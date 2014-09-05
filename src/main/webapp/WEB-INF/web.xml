@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+  <display-name>Insamlingsappen</display-name>
+  <description>Sajt för att samla upp information om vilket postnummer det är på en given plats.</description>
+
+  <listener>
+    <listener-class>nu.postnummeruppror.insamlingsappen.webapp.ServiceStarter</listener-class>
+  </listener>
+
+  <servlet>
+    <servlet-name>CreateAccount</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.CreateAccountServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>CreateAccount</servlet-name>
+    <url-pattern>/api/account/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>CreateLocationSample</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.CreateLocationSampleServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>CreateLocationSample</servlet-name>
+    <url-pattern>/api/location_sample/create</url-pattern>
+  </servlet-mapping>
+
+</web-app>
