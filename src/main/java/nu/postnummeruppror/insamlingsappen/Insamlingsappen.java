@@ -10,6 +10,16 @@ import java.io.File;
  */
 public class Insamlingsappen {
 
+  /** För att teststarta tjänsten */
+  public static void main(String[] args) throws Exception {
+    Insamlingsappen.getInstance().open();
+    try {
+      // foo
+    } finally {
+      Insamlingsappen.getInstance().close();
+    }
+  }
+
   private static Insamlingsappen instance = new Insamlingsappen();
 
   public static Insamlingsappen getInstance() {

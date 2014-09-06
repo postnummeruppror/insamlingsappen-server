@@ -12,7 +12,7 @@ public class LocationSample {
   @PrimaryKey
   private Long identity;
 
-  @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Account.class, name = "identity", onRelatedEntityDelete = DeleteAction.NULLIFY)
+  @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Account.class, onRelatedEntityDelete = DeleteAction.NULLIFY)
   private String accountIdentity;
 
   private String device;

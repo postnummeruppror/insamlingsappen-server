@@ -19,7 +19,7 @@ public class Account {
 
   private Long timestampVerified;
 
-  @SecondaryKey(relate = Relationship.ONE_TO_ONE)
+  @SecondaryKey(relate = Relationship.MANY_TO_ONE)
   private String emailAddress;
 
   public String getEmailAddress() {
