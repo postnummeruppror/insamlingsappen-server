@@ -31,6 +31,23 @@ public class LocationSample implements Serializable {
   private String houseNumber;
 
 
+  @Override
+  public String toString() {
+    return "LocationSample{" +
+        "identity=" + identity +
+        ", account.identity=" + account.getIdentity() +
+        ", provider='" + provider + '\'' +
+        ", timestamp=" + timestamp +
+        ", latitude=" + latitude +
+        ", longitude=" + longitude +
+        ", accuracy=" + accuracy +
+        ", altitude=" + altitude +
+        ", postalCode.postalCode=" + postalCode.getPostalCode() +
+        ", streetName='" + streetName + '\'' +
+        ", houseNumber='" + houseNumber + '\'' +
+        '}';
+  }
+
   public PostalCode getPostalCode() {
     return postalCode;
   }

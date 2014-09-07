@@ -3,6 +3,8 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.Account;
 import nu.postnummeruppror.insamlingsappen.transactions.CreateAccount;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +18,8 @@ import java.util.UUID;
  * @since 2014-09-06 01:00
  */
 public class CreateAccountServlet extends HttpServlet {
+
+  private static final Logger log = LoggerFactory.getLogger(CreateAccountServlet.class);
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,6 +42,9 @@ public class CreateAccountServlet extends HttpServlet {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
     response.getOutputStream().write(responseJson.toString().getBytes("UTF-8"));
+
+    log.info("Created account " + account);
+
 
   }
 }

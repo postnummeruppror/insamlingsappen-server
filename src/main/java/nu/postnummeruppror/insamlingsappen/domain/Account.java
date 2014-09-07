@@ -25,6 +25,19 @@ public class Account implements Serializable {
 
   private List<LocationSample> locationSamples = new ArrayList<>();
 
+  @Override
+  public String toString() {
+    return "Account{" +
+        "identity='" + identity + '\'' +
+        ", timestampCreated=" + timestampCreated +
+        ", emailAddress='" + emailAddress + '\'' +
+        ", timestampVerifiedEmailAddress=" + timestampVerifiedEmailAddress +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", locationSamples.size()=" + locationSamples.size() +
+        '}';
+  }
+
   public String getEmailAddress() {
     return emailAddress;
   }

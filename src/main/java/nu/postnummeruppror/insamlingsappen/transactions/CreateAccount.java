@@ -30,6 +30,7 @@ public class CreateAccount implements TransactionWithQuery<Root, Account>, Seria
   @Override
   public Account executeAndQuery(Root root, Date executionTime) throws Exception {
     Account account = new Account();
+    account.setTimestampCreated(executionTime.getTime());
     account.setIdentity(accountIdentity);
     account.setEmailAddress(emailAddress);
     root.getAccounts().put(account.getIdentity(), account);
