@@ -54,8 +54,19 @@ public class CreateLocationSampleServlet extends HttpServlet {
       Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
 
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      response.getOutputStream().write("{ \"success\": false }".getBytes("UTF-8"));
+
+      e.printStackTrace();
+
+      return;
+
     }
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getOutputStream().write("{ \"success\": true }".getBytes("UTF-8"));
 
   }
 }

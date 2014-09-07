@@ -34,7 +34,14 @@ public class CreateAccountServlet extends HttpServlet {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    response.getWriter().append("{ \"identity\": \"").append(String.valueOf(account.getIdentity())).append("\" }");
+
+    StringBuilder responseJson = new StringBuilder(1024);
+
+    responseJson.append("{ \"success\": true, \"identity\": \"").append(String.valueOf(account.getIdentity())).append("\" }");
+
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getOutputStream().write(responseJson.toString().getBytes("UTF-8"));
 
   }
 }
