@@ -1,8 +1,11 @@
 package nu.postnummeruppror.insamlingsappen;
 
-import nu.postnummeruppror.insamlingsappen.domain.DomainStore;
+import nu.postnummeruppror.insamlingsappen.domain.Root;
+import org.prevayler.Prevayler;
+import org.prevayler.PrevaylerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author kalle
@@ -10,7 +13,9 @@ import java.io.File;
  */
 public class Insamlingsappen {
 
-  /** För att teststarta tjänsten */
+  /**
+   * För att teststarta tjänsten
+   */
   public static void main(String[] args) throws Exception {
     Insamlingsappen.getInstance().open();
     try {
@@ -29,20 +34,23 @@ public class Insamlingsappen {
   private Insamlingsappen() {
   }
 
-  private DomainStore domainStore;
+  private Prevayler<Root> prevayler;
 
   public void open() throws Exception {
-    domainStore = new DomainStore();
-    domainStore.setPath(new File("data/domain_store"));
-    domainStore.open();
+    PrevaylerFactory<Root> prevaylerFactory = new PrevaylerFactory<>();
+    File prevalenceDirectory = new File("data/prevalence");
+    if (!prevalenceDirectory.exists() && !prevalenceDirectory.mkdirs()) {
+      throw new IOException("Could not mkdirs " + prevalenceDirectory.getAbsolutePath());
+    }
+    prevaylerFactory.configurePrevalenceDirectory(new File("data/prevalence").getAbsolutePath());
+    prevayler = prevaylerFactory.create();
   }
 
   public void close() throws Exception {
-    domainStore.close();
+    prevayler.close();
   }
 
-  public DomainStore getDomainStore() {
-    return domainStore;
+  public Prevayler<Root> getPrevayler() {
+    return prevayler;
   }
-
 }

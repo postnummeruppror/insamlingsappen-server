@@ -1,21 +1,20 @@
 package nu.postnummeruppror.insamlingsappen.domain;
 
-import com.sleepycat.persist.model.*;
+import java.io.Serializable;
 
 /**
  * @author kalle
  * @since 2014-09-06 00:45
  */
-@Entity(version = 1)
-public class LocationSample {
+public class LocationSample implements Serializable {
 
-  @PrimaryKey
+  private static final long serialVersionUID = 1l;
+
   private Long identity;
 
-  @SecondaryKey(relate = Relationship.MANY_TO_ONE, relatedEntity = Account.class, onRelatedEntityDelete = DeleteAction.NULLIFY)
-  private String accountIdentity;
+  private Account account;
 
-  private String device;
+  private String provider;
 
   private long timestamp;
 
@@ -24,32 +23,20 @@ public class LocationSample {
 
   private double accuracy;
 
-  private String postalCode;
+  private double altitude;
+
+  private PostalCode postalCode;
+
   private String streetName;
   private String houseNumber;
 
-  public String getPostalCode() {
+
+  public PostalCode getPostalCode() {
     return postalCode;
   }
 
-  public void setPostalCode(String postalCode) {
+  public void setPostalCode(PostalCode postalCode) {
     this.postalCode = postalCode;
-  }
-
-  public String getStreetName() {
-    return streetName;
-  }
-
-  public void setStreetName(String streetName) {
-    this.streetName = streetName;
-  }
-
-  public String getHouseNumber() {
-    return houseNumber;
-  }
-
-  public void setHouseNumber(String houseNumber) {
-    this.houseNumber = houseNumber;
   }
 
   public Long getIdentity() {
@@ -60,20 +47,12 @@ public class LocationSample {
     this.identity = identity;
   }
 
-  public String getAccountIdentity() {
-    return accountIdentity;
+  public String getProvider() {
+    return provider;
   }
 
-  public void setAccountIdentity(String accountIdentity) {
-    this.accountIdentity = accountIdentity;
-  }
-
-  public String getDevice() {
-    return device;
-  }
-
-  public void setDevice(String device) {
-    this.device = device;
+  public void setProvider(String provider) {
+    this.provider = provider;
   }
 
   public long getTimestamp() {
@@ -106,5 +85,37 @@ public class LocationSample {
 
   public void setAccuracy(double accuracy) {
     this.accuracy = accuracy;
+  }
+
+  public Account getAccount() {
+    return account;
+  }
+
+  public void setAccount(Account account) {
+    this.account = account;
+  }
+
+  public String getStreetName() {
+    return streetName;
+  }
+
+  public void setStreetName(String streetName) {
+    this.streetName = streetName;
+  }
+
+  public String getHouseNumber() {
+    return houseNumber;
+  }
+
+  public void setHouseNumber(String houseNumber) {
+    this.houseNumber = houseNumber;
+  }
+
+  public double getAltitude() {
+    return altitude;
+  }
+
+  public void setAltitude(double altitude) {
+    this.altitude = altitude;
   }
 }

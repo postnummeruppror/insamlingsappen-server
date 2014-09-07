@@ -1,7 +1,12 @@
 package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
-import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
+import nu.postnummeruppror.insamlingsappen.domain.Account;
+import nu.postnummeruppror.insamlingsappen.transactions.CreateLocationSample;
+import nu.postnummeruppror.insamlingsappen.transactions.IdentityFactory;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,44 +23,39 @@ public class CreateLocationSampleServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    if (!request.getParameterMap().containsKey("accountIdentity")) {
-      throw new IllegalArgumentException("Missing parameter 'accountIdentity'");
+    try {
+      String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
+      JSONObject json = new JSONObject(new JSONTokener(jsonString));
+
+      Account account = Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getAccounts().get(json.getString("accountIdentity"));
+
+      CreateLocationSample createLocationSample = new CreateLocationSample();
+
+      createLocationSample.setLocationSampleIdentity(Insamlingsappen.getInstance().getPrevayler().execute(new IdentityFactory()));
+
+      createLocationSample.setAccountIdentity(account.getIdentity());
+
+      createLocationSample.setPostalCode(json.getString("postalCode"));
+
+      if (json.has("streetName")) {
+        createLocationSample.setStreetName(json.getString("streetName"));
+      }
+
+      if (json.has("houseNumber")) {
+        createLocationSample.setHouseNumber(json.getString("houseNumber"));
+      }
+
+      createLocationSample.setProvider(json.getString("provider"));
+      createLocationSample.setAccuracy(json.getDouble("accuracy"));
+      createLocationSample.setLatitude(json.getDouble("latitude"));
+      createLocationSample.setLongitude(json.getDouble("longitude"));
+      createLocationSample.setAltitude(json.getDouble("altitude"));
+
+      Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-
-    if (!request.getParameterMap().containsKey("latitude")) {
-      throw new IllegalArgumentException("Missing parameter 'latitude'");
-    }
-
-    if (!request.getParameterMap().containsKey("longitude")) {
-      throw new IllegalArgumentException("Missing parameter 'longitude'");
-    }
-
-    if (!request.getParameterMap().containsKey("accuracy")) {
-      throw new IllegalArgumentException("Missing parameter 'accuracy'");
-    }
-
-    if (!request.getParameterMap().containsKey("postalCode")) {
-      throw new IllegalArgumentException("Missing parameter 'postalCode'");
-    }
-
-    if (!request.getParameterMap().containsKey("device")) {
-      throw new IllegalArgumentException("Missing parameter 'device'");
-    }
-
-    LocationSample locationSample = new LocationSample();
-
-    locationSample.setTimestamp(System.currentTimeMillis());
-    locationSample.setAccountIdentity(request.getParameter("accountIdentity"));
-    locationSample.setDevice(request.getParameter("device"));
-    locationSample.setPostalCode(request.getParameter("postalCode"));
-    locationSample.setLatitude(Double.valueOf(request.getParameter("latitude")));
-    locationSample.setLongitude(Double.valueOf(request.getParameter("longitude")));
-    locationSample.setAccuracy(Double.valueOf(request.getParameter("accuracy")));
-    locationSample.setStreetName(request.getParameter("streetName"));
-    locationSample.setHouseNumber(request.getParameter("houseNumber"));
-
-    Insamlingsappen.getInstance().getDomainStore().getLocationSamples().put(locationSample);
-
 
   }
 }

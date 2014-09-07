@@ -1,26 +1,29 @@
 package nu.postnummeruppror.insamlingsappen.domain;
 
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-import com.sleepycat.persist.model.Relationship;
-import com.sleepycat.persist.model.SecondaryKey;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author kalle
  * @since 2014-09-06 00:45
  */
-@Entity(version = 1)
-public class Account {
+public class Account implements Serializable {
 
-  @PrimaryKey
+  private static final long serialVersionUID = 1l;
+
+  /** Random UUID */
   private String identity;
 
   private long timestampCreated;
 
-  private Long timestampVerified;
-
-  @SecondaryKey(relate = Relationship.MANY_TO_ONE)
   private String emailAddress;
+  private Long timestampVerifiedEmailAddress;
+
+  private String firstName;
+  private String lastName;
+
+  private List<LocationSample> locationSamples = new ArrayList<>();
 
   public String getEmailAddress() {
     return emailAddress;
@@ -46,11 +49,37 @@ public class Account {
     this.timestampCreated = timestampCreated;
   }
 
-  public Long getTimestampVerified() {
-    return timestampVerified;
+  public Long getTimestampVerifiedEmailAddress() {
+    return timestampVerifiedEmailAddress;
   }
 
-  public void setTimestampVerified(Long timestampVerified) {
-    this.timestampVerified = timestampVerified;
+  public void setTimestampVerifiedEmailAddress(Long timestampVerifiedEmailAddress) {
+    this.timestampVerifiedEmailAddress = timestampVerifiedEmailAddress;
   }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public List<LocationSample> getLocationSamples() {
+    return locationSamples;
+  }
+
+  public void setLocationSamples(List<LocationSample> locationSamples) {
+    this.locationSamples = locationSamples;
+  }
+
+
 }

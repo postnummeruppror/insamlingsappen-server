@@ -2,6 +2,7 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.Account;
+import nu.postnummeruppror.insamlingsappen.transactions.CreateAccount;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,14 +24,16 @@ public class CreateAccountServlet extends HttpServlet {
       throw new IllegalArgumentException("Missing parameter 'emailAddress'");
     }
 
-    if (!request.getParameterMap().containsKey("password")) {
-      throw new IllegalArgumentException("Missing parameter 'password'");
-    }
+    CreateAccount createAccount = new CreateAccount();
+    createAccount.setAccountIdentity(UUID.randomUUID().toString());
+    createAccount.setEmailAddress(request.getParameter("emailAddress"));
 
-    Account account = new Account();
-    account.setIdentity(UUID.randomUUID().toString());
-    account.setTimestampCreated(System.currentTimeMillis());
-    Insamlingsappen.getInstance().getDomainStore().getAccounts().put(account);
+    Account account;
+    try {
+      account = Insamlingsappen.getInstance().getPrevayler().execute(createAccount);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     response.getWriter().append("{ \"identity\": \"").append(String.valueOf(account.getIdentity())).append("\" }");
 
   }
