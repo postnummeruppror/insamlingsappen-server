@@ -18,11 +18,7 @@ import java.util.UUID;
 public class CreateAccountServlet extends HttpServlet {
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    if (!request.getParameterMap().containsKey("emailAddress")) {
-      throw new IllegalArgumentException("Missing parameter 'emailAddress'");
-    }
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     CreateAccount createAccount = new CreateAccount();
     createAccount.setAccountIdentity(UUID.randomUUID().toString());

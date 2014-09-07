@@ -21,7 +21,7 @@ import java.io.IOException;
 public class CreateLocationSampleServlet extends HttpServlet {
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     try {
       String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
