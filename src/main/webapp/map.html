@@ -49,12 +49,13 @@
 
 
 </head>
-<body onclick="start();">
+<body onload="start();">
 <div id="map" role="main" style="width: 100%; height:100%"></div>
 
 <script type="text/javascript">
 
   var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a>. Kart-API från <a href="http://leafletjs.org">Leaflet</a>.';
+
   var full = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
     subdomains: "abc",
     attribution: attribution,
