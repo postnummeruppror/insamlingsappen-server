@@ -28,6 +28,8 @@ public class CreateLocationSampleServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+    LocationSample locationSample;
+
     try {
       String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
       JSONObject json = new JSONObject(new JSONTokener(jsonString));
@@ -56,24 +58,23 @@ public class CreateLocationSampleServlet extends HttpServlet {
       createLocationSample.setLongitude(json.getDouble("longitude"));
       createLocationSample.setAltitude(json.getDouble("altitude"));
 
-      LocationSample locationSample = Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
+      locationSample = Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
 
       log.info("Created location sample " + locationSample);
 
-    } catch (Exception e) {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");
-      response.getOutputStream().write("{ \"success\": false }".getBytes("UTF-8"));
+      response.getOutputStream().write("{ \"success\": true }".getBytes("UTF-8"));
+      response.getOutputStream().close();
 
-      e.printStackTrace();
+      Insamlingsappen.getInstance().getLocationSampleIndex().update(locationSample);
 
-      return;
+    } catch (Exception e) {
+      log.error("Exception while processing new location sample", e);
 
+      throw new RuntimeException();
     }
 
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
-    response.getOutputStream().write("{ \"success\": true }".getBytes("UTF-8"));
 
   }
 }
