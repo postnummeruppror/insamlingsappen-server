@@ -60,6 +60,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     locationSample.setStreetName(root.getStreetNameIntern().intern(streetName));
     locationSample.setHouseNumber(root.getHouseNumberIntern().intern(houseNumber));
 
+    locationSample.setAccount(account);
     account.getLocationSamples().add(locationSample);
 
     root.getLocationSamples().put(locationSample.getIdentity(), locationSample);
