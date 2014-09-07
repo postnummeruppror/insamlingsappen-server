@@ -26,6 +26,32 @@
   <link rel="stylesheet" href="lib/leaflet/leaflet.ie.css"/>
   <![endif]-->
 
+  <style type="text/css">
+    html, body, div, span, textarea, button, input, table, tr, td {
+      font-family: arial, helvetica, sans-serif;
+      font-size: 13px
+    }
+
+    html, body {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+    }
+
+    #locationSampleMarker {
+      background-color: #FFFF00;
+      color: #000000;
+      padding: 0.25em 0.25em 0.25em 0.25em;
+      border: solid 2px #FFFFFF;
+    }
+  </style>
+
+
+</head>
+<body>
+  <div id="map" role="main" style="width: 100%; height:100%"></div>
+
   <script type="text/javascript">
 
     var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a>. Kart-API från <a href="http://leafletjs.org">Leaflet</a>.';
@@ -164,19 +190,6 @@
 
 
   </script>
-
-  <style>
-    #locationSampleMarker {
-      background-color: #FFFF00;
-      color: #000000;
-      padding: 0.25em 0.25em 0.25em 0.25em;
-      border: solid 2px #FFFFFF;
-    }
-  </style>
-
-</head>
-
-<body>
 
 
 </body>
