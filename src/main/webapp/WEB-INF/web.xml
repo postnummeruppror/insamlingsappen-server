@@ -32,4 +32,14 @@
     <url-pattern>/api/location_sample/create</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>SearchLocationSample</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.SearchLocationSampleServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>SearchLocationSample</servlet-name>
+    <url-pattern>/api/location_sample/search</url-pattern>
+  </servlet-mapping>
+
 </web-app>

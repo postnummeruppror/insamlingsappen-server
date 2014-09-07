@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+  <meta charset="utf-8">
+
+  <!--<meta http-equiv="cache-control" content="no-cache">-->
+  <!--<meta http-equiv="pragma" content="no-cache">-->
+  <meta http-equiv="content-language" content="sv">
+
+  <script src="lib/leaflet/leaflet-src.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css" type="text/css"/>
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="lib/leaflet/leaflet.ie.css"/>
+  <![endif]-->
+
+  <script type="text/javascript">
+
+    var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a>. Kart-API från <a href="http://leafletjs.org">Leaflet</a>.';
+    var full = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+      subdomains: "abc",
+      attribution: attribution,
+      maxZoom: 18
+    });
+
+    var base = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png', {
+      subdomains: "abc",
+      attribution: attribution,
+      maxZoom: 18
+    });
+    var roads_and_labels = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
+      subdomains: "abc",
+      attribution: attribution,
+      maxZoom: 18
+    });
+
+
+    var map = new L.Map('map');
+    //  , {
+    //    center: new L.LatLng(63, 15),
+    //    zoom: 5
+    //  });
+
+    map.attributionControl.options.prefix = '';
+
+    map.addLayer(full);
+
+    var locationSamplesMarkersLayer = L.layerGroup();
+    map.addLayer(locationSamplesMarkersLayer);
+
+    var moveStarted = null;
+
+    map.on('movestart', function (mouseEvent) {
+      moveStarted = new Date().getTime();
+    });
+    map.on('dragend', function (mouseEvent) {
+      // todo did we move far enough? would be better
+      var millisecondsSpent = new Date().getTime() - moveStarted;
+      if (millisecondsSpent < 100) {
+        return;
+      }
+      console.log("dragend");
+      delayedSearch(100);
+    });
+    map.on('zoomend', function (mouseEvent) {
+      console.log("zoomend");
+      delayedSearch(200);
+    });
+    map.on('resize', function (mouseEvent) {
+      console.log("resized");
+      delayedSearch(500);
+    });
+
+
+    var delayedSearchTimeout = null;
+    function delayedSearch(millisecondsDelay) {
+      if (delayedSearchTimeout) {
+        window.clearTimeout(delayedSearchTimeout);
+      }
+      delayedSearchTimeout = window.setTimeout(function () {
+        search();
+      }, millisecondsDelay);
+    }
+
+    var expectedReference = null;
+
+    function search() {
+      if (delayedSearchTimeout) {
+        window.clearTimeout(delayedSearchTimeout);
+        delayedSearchTimeout = null;
+      }
+
+      var reference = new Date().getTime().toString();
+      expectedReference = reference;
+
+      var url = "/api/location_sample/search";
+      url += "?south=" + map.getBounds().getSouth();
+      url += "&west=" + map.getBounds().getWest();
+      url += "&north=" + map.getBounds().getNorth();
+      url += "&east=" + map.getBounds().getEast();
+      url += "&reference=" + reference;
+
+
+      var httpRequest = new XMLHttpRequest();
+      httpRequest.open("get", url, true);
+      httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState == 4) {
+          if (httpRequest.status == 200) {
+            var timestampReceived = new Date();
+            var searchResults = JSON.parse(httpRequest.responseText);
+            searchResults.timestampReceived = timestampReceived;
+
+            if (searchResults.reference == expectedReference) {
+              processSearchResults(searchResults);
+            } else {
+              console.log("Ignoring non expected search results, probably due to old response taking a long time.")
+            }
+
+          } else {
+            // todo notify user of error
+            console.log(httpRequest.status + "\n" + httpRequest.responseText);
+          }
+        }
+      };
+      httpRequest.send(JSON.stringify(searchRequest));
+
+    }
+
+    function processSearchResults(searchResults) {
+
+      locationSamplesMarkersLayer.clearLayers();
+
+      for (var i = 0; i < searchResult.hits.length; i++) {
+
+        var hit = searchResults.hits[i];
+
+
+        var marker = L.marker(
+            [hit.latitude, hit.longitude], {
+              icon: L.divIcon({
+                className: 'locationSampleMarker',
+                html: hit.postalCode
+              })
+            });
+
+        locationSamplesMarkersLayer.addLayer(marker);
+
+      }
+
+
+    }
+
+
+  </script>
+
+  <style>
+    #locationSampleMarker {
+      background-color: #FFFF00;
+      color: #000000;
+      padding: 0.25em 0.25em 0.25em 0.25em;
+      border: solid 2px #FFFFFF;
+    }
+  </style>
+
+</head>
+
+<body>
+
+
+</body>
+
+</html>

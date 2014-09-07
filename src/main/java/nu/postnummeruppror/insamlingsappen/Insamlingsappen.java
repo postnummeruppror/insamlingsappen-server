@@ -50,6 +50,7 @@ public class Insamlingsappen {
 
     locationSampleIndex = new LocationSampleIndex();
     locationSampleIndex.open();
+    locationSampleIndex.reconstruct();
   }
 
   public void close() throws Exception {
