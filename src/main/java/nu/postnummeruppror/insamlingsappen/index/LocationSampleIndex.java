@@ -259,7 +259,7 @@ public class LocationSampleIndex {
 
     long millisecondsSpent = System.currentTimeMillis() - started;
 
-    log.debug("Query executed in " + millisecondsSpent + " milliseconds and returned " + results.size() + " advertisements.");
+    log.debug("Query executed in " + millisecondsSpent + " milliseconds and returned " + results.size() + " location samples.");
 
     return results;
   }

@@ -52,7 +52,9 @@ public class SearchLocationSampleServlet extends HttpServlet {
         hitJson.put("latitude", hit.getLatitude());
         hitJson.put("longitude", hit.getLongitude());
 
-        if (hitJson.length() >= maximumHits) {
+        hitsJson.put(hitJson);
+
+        if (hitsJson.length() >= maximumHits) {
           break;
         }
       }
