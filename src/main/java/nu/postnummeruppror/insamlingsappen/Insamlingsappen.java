@@ -43,6 +43,7 @@ public class Insamlingsappen {
       throw new IOException("Could not mkdirs " + prevalenceDirectory.getAbsolutePath());
     }
     prevaylerFactory.configurePrevalenceDirectory(new File("data/prevalence").getAbsolutePath());
+    prevaylerFactory.configurePrevalentSystem(new Root());
     prevayler = prevaylerFactory.create();
   }
 
