@@ -33,19 +33,21 @@ public class LocationSample implements Serializable {
 
   @Override
   public String toString() {
-    return "LocationSample{" +
-        "identity=" + identity +
-        ", account.identity=" + account.getIdentity() +
-        ", provider='" + provider + '\'' +
-        ", timestamp=" + timestamp +
-        ", latitude=" + latitude +
-        ", longitude=" + longitude +
-        ", accuracy=" + accuracy +
-        ", altitude=" + altitude +
-        ", postalCode.postalCode=" + postalCode.getPostalCode() +
-        ", streetName='" + streetName + '\'' +
-        ", houseNumber='" + houseNumber + '\'' +
-        '}';
+    StringBuilder sb = new StringBuilder();
+    sb.append("LocationSample{");
+    sb.append("identity=").append(identity);
+    sb.append(", account.identity=").append(account.getIdentity());
+    sb.append(", provider='").append(provider).append('\'');
+    sb.append(", timestamp=").append(timestamp);
+    sb.append(", latitude=").append(latitude);
+    sb.append(", longitude=").append(longitude);
+    sb.append(", accuracy=").append(accuracy);
+    sb.append(", altitude=").append(altitude);
+    sb.append(", postalCode.postalCode=").append(postalCode.getPostalCode());
+    sb.append(", streetName='").append(streetName);
+    sb.append('\'').append(", houseNumber='").append(houseNumber).append('\'');
+    sb.append('}');
+    return sb.toString();
   }
 
   public PostalCode getPostalCode() {
