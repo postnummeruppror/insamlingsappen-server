@@ -28,16 +28,24 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
   private double longitude;
   private double accuracy;
   private double altitude;
+
   private String postalCode;
 
   private String streetName;
   private String houseNumber;
+  private String postalTown;
 
 
   @Override
   public LocationSample executeAndQuery(Root root, Date executionTime) throws Exception {
 
     Account account = root.getAccounts().get(accountIdentity);
+    if (account == null) {
+      // create new account if not existing
+      account = new Account();
+      account.setIdentity(accountIdentity);
+      root.getAccounts().put(account.getIdentity(), account);
+    }
 
     LocationSample locationSample = new LocationSample();
     locationSample.setIdentity(locationSampleIdentity);
@@ -59,6 +67,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
     locationSample.setStreetName(root.getStreetNameIntern().intern(streetName));
     locationSample.setHouseNumber(root.getHouseNumberIntern().intern(houseNumber));
+    locationSample.setPostalTown(root.getPostalTownIntern().intern(postalTown));
 
     locationSample.setAccount(account);
     account.getLocationSamples().add(locationSample);
@@ -148,5 +157,13 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
   public void setAltitude(double altitude) {
     this.altitude = altitude;
+  }
+
+  public String getPostalTown() {
+    return postalTown;
+  }
+
+  public void setPostalTown(String postalTown) {
+    this.postalTown = postalTown;
   }
 }

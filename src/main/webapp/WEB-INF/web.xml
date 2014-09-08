@@ -13,13 +13,13 @@
   </listener>
 
   <servlet>
-    <servlet-name>CreateAccount</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.CreateAccountServlet</servlet-class>
+    <servlet-name>SetAccount</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.SetAccountServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>CreateAccount</servlet-name>
-    <url-pattern>/api/account/create</url-pattern>
+    <servlet-name>SetAccount</servlet-name>
+    <url-pattern>/api/account/set</url-pattern>
   </servlet-mapping>
 
   <servlet>

@@ -22,6 +22,7 @@ public class Root implements Serializable {
   private Intern<String> providerIntern = new Intern<>();
   private Intern<String> streetNameIntern = new Intern<>();
   private Intern<String> houseNumberIntern = new Intern<>();
+  private Intern<String> postalTownIntern = new Intern<>();
 
   public Map<String, Account> getAccounts() {
     return accounts;
@@ -63,7 +64,6 @@ public class Root implements Serializable {
     this.providerIntern = providerIntern;
   }
 
-
   public Intern<String> getStreetNameIntern() {
     return streetNameIntern;
   }
@@ -78,5 +78,13 @@ public class Root implements Serializable {
 
   public void setHouseNumberIntern(Intern<String> houseNumberIntern) {
     this.houseNumberIntern = houseNumberIntern;
+  }
+
+  public Intern<String> getPostalTownIntern() {
+    return postalTownIntern;
+  }
+
+  public void setPostalTownIntern(Intern<String> postalTownIntern) {
+    this.postalTownIntern = postalTownIntern;
   }
 }

@@ -34,4 +34,5 @@ public class PostalCode implements Serializable {
   public void setLocationSamples(List<LocationSample> locationSamples) {
     this.locationSamples = locationSamples;
   }
+
 }

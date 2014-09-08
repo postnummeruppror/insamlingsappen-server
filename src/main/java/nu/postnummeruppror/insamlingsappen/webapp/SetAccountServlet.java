@@ -2,7 +2,7 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.Account;
-import nu.postnummeruppror.insamlingsappen.transactions.CreateAccount;
+import nu.postnummeruppror.insamlingsappen.transactions.SetAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,33 +17,30 @@ import java.util.UUID;
  * @author kalle
  * @since 2014-09-06 01:00
  */
-public class CreateAccountServlet extends HttpServlet {
+public class SetAccountServlet extends HttpServlet {
 
-  private static final Logger log = LoggerFactory.getLogger(CreateAccountServlet.class);
+  private static final Logger log = LoggerFactory.getLogger(SetAccountServlet.class);
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    CreateAccount createAccount = new CreateAccount();
-    createAccount.setAccountIdentity(UUID.randomUUID().toString());
-    createAccount.setEmailAddress(request.getParameter("emailAddress"));
+    SetAccount setAccount = new SetAccount();
+    setAccount.setAccountIdentity(UUID.randomUUID().toString());
+    setAccount.setEmailAddress(request.getParameter("emailAddress"));
 
     Account account;
     try {
-      account = Insamlingsappen.getInstance().getPrevayler().execute(createAccount);
+      account = Insamlingsappen.getInstance().getPrevayler().execute(setAccount);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
 
-    StringBuilder responseJson = new StringBuilder(1024);
-
-    responseJson.append("{ \"success\": true, \"identity\": \"").append(String.valueOf(account.getIdentity())).append("\" }");
-
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
-    response.getOutputStream().write(responseJson.toString().getBytes("UTF-8"));
+    response.getOutputStream().write("{ \"success\": true }".getBytes("UTF-8"));
+    response.getOutputStream().close();
 
-    log.info("Created account " + account);
+    log.info("Updated account " + account);
 
 
   }

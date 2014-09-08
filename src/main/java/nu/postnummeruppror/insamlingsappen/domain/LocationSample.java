@@ -29,6 +29,7 @@ public class LocationSample implements Serializable {
 
   private String streetName;
   private String houseNumber;
+  private String postalTown;
 
 
   @Override
@@ -136,5 +137,13 @@ public class LocationSample implements Serializable {
 
   public void setAltitude(double altitude) {
     this.altitude = altitude;
+  }
+
+  public String getPostalTown() {
+    return postalTown;
+  }
+
+  public void setPostalTown(String postalTown) {
+    this.postalTown = postalTown;
   }
 }

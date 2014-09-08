@@ -9,31 +9,41 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * Creates the account if not already existing
+ * and updates user specifiable data (email address, etc).
+ *
  * @author kalle
  * @since 2014-09-06 20:23
  */
-public class CreateAccount implements TransactionWithQuery<Root, Account>, Serializable {
+public class SetAccount implements TransactionWithQuery<Root, Account>, Serializable {
 
   private static final long serialVersionUID = 1l;
 
-  public CreateAccount() {
+  public SetAccount() {
   }
 
   private String accountIdentity;
+
   private String emailAddress;
 
-  public CreateAccount(String accountIdentity, String emailAddress) {
+  public SetAccount(String accountIdentity, String emailAddress) {
     this.accountIdentity = accountIdentity;
     this.emailAddress = emailAddress;
   }
 
   @Override
   public Account executeAndQuery(Root root, Date executionTime) throws Exception {
-    Account account = new Account();
-    account.setTimestampCreated(executionTime.getTime());
-    account.setIdentity(accountIdentity);
+
+    Account account = root.getAccounts().get(accountIdentity);
+    if (account == null) {
+      account = new Account();
+      account.setIdentity(accountIdentity);
+      account.setTimestampCreated(executionTime.getTime());
+      root.getAccounts().put(account.getIdentity(), account);
+    }
+
     account.setEmailAddress(emailAddress);
-    root.getAccounts().put(account.getIdentity(), account);
+
     return account;
   }
 
