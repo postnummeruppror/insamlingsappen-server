@@ -34,13 +34,11 @@ public class CreateLocationSampleServlet extends HttpServlet {
       String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
       JSONObject json = new JSONObject(new JSONTokener(jsonString));
 
-      Account account = Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getAccounts().get(json.getString("accountIdentity"));
-
       CreateLocationSample createLocationSample = new CreateLocationSample();
 
       createLocationSample.setLocationSampleIdentity(Insamlingsappen.getInstance().getPrevayler().execute(new IdentityFactory()));
 
-      createLocationSample.setAccountIdentity(account.getIdentity());
+      createLocationSample.setAccountIdentity(json.getString("accountIdentity"));
 
       createLocationSample.setPostalCode(json.getString("postalCode"));
 
