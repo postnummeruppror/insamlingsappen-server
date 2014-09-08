@@ -1,6 +1,7 @@
 {
   "accountIdentity": "Client generated identity, preferably an UUID",
-  "application": "devicename/application version",
+  "application": "insamlingsappen-android, etc",
+  "applicationVersion": "0.0.1, etc",
   "provider": "network, gps, human, what not",
   "latitude": 55.6033206,
   "longitude": 13.0279209375,
