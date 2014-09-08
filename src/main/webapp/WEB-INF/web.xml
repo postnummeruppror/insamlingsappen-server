@@ -42,4 +42,14 @@
     <url-pattern>/api/location_sample/search</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>LocationStatistics</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.LocationStatisticsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>LocationStatistics</servlet-name>
+    <url-pattern>/api/statistics/location</url-pattern>
+  </servlet-mapping>
+
 </web-app>

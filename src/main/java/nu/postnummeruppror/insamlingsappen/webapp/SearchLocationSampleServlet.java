@@ -2,6 +2,7 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
+import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateEnvelopeQueryFactory;
 import nu.postnummeruppror.insamlingsappen.index.LocationSampleIndexFields;
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.search.*;
@@ -76,11 +77,14 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
   public JSONObject search(double south, double west, double north, double east, int maximumHits, String reference) throws Exception {
 
-    Query coordinateEnvelopeQuery = coordinateEnvelopeQueryFactory(south, west, north, east);
+    Map<LocationSample, Float> hits = Insamlingsappen.getInstance().getLocationSampleIndex().search(new LocationSampleCoordinateEnvelopeQueryFactory()
+        .setSouth(south)
+        .setWest(west)
+        .setNorth(north)
+        .setEast(east)
+        .build());
 
     JSONObject json = new JSONObject();
-
-    Map<LocationSample, Float> hits = Insamlingsappen.getInstance().getLocationSampleIndex().search(coordinateEnvelopeQuery);
 
     json.put("success", true);
     json.put("reference", reference);
@@ -114,35 +118,4 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
   }
 
-  public Query coordinateEnvelopeQueryFactory(double south, double west, double north, double east) {
-    if (south <= -90d
-        && west <= -180d
-        && north >= 90d
-        && east >= 180d) {
-      return new MatchAllDocsQuery();
-    }
-
-    BooleanQuery query = new BooleanQuery();
-
-    query.add(NumericRangeQuery.newDoubleRange(LocationSampleIndexFields.latitude, south, north, true, true), BooleanClause.Occur.MUST);
-
-    if (west < east) {
-
-      query.add(NumericRangeQuery.newDoubleRange(LocationSampleIndexFields.longitude, west, east, true, true), BooleanClause.Occur.MUST);
-
-    } else {
-
-      BooleanQuery longitudeQuery = new BooleanQuery();
-
-      longitudeQuery.add(NumericRangeQuery.newDoubleRange(LocationSampleIndexFields.longitude, -180d, west, true, true), BooleanClause.Occur.SHOULD);
-      longitudeQuery.add(NumericRangeQuery.newDoubleRange(LocationSampleIndexFields.longitude, east, 180d, true, true), BooleanClause.Occur.SHOULD);
-
-      query.add(longitudeQuery, BooleanClause.Occur.MUST);
-
-
-    }
-
-    return query;
-
-  }
 }
