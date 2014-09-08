@@ -1,8 +1,6 @@
 package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
-import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
-import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateEnvelopeQueryFactory;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author kalle

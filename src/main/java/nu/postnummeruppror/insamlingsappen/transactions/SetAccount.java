@@ -25,11 +25,8 @@ public class SetAccount implements TransactionWithQuery<Root, Account>, Serializ
   private String accountIdentity;
 
   private String emailAddress;
+  private Boolean acceptingCcZero;
 
-  public SetAccount(String accountIdentity, String emailAddress) {
-    this.accountIdentity = accountIdentity;
-    this.emailAddress = emailAddress;
-  }
 
   @Override
   public Account executeAndQuery(Root root, Date executionTime) throws Exception {
@@ -38,6 +35,8 @@ public class SetAccount implements TransactionWithQuery<Root, Account>, Serializ
     if (account == null) {
       account = new Account();
       account.setIdentity(accountIdentity);
+      account.setEmailAddress(emailAddress);
+      account.setAcceptingCcZero(acceptingCcZero);
       account.setTimestampCreated(executionTime.getTime());
       root.getAccounts().put(account.getIdentity(), account);
     }
@@ -61,5 +60,17 @@ public class SetAccount implements TransactionWithQuery<Root, Account>, Serializ
 
   public void setEmailAddress(String emailAddress) {
     this.emailAddress = emailAddress;
+  }
+
+  public static long getSerialVersionUID() {
+    return serialVersionUID;
+  }
+
+  public Boolean getAcceptingCcZero() {
+    return acceptingCcZero;
+  }
+
+  public void setAcceptingCcZero(Boolean acceptingCcZero) {
+    this.acceptingCcZero = acceptingCcZero;
   }
 }

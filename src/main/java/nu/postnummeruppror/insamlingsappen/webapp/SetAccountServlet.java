@@ -3,6 +3,9 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.Account;
 import nu.postnummeruppror.insamlingsappen.transactions.SetAccount;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,12 +25,39 @@ public class SetAccountServlet extends HttpServlet {
   private static final Logger log = LoggerFactory.getLogger(SetAccountServlet.class);
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     SetAccount setAccount = new SetAccount();
-    setAccount.setAccountIdentity(UUID.randomUUID().toString());
+    setAccount.setAccountIdentity(request.getParameter("identity"));
     setAccount.setEmailAddress(request.getParameter("emailAddress"));
+    setAccount.setAcceptingCcZero(Boolean.valueOf(request.getParameter("acceptingCcZero")));
 
+    sendResponse(setAccount, request, response);
+
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    try {
+
+      String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
+      JSONObject requestJson = new JSONObject(new JSONTokener(jsonString));
+
+      SetAccount setAccount = new SetAccount();
+      setAccount.setAccountIdentity(requestJson.getString("identity"));
+      setAccount.setEmailAddress(requestJson.getString("emailAddress"));
+      setAccount.setAcceptingCcZero(requestJson.getBoolean("acceptingCcZero"));
+
+      sendResponse(setAccount, request, response);
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
+  private void sendResponse(SetAccount setAccount, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     Account account;
     try {
       account = Insamlingsappen.getInstance().getPrevayler().execute(setAccount);
@@ -42,6 +72,6 @@ public class SetAccountServlet extends HttpServlet {
 
     log.info("Updated account " + account);
 
-
   }
+
 }

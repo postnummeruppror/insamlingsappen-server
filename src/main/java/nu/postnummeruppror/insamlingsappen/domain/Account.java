@@ -23,6 +23,8 @@ public class Account implements Serializable {
   private String firstName;
   private String lastName;
 
+  private Boolean acceptingCcZero = false;
+
   private List<LocationSample> locationSamples = new ArrayList<>();
 
   @Override
@@ -31,6 +33,7 @@ public class Account implements Serializable {
         "identity='" + identity + '\'' +
         ", timestampCreated=" + timestampCreated +
         ", emailAddress='" + emailAddress + '\'' +
+        ", acceptingCcZero=" + acceptingCcZero +
         ", timestampVerifiedEmailAddress=" + timestampVerifiedEmailAddress +
         ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
@@ -94,5 +97,11 @@ public class Account implements Serializable {
     this.locationSamples = locationSamples;
   }
 
+  public Boolean getAcceptingCcZero() {
+    return acceptingCcZero;
+  }
 
+  public void setAcceptingCcZero(Boolean acceptingCcZero) {
+    this.acceptingCcZero = acceptingCcZero;
+  }
 }
