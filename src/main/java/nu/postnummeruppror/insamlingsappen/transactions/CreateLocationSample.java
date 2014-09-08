@@ -54,7 +54,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     locationSample.setIdentity(locationSampleIdentity);
 
     locationSample.setApplication(root.getApplicationIntern().intern(application));
-    locationSample.setApplication(root.getApplicationVersionIntern().intern(applicationVersion));
+    locationSample.setApplicationVersion(root.getApplicationVersionIntern().intern(applicationVersion));
 
     locationSample.setProvider(root.getProviderIntern().intern(provider));
     locationSample.setAccuracy(accuracy);
