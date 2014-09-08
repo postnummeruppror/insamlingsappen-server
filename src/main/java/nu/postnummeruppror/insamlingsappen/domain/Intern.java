@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Assures that only a single instance of objects that equals is kept in memory.
+ *
+ * I.e. every instance of the String "android" consume 112 bytes more heap
+ * than pointing at an existing object with that value.
+ *
  * @author kalle
  * @since 2014-09-07 02:05
  */

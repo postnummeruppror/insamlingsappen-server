@@ -14,6 +14,14 @@ public class LocationSample implements Serializable {
 
   private Account account;
 
+  /**
+   * android, ios, webapp, etc
+   */
+  private String application;
+
+  /**
+   * gps, network, wifi, human, etc.
+   */
   private String provider;
 
   private long timestamp;
@@ -38,6 +46,7 @@ public class LocationSample implements Serializable {
     sb.append("LocationSample{");
     sb.append("identity=").append(identity);
     sb.append(", account.identity=").append(account.getIdentity());
+    sb.append(", application='").append(application).append('\'');
     sb.append(", provider='").append(provider).append('\'');
     sb.append(", timestamp=").append(timestamp);
     sb.append(", latitude=").append(latitude);
@@ -45,8 +54,9 @@ public class LocationSample implements Serializable {
     sb.append(", accuracy=").append(accuracy);
     sb.append(", altitude=").append(altitude);
     sb.append(", postalCode.postalCode=").append(postalCode.getPostalCode());
-    sb.append(", streetName='").append(streetName);
-    sb.append('\'').append(", houseNumber='").append(houseNumber).append('\'');
+    sb.append(", streetName='").append(streetName).append('\'');
+    sb.append(", houseNumber='").append(houseNumber).append('\'');
+    sb.append(", postalTown='").append(postalTown).append('\'');
     sb.append('}');
     return sb.toString();
   }
@@ -145,5 +155,13 @@ public class LocationSample implements Serializable {
 
   public void setPostalTown(String postalTown) {
     this.postalTown = postalTown;
+  }
+
+  public String getApplication() {
+    return application;
+  }
+
+  public void setApplication(String application) {
+    this.application = application;
   }
 }

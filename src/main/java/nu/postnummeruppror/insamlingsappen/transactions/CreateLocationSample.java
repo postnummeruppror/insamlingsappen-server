@@ -23,6 +23,8 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
   private String accountIdentity;
   private Long locationSampleIdentity;
 
+  private String application;
+
   private String provider;
   private double latitude;
   private double longitude;
@@ -49,6 +51,8 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
     LocationSample locationSample = new LocationSample();
     locationSample.setIdentity(locationSampleIdentity);
+
+    locationSample.setApplication(root.getApplicationIntern().intern(application));
 
     locationSample.setProvider(root.getProviderIntern().intern(provider));
     locationSample.setAccuracy(accuracy);
@@ -165,5 +169,13 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
   public void setPostalTown(String postalTown) {
     this.postalTown = postalTown;
+  }
+
+  public String getApplication() {
+    return application;
+  }
+
+  public void setApplication(String application) {
+    this.application = application;
   }
 }
