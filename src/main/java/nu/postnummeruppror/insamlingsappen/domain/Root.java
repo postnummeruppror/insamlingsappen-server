@@ -20,6 +20,7 @@ public class Root implements Serializable {
   private Map<String, PostalCode> postalCodes = new HashMap<>();
 
   private Intern<String> applicationIntern = new Intern<>();
+  private Intern<String> applicationVersionIntern = new Intern<>();
   private Intern<String> providerIntern = new Intern<>();
   private Intern<String> streetNameIntern = new Intern<>();
   private Intern<String> houseNumberIntern = new Intern<>();
@@ -95,5 +96,13 @@ public class Root implements Serializable {
 
   public void setApplicationIntern(Intern<String> applicationIntern) {
     this.applicationIntern = applicationIntern;
+  }
+
+  public Intern<String> getApplicationVersionIntern() {
+    return applicationVersionIntern;
+  }
+
+  public void setApplicationVersionIntern(Intern<String> applicationVersionIntern) {
+    this.applicationVersionIntern = applicationVersionIntern;
   }
 }

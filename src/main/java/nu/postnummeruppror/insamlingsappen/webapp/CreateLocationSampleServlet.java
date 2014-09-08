@@ -41,6 +41,7 @@ public class CreateLocationSampleServlet extends HttpServlet {
       createLocationSample.setAccountIdentity(json.getString("accountIdentity"));
 
       createLocationSample.setApplication(json.getString("application"));
+      createLocationSample.setApplicationVersion(json.getString("applicationVersion"));
 
       createLocationSample.setPostalCode(json.getString("postalCode"));
 

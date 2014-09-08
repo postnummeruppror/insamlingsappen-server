@@ -19,6 +19,9 @@ public class LocationSample implements Serializable {
    */
   private String application;
 
+  /** 0.0.1 or what not */
+  private String applicationVersion;
+
   /**
    * gps, network, wifi, human, etc.
    */
@@ -47,6 +50,7 @@ public class LocationSample implements Serializable {
     sb.append("identity=").append(identity);
     sb.append(", account.identity=").append(account.getIdentity());
     sb.append(", application='").append(application).append('\'');
+    sb.append(", applicationVersion='").append(applicationVersion).append('\'');
     sb.append(", provider='").append(provider).append('\'');
     sb.append(", timestamp=").append(timestamp);
     sb.append(", latitude=").append(latitude);
@@ -163,5 +167,13 @@ public class LocationSample implements Serializable {
 
   public void setApplication(String application) {
     this.application = application;
+  }
+
+  public String getApplicationVersion() {
+    return applicationVersion;
+  }
+
+  public void setApplicationVersion(String applicationVersion) {
+    this.applicationVersion = applicationVersion;
   }
 }

@@ -1,0 +1,13 @@
+{
+  "accountIdentity": "Client generated identity, preferably an UUID",
+  "application": "devicename/application version",
+  "provider": "network, gps, human, what not",
+  "latitude": 55.6033206,
+  "longitude": 13.0279209375,
+  "accuracy": 174.0,
+  "altitude": 0.0,
+  "postalCode": "21218",
+  "streetName": null,
+  "houseNumber": null,
+  "postalTown": null
+}
