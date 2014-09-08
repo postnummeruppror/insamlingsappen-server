@@ -46,12 +46,15 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     if (account == null) {
       // create new account if not existing
       account = new Account();
+      account.setTimestampCreated(executionTime.getTime());
       account.setIdentity(accountIdentity);
       root.getAccounts().put(account.getIdentity(), account);
     }
 
     LocationSample locationSample = new LocationSample();
     locationSample.setIdentity(locationSampleIdentity);
+
+    locationSample.setTimestamp(executionTime.getTime());
 
     locationSample.setApplication(root.getApplicationIntern().intern(application));
     locationSample.setApplicationVersion(root.getApplicationVersionIntern().intern(applicationVersion));
