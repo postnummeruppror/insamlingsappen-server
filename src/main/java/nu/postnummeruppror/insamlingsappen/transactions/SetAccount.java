@@ -26,6 +26,8 @@ public class SetAccount implements TransactionWithQuery<Root, Account>, Serializ
 
   private String emailAddress;
   private Boolean acceptingCcZero;
+  private String firstName;
+  private String lastName;
 
 
   @Override

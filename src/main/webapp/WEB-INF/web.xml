@@ -52,4 +52,14 @@
     <url-pattern>/api/statistics/location</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>ServerStatistics</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.ServerStatisticsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ServerStatistics</servlet-name>
+    <url-pattern>/api/statistics/server</url-pattern>
+  </servlet-mapping>
+
 </web-app>

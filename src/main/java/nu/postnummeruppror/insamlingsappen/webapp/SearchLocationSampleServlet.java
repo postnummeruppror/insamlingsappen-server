@@ -2,16 +2,13 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
-import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateEnvelopeQueryFactory;
-import nu.postnummeruppror.insamlingsappen.index.LocationSampleIndexFields;
+import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateCircleEnvelopeQueryFactory;
 import org.apache.commons.io.IOUtils;
-import org.apache.lucene.search.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,31 +18,34 @@ import java.util.Map;
  * @author kalle
  * @since 2014-09-07 03:48
  */
-public class SearchLocationSampleServlet extends HttpServlet {
+public class SearchLocationSampleServlet extends NoHammeringHttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    try {
+    if (noHammering(request, response)) {
 
-      String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
-      JSONObject requestJson = new JSONObject(new JSONTokener(jsonString));
+      try {
 
-      JSONObject json = search(
-          requestJson.getDouble("south"),
-          requestJson.getDouble("west"),
-          requestJson.getDouble("north"),
-          requestJson.getDouble("east"),
-          requestJson.getInt("maximumHits"),
-          requestJson.getString("reference")
-      );
+        String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
+        JSONObject requestJson = new JSONObject(new JSONTokener(jsonString));
 
-      response.setCharacterEncoding("UTF-8");
-      response.setContentType("application/json");
-      response.getOutputStream().write(json.toString().getBytes("UTF-8"));
+        JSONObject json = search(
+            requestJson.getDouble("south"),
+            requestJson.getDouble("west"),
+            requestJson.getDouble("north"),
+            requestJson.getDouble("east"),
+            requestJson.getInt("maximumHits"),
+            requestJson.getString("reference")
+        );
 
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.getOutputStream().write(json.toString().getBytes("UTF-8"));
+
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
   }
@@ -53,23 +53,25 @@ public class SearchLocationSampleServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    try {
+    if (noHammering(request, response)) {
+      try {
 
-      JSONObject json = search(
-          Double.valueOf(request.getParameter("south")),
-          Double.valueOf(request.getParameter("west")),
-          Double.valueOf(request.getParameter("north")),
-          Double.valueOf(request.getParameter("east")),
-          Integer.valueOf(request.getParameter("maximumHits")),
-          request.getParameter("reference")
-      );
+        JSONObject json = search(
+            Double.valueOf(request.getParameter("south")),
+            Double.valueOf(request.getParameter("west")),
+            Double.valueOf(request.getParameter("north")),
+            Double.valueOf(request.getParameter("east")),
+            Integer.valueOf(request.getParameter("maximumHits")),
+            request.getParameter("reference")
+        );
 
-      response.setCharacterEncoding("UTF-8");
-      response.setContentType("application/json");
-      response.getOutputStream().write(json.toString().getBytes("UTF-8"));
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.getOutputStream().write(json.toString().getBytes("UTF-8"));
 
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
   }
@@ -77,7 +79,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
   public JSONObject search(double south, double west, double north, double east, int maximumHits, String reference) throws Exception {
 
-    Map<LocationSample, Float> hits = Insamlingsappen.getInstance().getLocationSampleIndex().search(new LocationSampleCoordinateEnvelopeQueryFactory()
+    Map<LocationSample, Float> hits = Insamlingsappen.getInstance().getLocationSampleIndex().search(new LocationSampleCoordinateCircleEnvelopeQueryFactory()
         .setSouth(south)
         .setWest(west)
         .setNorth(north)

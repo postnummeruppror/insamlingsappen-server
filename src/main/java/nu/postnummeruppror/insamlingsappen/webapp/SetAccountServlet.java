@@ -20,39 +20,46 @@ import java.util.UUID;
  * @author kalle
  * @since 2014-09-06 01:00
  */
-public class SetAccountServlet extends HttpServlet {
+public class SetAccountServlet extends NoHammeringHttpServlet {
 
   private static final Logger log = LoggerFactory.getLogger(SetAccountServlet.class);
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    SetAccount setAccount = new SetAccount();
-    setAccount.setAccountIdentity(request.getParameter("identity"));
-    setAccount.setEmailAddress(request.getParameter("emailAddress"));
-    setAccount.setAcceptingCcZero(Boolean.valueOf(request.getParameter("acceptingCcZero")));
+    if (noHammering(request, response)) {
 
-    sendResponse(setAccount, request, response);
+      SetAccount setAccount = new SetAccount();
+      setAccount.setAccountIdentity(request.getParameter("identity"));
+      setAccount.setEmailAddress(request.getParameter("emailAddress"));
+      setAccount.setAcceptingCcZero(Boolean.valueOf(request.getParameter("acceptingCcZero")));
+
+      sendResponse(setAccount, request, response);
+
+    }
 
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    try {
+    if (noHammering(request, response)) {
 
-      String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
-      JSONObject requestJson = new JSONObject(new JSONTokener(jsonString));
+      try {
 
-      SetAccount setAccount = new SetAccount();
-      setAccount.setAccountIdentity(requestJson.getString("identity"));
-      setAccount.setEmailAddress(requestJson.getString("emailAddress"));
-      setAccount.setAcceptingCcZero(requestJson.getBoolean("acceptingCcZero"));
+        String jsonString = IOUtils.toString(request.getInputStream(), "UTF-8");
+        JSONObject requestJson = new JSONObject(new JSONTokener(jsonString));
 
-      sendResponse(setAccount, request, response);
+        SetAccount setAccount = new SetAccount();
+        setAccount.setAccountIdentity(requestJson.getString("identity"));
+        setAccount.setEmailAddress(requestJson.getString("emailAddress"));
+        setAccount.setAcceptingCcZero(requestJson.getBoolean("acceptingCcZero"));
 
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+        sendResponse(setAccount, request, response);
+
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
   }

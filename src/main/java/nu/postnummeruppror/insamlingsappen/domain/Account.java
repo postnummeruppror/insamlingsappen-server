@@ -33,10 +33,10 @@ public class Account implements Serializable {
         "identity='" + identity + '\'' +
         ", timestampCreated=" + timestampCreated +
         ", emailAddress='" + emailAddress + '\'' +
-        ", acceptingCcZero=" + acceptingCcZero +
-        ", timestampVerifiedEmailAddress=" + timestampVerifiedEmailAddress +
         ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
+        ", timestampVerifiedEmailAddress=" + timestampVerifiedEmailAddress +
+        ", acceptingCcZero=" + acceptingCcZero+
         ", locationSamples.size()=" + locationSamples.size() +
         '}';
   }
