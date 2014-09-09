@@ -3,6 +3,7 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateCircleEnvelopeQueryFactory;
+import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateEnvelopeQueryFactory;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,7 +80,7 @@ public class SearchLocationSampleServlet extends NoHammeringHttpServlet {
 
   public JSONObject search(double south, double west, double north, double east, int maximumHits, String reference) throws Exception {
 
-    Map<LocationSample, Float> hits = Insamlingsappen.getInstance().getLocationSampleIndex().search(new LocationSampleCoordinateCircleEnvelopeQueryFactory()
+    Map<LocationSample, Float> hits = Insamlingsappen.getInstance().getLocationSampleIndex().search(new LocationSampleCoordinateEnvelopeQueryFactory()
         .setSouth(south)
         .setWest(west)
         .setNorth(north)
