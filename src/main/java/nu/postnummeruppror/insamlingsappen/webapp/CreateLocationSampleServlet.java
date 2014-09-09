@@ -55,6 +55,10 @@ public class CreateLocationSampleServlet extends NoHammeringHttpServlet {
 
         createLocationSample.setPostalCode(json.getString("postalCode"));
 
+        if (json.has("postalTown")) {
+          createLocationSample.setPostalTown(json.getString("postalTown"));
+        }
+
         if (json.has("streetName")) {
           createLocationSample.setStreetName(json.getString("streetName"));
         }
