@@ -24,6 +24,7 @@ public class Root implements Serializable {
   private Intern<String> providerIntern = new Intern<>();
   private Intern<String> streetNameIntern = new Intern<>();
   private Intern<String> houseNumberIntern = new Intern<>();
+  private Intern<String> houseNameIntern = new Intern<>();
   private Intern<String> postalTownIntern = new Intern<>();
 
   public Map<String, Account> getAccounts() {
@@ -104,5 +105,13 @@ public class Root implements Serializable {
 
   public void setApplicationVersionIntern(Intern<String> applicationVersionIntern) {
     this.applicationVersionIntern = applicationVersionIntern;
+  }
+
+  public Intern<String> getHouseNameIntern() {
+    return houseNameIntern;
+  }
+
+  public void setHouseNameIntern(Intern<String> houseNameIntern) {
+    this.houseNameIntern = houseNameIntern;
   }
 }

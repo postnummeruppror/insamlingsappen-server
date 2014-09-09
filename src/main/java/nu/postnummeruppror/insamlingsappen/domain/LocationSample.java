@@ -40,6 +40,7 @@ public class LocationSample implements Serializable {
 
   private String streetName;
   private String houseNumber;
+  private String houseName;
   private String postalTown;
 
 
@@ -60,6 +61,7 @@ public class LocationSample implements Serializable {
     sb.append(", postalCode.postalCode=").append(postalCode.getPostalCode());
     sb.append(", streetName='").append(streetName).append('\'');
     sb.append(", houseNumber='").append(houseNumber).append('\'');
+    sb.append(", houseName='").append(houseName).append('\'');
     sb.append(", postalTown='").append(postalTown).append('\'');
     sb.append('}');
     return sb.toString();
@@ -175,5 +177,13 @@ public class LocationSample implements Serializable {
 
   public void setApplicationVersion(String applicationVersion) {
     this.applicationVersion = applicationVersion;
+  }
+
+  public String getHouseName() {
+    return houseName;
+  }
+
+  public void setHouseName(String houseName) {
+    this.houseName = houseName;
   }
 }

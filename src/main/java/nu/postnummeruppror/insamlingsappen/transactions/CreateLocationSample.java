@@ -36,6 +36,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
   private String streetName;
   private String houseNumber;
+  private String houseName;
   private String postalTown;
 
 
@@ -76,6 +77,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
     locationSample.setStreetName(root.getStreetNameIntern().intern(streetName));
     locationSample.setHouseNumber(root.getHouseNumberIntern().intern(houseNumber));
+    locationSample.setHouseName(root.getHouseNameIntern().intern(houseName));
     locationSample.setPostalTown(root.getPostalTownIntern().intern(postalTown));
 
     locationSample.setAccount(account);
@@ -190,5 +192,13 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
   public void setApplicationVersion(String applicationVersion) {
     this.applicationVersion = applicationVersion;
+  }
+
+  public String getHouseName() {
+    return houseName;
+  }
+
+  public void setHouseName(String houseName) {
+    this.houseName = houseName;
   }
 }

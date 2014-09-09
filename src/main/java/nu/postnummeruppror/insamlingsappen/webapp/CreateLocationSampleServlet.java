@@ -67,6 +67,10 @@ public class CreateLocationSampleServlet extends NoHammeringHttpServlet {
           createLocationSample.setHouseNumber(json.getString("houseNumber"));
         }
 
+        if (json.has("houseName")) {
+          createLocationSample.setHouseName(json.getString("houseName"));
+        }
+
         createLocationSample.setProvider(json.getString("provider"));
         createLocationSample.setAccuracy(json.getDouble("accuracy"));
         createLocationSample.setLatitude(json.getDouble("latitude"));
