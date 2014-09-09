@@ -20,7 +20,7 @@ public class NoHammeringHttpServlet extends HttpServlet {
    * @param response
    * @return true if client is not hammering the server
    */
-  public boolean noHammering(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public boolean hammering(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     boolean hammering = false;
 

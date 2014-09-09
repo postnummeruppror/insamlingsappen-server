@@ -1,7 +1,6 @@
 package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
-import nu.postnummeruppror.insamlingsappen.domain.Account;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.transactions.CreateLocationSample;
 import nu.postnummeruppror.insamlingsappen.transactions.IdentityFactory;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -27,7 +25,7 @@ public class CreateLocationSampleServlet extends NoHammeringHttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    if (noHammering(request, response)) {
+    if (!hammering(request, response)) {
 
       // todo
       super.doGet(request, response);
@@ -38,7 +36,7 @@ public class CreateLocationSampleServlet extends NoHammeringHttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    if (noHammering(request, response)) {
+    if (!hammering(request, response)) {
 
       LocationSample locationSample;
 

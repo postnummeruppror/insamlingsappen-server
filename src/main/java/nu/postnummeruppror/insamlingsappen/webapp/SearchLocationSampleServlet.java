@@ -2,7 +2,6 @@ package nu.postnummeruppror.insamlingsappen.webapp;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
-import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateCircleEnvelopeQueryFactory;
 import nu.postnummeruppror.insamlingsappen.index.LocationSampleCoordinateEnvelopeQueryFactory;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -24,7 +23,7 @@ public class SearchLocationSampleServlet extends NoHammeringHttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    if (noHammering(request, response)) {
+    if (!hammering(request, response)) {
 
       try {
 
@@ -54,7 +53,7 @@ public class SearchLocationSampleServlet extends NoHammeringHttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    if (noHammering(request, response)) {
+    if (!hammering(request, response)) {
       try {
 
         JSONObject json = search(

@@ -10,11 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * @author kalle
@@ -27,7 +25,7 @@ public class SetAccountServlet extends NoHammeringHttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    if (noHammering(request, response)) {
+    if (!hammering(request, response)) {
 
       SetAccount setAccount = new SetAccount();
       setAccount.setAccountIdentity(request.getParameter("identity"));
@@ -43,7 +41,7 @@ public class SetAccountServlet extends NoHammeringHttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    if (noHammering(request, response)) {
+    if (!hammering(request, response)) {
 
       try {
 
