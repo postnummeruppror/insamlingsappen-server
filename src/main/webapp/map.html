@@ -183,8 +183,18 @@
         text = searchResult.postalTown;
       } else if (searchResult.streetName) {
         text = searchResult.streetName;
+        if (searchResult.houseNumber) {
+          text += " " + searchResult.houseNumber;
+          if (searchResult.houseName) {
+            text += " " + searchResult.houseName;
+          }
+        }
       } else if (searchResult.houseNumber) {
         text = searchResult.houseNumber;
+        if (searchResult.houseName) {
+          text += " " + searchResult.houseName;
+        }
+
       } else if (searchResult.houseName) {
         text = searchResult.houseName;
       } else {
