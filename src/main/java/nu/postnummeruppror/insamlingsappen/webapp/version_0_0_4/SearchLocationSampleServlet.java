@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.kodapan.lucene.query.JsonQueryUnmarshaller2;
+import se.kodapan.lucene.query.JSONQueryUnmarshaller;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -89,7 +89,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
       JSONObject requestJSON = new JSONObject(new JSONTokener(IOUtils.toString(request.getInputStream(), "UTF-8")));
 
       Map<LocationSample, Float> searchResults = Insamlingsappen.getInstance().getLocationSampleIndex().search(
-          new JsonQueryUnmarshaller2().parseJsonQuery(requestJSON.getJSONObject("query")));
+          new JSONQueryUnmarshaller().parseJsonQuery(requestJSON.getJSONObject("query")));
 
       List<Map.Entry<LocationSample, Float>> orderedSearchResults = new ArrayList<>(searchResults.entrySet());
       Collections.sort(orderedSearchResults, new Comparator<Map.Entry<LocationSample, Float>>() {
