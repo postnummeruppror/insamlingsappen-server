@@ -39,12 +39,49 @@
       height: 100%;
     }
 
-    #locationSampleMarker {
-      background-color: #FFFF00;
+    #map div.locationSampleMarker {
+      font-family: 'Roboto', helvetica, sans-serif;
       color: #000000;
-      padding: 0.25em 0.25em 0.25em 0.25em;
-      border: solid 2px #FFFFFF;
+      font-size: .8rem;
+      font-weight: 500;
+      line-height: 0.3rem;
+      height: 1.4rem;
+      min-width: 1.4rem;
+      width: auto;
+      text-align: center;
+      padding: .4rem .4rem;
+      border: 1px solid #000000;
+      white-space: nowrap;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      -webkit-transform: translateZ(0);
+      -moz-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      -moz-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-transition: 300ms ease;
+      -moz-transition: 300ms ease;
+      transition: 300ms ease;
     }
+
+    #map div.accuracy-10 {
+      background: #7cff33;
+    }
+    #map div.accuracy-20 {
+      background: #d8ff33;
+    }
+    #map div.accuracy-30 {
+      background: #ffe933;
+    }
+    #map div.accuracy-40 {
+      background: #ff9c33;
+    }
+    #map div.accuracy-50 {
+      background: #ff5233;
+    }
+
   </style>
 
 
@@ -201,10 +238,23 @@
         text = "?";
       }
 
+      var className = 'locationSampleMarker accuracy-';
+      if (searchResult.accuracy <= 10) {
+        className += "10";
+      } else if (searchResult.accuracy <= 20) {
+        className += "20";
+      } else if (searchResult.accuracy <= 30) {
+        className += "30";
+      } else if (searchResult.accuracy <= 40) {
+        className += "40";
+      } else {
+        className += "50";
+      }
+
       var marker = L.marker(
           [searchResult.latitude, searchResult.longitude], {
             icon: L.divIcon({
-              className: 'locationSampleMarker',
+              className: className,
               html: text
             })
           });
