@@ -4,6 +4,8 @@ import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,8 +19,40 @@ import java.io.IOException;
  */
 public class ServerStatisticsServlet extends HttpServlet {
 
+  private static final Logger log = LoggerFactory.getLogger(ServerStatisticsServlet.class);
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    StringBuilder documentation = new StringBuilder(1024);
+    documentation.append("This service accept UTF-8 encoded HTTP post.\n");
+    documentation.append("\n");
+    documentation.append("Request data is ignored.\n");
+    documentation.append("\n");
+    documentation.append("\n");
+    documentation.append("JSON response:\n");
+    documentation.append("{\n");
+    documentation.append("\n");
+    documentation.append("  \"success\": Boolean value.\n");
+    documentation.append("\n");
+    documentation.append("  \"numberOfLocationSamples\": Integer value. Number of location samples on server.\n");
+    documentation.append("  \"numberOfAccounts\": Integer value. Number of accounts on server.\n");
+    documentation.append("  \"numberOfPostalCodes\": Integer value. Number of unique postal codes on server.\n");
+    documentation.append("  \"numberOfPostalTowns\": Integer value. Number of unique postal towns on server.\n");
+    documentation.append("\n");
+
+    documentation.append("}\n");
+
+    response.setContentType("text/plain");
+    response.setCharacterEncoding("UTF-8");
+    response.getOutputStream().write(documentation.toString().getBytes("UTF-8"));
+
+
+  }
+
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     try {
 
