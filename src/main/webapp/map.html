@@ -184,15 +184,15 @@
       } else if (searchResult.streetName) {
         text = searchResult.streetName;
         if (searchResult.houseNumber) {
-          text += " " + searchResult.houseNumber;
+          text += "&nbsp;" + searchResult.houseNumber;
           if (searchResult.houseName) {
-            text += " " + searchResult.houseName;
+            text += "&nbsp;" + searchResult.houseName;
           }
         }
       } else if (searchResult.houseNumber) {
         text = searchResult.houseNumber;
         if (searchResult.houseName) {
-          text += " " + searchResult.houseName;
+          text += "&nbsp;" + searchResult.houseName;
         }
 
       } else if (searchResult.houseName) {
