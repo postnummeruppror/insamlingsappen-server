@@ -10,7 +10,7 @@ import org.json.JSONObject;
  * @author kalle
  * @since 2014-09-10 18:20
  */
-public class JSONQueryUnmarshaller {
+public class JsonQueryUnmarshaller {
 
   public Query parseJsonQuery(JSONObject jsonQuery) throws JSONException {
 
