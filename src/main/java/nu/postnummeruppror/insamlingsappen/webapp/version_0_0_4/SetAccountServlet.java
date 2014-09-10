@@ -65,6 +65,9 @@ public class SetAccountServlet extends HttpServlet {
 
       JSONObject requestJSON = new JSONObject(new JSONTokener(IOUtils.toString(request.getInputStream(), "UTF-8")));
 
+      log.debug("Incoming request: " + requestJSON.toString());
+
+
       SetAccount setAccount = new SetAccount();
 
       // required

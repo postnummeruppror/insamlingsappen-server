@@ -78,6 +78,7 @@ public class CreateLocationSampleServlet extends HttpServlet {
 
       JSONObject requestJSON = new JSONObject(new JSONTokener(IOUtils.toString(request.getInputStream(), "UTF-8")));
 
+      log.debug("Incoming request: " + requestJSON.toString());
 
       CreateLocationSample createLocationSample = new CreateLocationSample();
 

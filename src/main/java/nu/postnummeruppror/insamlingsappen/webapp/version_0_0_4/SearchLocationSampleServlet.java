@@ -88,6 +88,8 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
       JSONObject requestJSON = new JSONObject(new JSONTokener(IOUtils.toString(request.getInputStream(), "UTF-8")));
 
+      log.debug("Incoming request: " + requestJSON.toString());
+
       Map<LocationSample, Float> searchResults = Insamlingsappen.getInstance().getLocationSampleIndex().search(
           new JSONQueryUnmarshaller().parseJsonQuery(requestJSON.getJSONObject("query")));
 
