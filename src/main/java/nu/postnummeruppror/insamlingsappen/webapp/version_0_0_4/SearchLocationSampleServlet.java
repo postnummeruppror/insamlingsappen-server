@@ -36,8 +36,9 @@ public class SearchLocationSampleServlet extends HttpServlet {
     documentation.append("{\n");
     documentation.append("\n");
     documentation.append("  \"reference\": Optional. Any value. Will be sent back to client in response.\n");
+    documentation.append("  \"score\": Optional. Boolean value. If search results is to be scored.\n");
     documentation.append("  \"startIndex\": Optional. Integer value. Zero-base index of first search result in response.\n");
-    documentation.append("  \"maximumHits\": Optional. Integer value. Maximum number of search results.\n");
+    documentation.append("  \"limit\": Optional. Integer value. Maximum number of search results.\n");
     documentation.append("\n");
     documentation.append("  \"query\": {\n");
     documentation.append("   }\n");
@@ -51,7 +52,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
     documentation.append("\n");
     documentation.append("  \"success\": Boolean value.\n");
     documentation.append("\n");
-    documentation.append("  \"numberOfHits\": Integer value. Number of hits yielded by query. This might be greater than searchResults.length\n");
+    documentation.append("  \"totalNumberOfMatches\": Integer value. Number of hits yielded by query. This might be greater than searchResults.length in case of limit was supplied in request.\n");
     documentation.append("  \"searchResults\": [ {\n");
     documentation.append("      \"index\": Integer value. Position in search results, ordered by score.\n");
     documentation.append("      \"score\": Float value. Similarity between query and result\n");
@@ -90,31 +91,44 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
       log.debug("Incoming request: " + requestJSON.toString());
 
+      boolean score = requestJSON.has("score") && requestJSON.getBoolean("score");
+
       Map<LocationSample, Float> searchResults = Insamlingsappen.getInstance().getLocationSampleIndex().search(
-          new JSONQueryUnmarshaller().parseJsonQuery(requestJSON.getJSONObject("query")));
+          new JSONQueryUnmarshaller().parseJsonQuery(requestJSON.getJSONObject("query")), score);
 
       List<Map.Entry<LocationSample, Float>> orderedSearchResults = new ArrayList<>(searchResults.entrySet());
-      Collections.sort(orderedSearchResults, new Comparator<Map.Entry<LocationSample, Float>>() {
-        @Override
-        public int compare(Map.Entry<LocationSample, Float> o1, Map.Entry<LocationSample, Float> o2) {
-          return o1.getValue().compareTo(o2.getValue());
-        }
-      });
+
+
+      if (score) {
+        Collections.sort(orderedSearchResults, new Comparator<Map.Entry<LocationSample, Float>>() {
+          @Override
+          public int compare(Map.Entry<LocationSample, Float> o1, Map.Entry<LocationSample, Float> o2) {
+            return o1.getValue().compareTo(o2.getValue());
+          }
+        });
+      } else {
+        Collections.sort(orderedSearchResults, new Comparator<Map.Entry<LocationSample, Float>>() {
+          @Override
+          public int compare(Map.Entry<LocationSample, Float> o1, Map.Entry<LocationSample, Float> o2) {
+            return o1.getKey().getIdentity().compareTo(o2.getKey().getIdentity());
+          }
+        });
+      }
 
       Object reference = requestJSON.has("reference") ? requestJSON.get("reference") : null;
-      int maximumHits = requestJSON.has("maximumHits") ? requestJSON.getInt("maximumHits") : Integer.MAX_VALUE;
+      int limit = requestJSON.has("limit") ? requestJSON.getInt("limit") : Integer.MAX_VALUE;
       int startIndex = requestJSON.has("startIndex") ? requestJSON.getInt("startIndex") : 0;
 
       JSONObject responseJSON = new JSONObject();
 
       responseJSON.put("success", true);
       responseJSON.put("reference", reference);
-      responseJSON.put("numberOfHits", searchResults.size());
+      responseJSON.put("totalNumberOfMatches", searchResults.size());
 
       JSONArray searchResultsJSON = new JSONArray();
       responseJSON.put("searchResults", searchResultsJSON);
 
-      for (int index = startIndex; index < maximumHits && index < orderedSearchResults.size(); index++) {
+      for (int index = startIndex; index < limit && index < orderedSearchResults.size(); index++) {
         JSONObject searchResultJSON = new JSONObject();
 
         Map.Entry<LocationSample, Float> searchResult = orderedSearchResults.get(index);
@@ -122,7 +136,9 @@ public class SearchLocationSampleServlet extends HttpServlet {
         LocationSample locationSample = searchResult.getKey();
 
         searchResultJSON.put("index", index);
-        searchResultJSON.put("score", searchResult.getValue());
+        if (score) {
+          searchResultJSON.put("score", searchResult.getValue());
+        }
 
         searchResultJSON.put("identity", locationSample.getIdentity());
 
