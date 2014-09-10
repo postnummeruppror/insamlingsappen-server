@@ -128,6 +128,8 @@ public class CreateLocationSampleServlet extends HttpServlet {
       response.setContentType("application/json");
       response.getOutputStream().write(responseJSON.toString().getBytes("UTF-8"));
 
+      Insamlingsappen.getInstance().getLocationSampleIndex().update(locationSample);
+
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
