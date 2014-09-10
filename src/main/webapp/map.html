@@ -125,20 +125,26 @@
       delayedSearchTimeout = null;
     }
 
-    var reference = new Date().getTime().toString();
-    expectedReference = reference;
+    var url = "/api/0.0.4/location_sample/search";
 
-    var url = "/api/location_sample/search";
-    url += "?south=" + map.getBounds().getSouth();
-    url += "&west=" + map.getBounds().getWest();
-    url += "&north=" + map.getBounds().getNorth();
-    url += "&east=" + map.getBounds().getEast();
-    url += "&reference=" + reference;
-    url += "&maximumHits=" + 100;
+    var searchRequest = {
+      reference: new Date().getTime().toString(),
+      maximumHits: 100,
+      query: {
+        type: "coordinate envelope",
+        latitudeField: "latitude",
+        longitudeField: "longitude",
+        southLatitude: map.getBounds().getSouth(),
+        westLongitude: map.getBounds().getWest(),
+        northLatitude: map.getBounds().getNorth(),
+        eastLongitude: map.getBounds().getEast()
+      }
+    };
 
+    expectedReference = searchRequest.reference;
 
     var httpRequest = new XMLHttpRequest();
-    httpRequest.open("get", url, true);
+    httpRequest.open("post", url, true);
     httpRequest.onreadystatechange = function () {
       if (httpRequest.readyState == 4) {
         if (httpRequest.status == 200) {
@@ -158,24 +164,38 @@
         }
       }
     };
-    httpRequest.send();
+    httpRequest.send(JSON.stringify(searchRequest));
 
   }
 
-  function processSearchResults(searchResults) {
+  function processSearchResults(searchResponse) {
 
     locationSamplesMarkersLayer.clearLayers();
 
-    for (var i = 0; i < searchResults.hits.length; i++) {
+    for (var i = 0; i < searchResponse.searchResults.length; i++) {
 
-      var hit = searchResults.hits[i];
+      var searchResult = searchResponse.searchResults[i];
 
+      var text;
+      if (searchResult.postalCode) {
+        text = searchResult.postalCode;
+      } else if (searchResult.postalTown) {
+        text = searchResult.postalTown;
+      } else if (searchResult.streetName) {
+        text = searchResult.streetName;
+      } else if (searchResult.houseNumber) {
+        text = searchResult.houseNumber;
+      } else if (searchResult.houseName) {
+        text = searchResult.houseName;
+      } else {
+        text = "?";
+      }
 
       var marker = L.marker(
-          [hit.latitude, hit.longitude], {
+          [searchResult.latitude, searchResult.longitude], {
             icon: L.divIcon({
               className: 'locationSampleMarker',
-              html: hit.postalCode
+              html: text
             })
           });
 
