@@ -1,4 +1,4 @@
-package nu.postnummeruppror.insamlingsappen.index;
+package se.kodapan.lucene.query;
 
 import org.apache.lucene.search.Query;
 

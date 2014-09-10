@@ -37,13 +37,22 @@ public class SetAccount implements TransactionWithQuery<Root, Account>, Serializ
     if (account == null) {
       account = new Account();
       account.setIdentity(accountIdentity);
-      account.setEmailAddress(emailAddress);
-      account.setAcceptingCcZero(acceptingCcZero);
       account.setTimestampCreated(executionTime.getTime());
       root.getAccounts().put(account.getIdentity(), account);
     }
 
-    account.setEmailAddress(emailAddress);
+    if (emailAddress != null) {
+      account.setEmailAddress(emailAddress);
+    }
+    if (acceptingCcZero != null) {
+      account.setAcceptingCcZero(acceptingCcZero);
+    }
+    if (firstName != null) {
+      account.setFirstName(firstName);
+    }
+    if (lastName != null) {
+      account.setLastName(lastName);
+    }
 
     return account;
   }
@@ -74,5 +83,21 @@ public class SetAccount implements TransactionWithQuery<Root, Account>, Serializ
 
   public void setAcceptingCcZero(Boolean acceptingCcZero) {
     this.acceptingCcZero = acceptingCcZero;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 }

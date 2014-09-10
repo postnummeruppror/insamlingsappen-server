@@ -33,11 +33,10 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
   private double altitude;
 
   private String postalCode;
-
+  private String postalTown;
   private String streetName;
   private String houseNumber;
   private String houseName;
-  private String postalTown;
 
 
   @Override
@@ -66,26 +65,39 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     locationSample.setLongitude(longitude);
     locationSample.setAltitude(altitude);
 
-    PostalCode postalCode = root.getPostalCodes().get(this.postalCode);
-    if (postalCode == null) {
-      postalCode = new PostalCode();
-      postalCode.setPostalCode(this.postalCode);
-      root.getPostalCodes().put(postalCode.getPostalCode(), postalCode);
+
+    if (this.postalCode != null) {
+      PostalCode postalCode = root.getPostalCodes().get(this.postalCode);
+      if (postalCode == null) {
+        postalCode = new PostalCode();
+        postalCode.setPostalCode(this.postalCode);
+        root.getPostalCodes().put(postalCode.getPostalCode(), postalCode);
+      }
+      locationSample.setPostalCode(postalCode);
+      postalCode.getLocationSamples().add(locationSample);
     }
 
-    locationSample.setPostalCode(postalCode);
+    if (streetName != null) {
+      locationSample.setStreetName(root.getStreetNameIntern().intern(streetName));
+    }
 
-    locationSample.setStreetName(root.getStreetNameIntern().intern(streetName));
-    locationSample.setHouseNumber(root.getHouseNumberIntern().intern(houseNumber));
-    locationSample.setHouseName(root.getHouseNameIntern().intern(houseName));
-    locationSample.setPostalTown(root.getPostalTownIntern().intern(postalTown));
+    if (houseNumber != null) {
+      locationSample.setHouseNumber(root.getHouseNumberIntern().intern(houseNumber));
+    }
+
+    if (houseName != null) {
+      locationSample.setHouseName(root.getHouseNameIntern().intern(houseName));
+    }
+
+    if (postalTown != null) {
+      locationSample.setPostalTown(root.getPostalTownIntern().intern(postalTown));
+    }
 
     locationSample.setAccount(account);
     account.getLocationSamples().add(locationSample);
 
-    root.getLocationSamples().put(locationSample.getIdentity(), locationSample);
 
-    postalCode.getLocationSamples().add(locationSample);
+    root.getLocationSamples().put(locationSample.getIdentity(), locationSample);
 
     return locationSample;
   }

@@ -1,6 +1,6 @@
 package nu.postnummeruppror.insamlingsappen.index;
 
-import org.apache.lucene.search.*;
+import se.kodapan.lucene.query.CoordinateCircleEnvelopeQueryFactory;
 
 /**
  * @author kalle
