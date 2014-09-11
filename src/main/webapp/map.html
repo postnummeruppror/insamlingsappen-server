@@ -229,17 +229,18 @@ function processSearchResults(searchResponse) {
         text += "&nbsp;";
       }
 
-    }
-    if (searchResult.houseNumber) {
-      text += searchResult.houseNumber;
-    }
-    if (searchResult.houseName) {
-      if (searchResult.houseNumber) {
-        text += ":";
-      }
-      text += searchResult.houseName;
 
-      text += searchResult.houseNumber;
+      if (searchResult.houseNumber) {
+        text += searchResult.houseNumber;
+      }
+
+      if (searchResult.houseName) {
+        if (searchResult.houseNumber) {
+          text += ":";
+          text += searchResult.houseName;
+        }
+
+      }
     }
 
 
