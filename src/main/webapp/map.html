@@ -69,15 +69,19 @@
     #map div.accuracy-10 {
       background: #7cff33;
     }
+
     #map div.accuracy-20 {
       background: #d8ff33;
     }
+
     #map div.accuracy-30 {
       background: #ffe933;
     }
+
     #map div.accuracy-40 {
       background: #ff9c33;
     }
+
     #map div.accuracy-50 {
       background: #ff5233;
     }
@@ -91,190 +95,213 @@
 
 <script type="text/javascript">
 
-  var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a>. Kart-API från <a href="http://leafletjs.org">Leaflet</a>.';
+var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a>. Kart-API från <a href="http://leafletjs.org">Leaflet</a>.';
 
-  var full = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
-    subdomains: "abc",
-    attribution: attribution,
-    maxZoom: 18
-  });
+var full = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+  subdomains: "abc",
+  attribution: attribution,
+  maxZoom: 18
+});
 
-  var base = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png', {
-    subdomains: "abc",
-    attribution: attribution,
-    maxZoom: 18
-  });
-  var roads_and_labels = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
-    subdomains: "abc",
-    attribution: attribution,
-    maxZoom: 18
-  });
-
-
-  var map = new L.Map('map');
-
-  map.attributionControl.options.prefix = '';
-
-  map.addLayer(full);
-
-  var locationSamplesMarkersLayer = L.layerGroup();
-  map.addLayer(locationSamplesMarkersLayer);
-
-  var moveStarted = null;
-
-  map.on('movestart', function (mouseEvent) {
-    moveStarted = new Date().getTime();
-  });
-  map.on('dragend', function (mouseEvent) {
-    // todo did we move far enough? would be better
-    var millisecondsSpent = new Date().getTime() - moveStarted;
-    if (millisecondsSpent < 100) {
-      return;
-    }
-    console.log("dragend");
-    delayedSearch(100);
-  });
-  map.on('zoomend', function (mouseEvent) {
-    console.log("zoomend");
-    delayedSearch(200);
-  });
-  map.on('resize', function (mouseEvent) {
-    console.log("resized");
-    delayedSearch(500);
-  });
+var base = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png', {
+  subdomains: "abc",
+  attribution: attribution,
+  maxZoom: 18
+});
+var roads_and_labels = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
+  subdomains: "abc",
+  attribution: attribution,
+  maxZoom: 18
+});
 
 
-  var delayedSearchTimeout = null;
-  function delayedSearch(millisecondsDelay) {
-    if (delayedSearchTimeout) {
-      window.clearTimeout(delayedSearchTimeout);
-    }
-    delayedSearchTimeout = window.setTimeout(function () {
-      search();
-    }, millisecondsDelay);
+var map = new L.Map('map');
+
+map.attributionControl.options.prefix = '';
+
+map.addLayer(full);
+
+var locationSamplesMarkersLayer = L.layerGroup();
+map.addLayer(locationSamplesMarkersLayer);
+
+var moveStarted = null;
+
+map.on('movestart', function (mouseEvent) {
+  moveStarted = new Date().getTime();
+});
+map.on('dragend', function (mouseEvent) {
+  // todo did we move far enough? would be better
+  var millisecondsSpent = new Date().getTime() - moveStarted;
+  if (millisecondsSpent < 100) {
+    return;
+  }
+  console.log("dragend");
+  delayedSearch(100);
+});
+map.on('zoomend', function (mouseEvent) {
+  console.log("zoomend");
+  delayedSearch(200);
+});
+map.on('resize', function (mouseEvent) {
+  console.log("resized");
+  delayedSearch(500);
+});
+
+
+var delayedSearchTimeout = null;
+function delayedSearch(millisecondsDelay) {
+  if (delayedSearchTimeout) {
+    window.clearTimeout(delayedSearchTimeout);
+  }
+  delayedSearchTimeout = window.setTimeout(function () {
+    search();
+  }, millisecondsDelay);
+}
+
+var expectedReference = null;
+
+function search() {
+  if (delayedSearchTimeout) {
+    window.clearTimeout(delayedSearchTimeout);
+    delayedSearchTimeout = null;
   }
 
-  var expectedReference = null;
+  var url = "/api/0.0.4/location_sample/search";
 
-  function search() {
-    if (delayedSearchTimeout) {
-      window.clearTimeout(delayedSearchTimeout);
-      delayedSearchTimeout = null;
+  var searchRequest = {
+    reference: new Date().getTime().toString(),
+    maximumHits: 100,
+    query: {
+      type: "coordinate envelope",
+      latitudeField: "latitude",
+      longitudeField: "longitude",
+      southLatitude: map.getBounds().getSouth(),
+      westLongitude: map.getBounds().getWest(),
+      northLatitude: map.getBounds().getNorth(),
+      eastLongitude: map.getBounds().getEast()
     }
+  };
 
-    var url = "/api/0.0.4/location_sample/search";
+  expectedReference = searchRequest.reference;
 
-    var searchRequest = {
-      reference: new Date().getTime().toString(),
-      maximumHits: 100,
-      query: {
-        type: "coordinate envelope",
-        latitudeField: "latitude",
-        longitudeField: "longitude",
-        southLatitude: map.getBounds().getSouth(),
-        westLongitude: map.getBounds().getWest(),
-        northLatitude: map.getBounds().getNorth(),
-        eastLongitude: map.getBounds().getEast()
-      }
-    };
+  var httpRequest = new XMLHttpRequest();
+  httpRequest.open("post", url, true);
+  httpRequest.onreadystatechange = function () {
+    if (httpRequest.readyState == 4) {
+      if (httpRequest.status == 200) {
+        var timestampReceived = new Date();
+        var searchResults = JSON.parse(httpRequest.responseText);
+        searchResults.timestampReceived = timestampReceived;
 
-    expectedReference = searchRequest.reference;
-
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.open("post", url, true);
-    httpRequest.onreadystatechange = function () {
-      if (httpRequest.readyState == 4) {
-        if (httpRequest.status == 200) {
-          var timestampReceived = new Date();
-          var searchResults = JSON.parse(httpRequest.responseText);
-          searchResults.timestampReceived = timestampReceived;
-
-          if (searchResults.reference == expectedReference) {
-            processSearchResults(searchResults);
-          } else {
-            console.log("Ignoring non expected search results, probably due to old response taking a long time.")
-          }
-
+        if (searchResults.reference == expectedReference) {
+          processSearchResults(searchResults);
         } else {
-          // todo notify user of error
-          console.log(httpRequest.status + "\n" + httpRequest.responseText);
-        }
-      }
-    };
-    httpRequest.send(JSON.stringify(searchRequest));
-
-  }
-
-  function processSearchResults(searchResponse) {
-
-    locationSamplesMarkersLayer.clearLayers();
-
-    for (var i = 0; i < searchResponse.searchResults.length; i++) {
-
-      var searchResult = searchResponse.searchResults[i];
-
-      var text;
-      if (searchResult.postalCode) {
-        text = searchResult.postalCode;
-      } else if (searchResult.postalTown) {
-        text = searchResult.postalTown;
-      } else if (searchResult.streetName) {
-        text = searchResult.streetName;
-        if (searchResult.houseNumber) {
-          text += "&nbsp;" + searchResult.houseNumber;
-          if (searchResult.houseName) {
-            text += ":" + searchResult.houseName;
-          }
-        }
-      } else if (searchResult.houseNumber) {
-        text = searchResult.houseNumber;
-        if (searchResult.houseName) {
-          text += "&nbsp;" + searchResult.houseName;
+          console.log("Ignoring non expected search results, probably due to old response taking a long time.")
         }
 
-      } else if (searchResult.houseName) {
-        text = searchResult.houseName;
       } else {
-        text = "?";
+        // todo notify user of error
+        console.log(httpRequest.status + "\n" + httpRequest.responseText);
+      }
+    }
+  };
+  httpRequest.send(JSON.stringify(searchRequest));
+
+}
+
+function processSearchResults(searchResponse) {
+
+  locationSamplesMarkersLayer.clearLayers();
+
+  for (var i = 0; i < searchResponse.searchResults.length; i++) {
+
+    var searchResult = searchResponse.searchResults[i];
+
+    var text = null;
+    if (searchResult.streetName) {
+      text += searchResult.streetName;
+    }
+
+    if (searchResult.houseNumber
+        || searchResult.houseName) {
+
+      if (searchResult.streetName) {
+        text += "&nbsp;";
       }
 
-      var className = 'locationSampleMarker accuracy-';
-      if (searchResult.accuracy <= 10) {
-        className += "10";
-      } else if (searchResult.accuracy <= 20) {
-        className += "20";
-      } else if (searchResult.accuracy <= 30) {
-        className += "30";
-      } else if (searchResult.accuracy <= 40) {
-        className += "40";
-      } else {
-        className += "50";
+    }
+    if (searchResult.houseNumber) {
+      text += searchResult.houseNumber;
+    }
+    if (searchResult.houseName) {
+      if (searchResult.houseNumber) {
+        text += ":";
       }
+      text += searchResult.houseName;
 
-      var marker = L.marker(
-          [searchResult.latitude, searchResult.longitude], {
-            icon: L.divIcon({
-              className: className,
-              html: text
-            })
-          });
-
-      locationSamplesMarkersLayer.addLayer(marker);
-
+      text += searchResult.houseNumber;
     }
 
 
+    if (searchResult.postalCode
+        || searchResult.postalTown) {
+      text += "<br/>";
+    }
+
+    if (searchResult.streetName
+        || searchResult.houseNumber
+        || searchResult.houseName) {
+
+
+      if (searchResult.postalCode) {
+        text += searchResult.postalCode;
+      }
+
+      if (searchResult.postalTown) {
+        if (searchResult.postalCode) {
+          text += "&nbsp;";
+        }
+        text += searchResult.postalTown;
+      }
+    }
+
+    var className = 'locationSampleMarker accuracy-';
+    if (searchResult.accuracy <= 10) {
+      className += "10";
+    } else if (searchResult.accuracy <= 20) {
+      className += "20";
+    } else if (searchResult.accuracy <= 30) {
+      className += "30";
+    } else if (searchResult.accuracy <= 40) {
+      className += "40";
+    } else {
+      className += "50";
+    }
+
+    var marker = L.marker(
+        [searchResult.latitude, searchResult.longitude], {
+          icon: L.divIcon({
+            className: className,
+            html: text
+          })
+        });
+
+    locationSamplesMarkersLayer.addLayer(marker);
+
   }
 
-  function start() {
 
-    var swedenSouthWest = L.latLng(55, 11),
-        swedenNorthEast = L.latLng(70, 25),
-        swedenBounds = L.latLngBounds(swedenSouthWest, swedenNorthEast);
-    map.fitBounds(swedenBounds);
+}
+
+function start() {
+
+  var swedenSouthWest = L.latLng(55, 11),
+      swedenNorthEast = L.latLng(70, 25),
+      swedenBounds = L.latLngBounds(swedenSouthWest, swedenNorthEast);
+  map.fitBounds(swedenBounds);
 
 
-  }
+}
 
 </script>
 
