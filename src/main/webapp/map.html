@@ -246,13 +246,13 @@ function processSearchResults(searchResponse) {
 
     if (searchResult.postalCode
         || searchResult.postalTown) {
-      text += "<br/>";
-    }
 
-    if (searchResult.streetName
-        || searchResult.houseNumber
-        || searchResult.houseName) {
+      if (searchResult.streetName
+          || searchResult.houseNumber
+          || searchResult.houseName) {
 
+        text += "<br/>";
+      }
 
       if (searchResult.postalCode) {
         text += searchResult.postalCode;
