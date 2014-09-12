@@ -288,6 +288,10 @@ function processSearchResults(searchResponse) {
         });
 
     locationSamplesMarkersLayer.addLayer(marker);
+    var circle = L.circle(
+        [searchResult.latitude, searchResult.longitude], searchResult.accuracy
+    );
+    locationSamplesMarkersLayer.addLayer(circle);
 
   }
 
