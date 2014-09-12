@@ -174,7 +174,7 @@ function search() {
 
   var searchRequest = {
     reference: new Date().getTime().toString(),
-    maximumHits: 100,
+    limit: 100,
     query: {
       type: "coordinate envelope",
       latitudeField: "latitude",
