@@ -66,6 +66,10 @@
       transition: 300ms ease;
     }
 
+    #map div.accuracy-null {
+      background: #aaaaaa;
+    }
+
     #map div.accuracy-10 {
       background: #7cff33;
     }
@@ -267,7 +271,9 @@ function processSearchResults(searchResponse) {
     }
 
     var className = 'locationSampleMarker accuracy-';
-    if (searchResult.accuracy <= 10) {
+    if (!searchResult.accuracy) {
+      className += "null"
+    } else if (searchResult.accuracy <= 10) {
       className += "10";
     } else if (searchResult.accuracy <= 20) {
       className += "20";
@@ -278,6 +284,7 @@ function processSearchResults(searchResponse) {
     } else {
       className += "50";
     }
+
 
     var marker = L.marker(
         [searchResult.latitude, searchResult.longitude], {

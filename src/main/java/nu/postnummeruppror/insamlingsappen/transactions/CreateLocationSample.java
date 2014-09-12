@@ -29,8 +29,9 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
   private String provider;
   private double latitude;
   private double longitude;
-  private double accuracy;
-  private double altitude;
+
+  private Double accuracy;
+  private Double altitude;
 
   private String postalCode;
   private String postalTown;
@@ -142,12 +143,20 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     this.longitude = longitude;
   }
 
-  public double getAccuracy() {
+  public Double getAccuracy() {
     return accuracy;
   }
 
-  public void setAccuracy(double accuracy) {
+  public void setAccuracy(Double accuracy) {
     this.accuracy = accuracy;
+  }
+
+  public Double getAltitude() {
+    return altitude;
+  }
+
+  public void setAltitude(Double altitude) {
+    this.altitude = altitude;
   }
 
   public String getPostalCode() {
@@ -174,13 +183,6 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     this.houseNumber = houseNumber;
   }
 
-  public double getAltitude() {
-    return altitude;
-  }
-
-  public void setAltitude(double altitude) {
-    this.altitude = altitude;
-  }
 
   public String getPostalTown() {
     return postalTown;

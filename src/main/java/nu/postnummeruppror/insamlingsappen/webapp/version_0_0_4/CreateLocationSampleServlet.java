@@ -110,10 +110,14 @@ public class CreateLocationSampleServlet extends HttpServlet {
       }
 
       createLocationSample.setProvider(requestJSON.getString("provider"));
-      createLocationSample.setAccuracy(requestJSON.getDouble("accuracy"));
       createLocationSample.setLatitude(requestJSON.getDouble("latitude"));
       createLocationSample.setLongitude(requestJSON.getDouble("longitude"));
-      createLocationSample.setAltitude(requestJSON.getDouble("altitude"));
+      if (requestJSON.has("accuracy")) {
+        createLocationSample.setAccuracy(requestJSON.getDouble("accuracy"));
+      }
+      if (requestJSON.has("altitude")) {
+        createLocationSample.setAltitude(requestJSON.getDouble("altitude"));
+      }
 
       LocationSample locationSample = Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
 

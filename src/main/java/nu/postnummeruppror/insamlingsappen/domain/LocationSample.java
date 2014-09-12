@@ -32,9 +32,8 @@ public class LocationSample implements Serializable {
   private double latitude;
   private double longitude;
 
-  private double accuracy;
-
-  private double altitude;
+  private Double accuracy;
+  private Double altitude;
 
   private PostalCode postalCode;
 
@@ -115,13 +114,6 @@ public class LocationSample implements Serializable {
     this.longitude = longitude;
   }
 
-  public double getAccuracy() {
-    return accuracy;
-  }
-
-  public void setAccuracy(double accuracy) {
-    this.accuracy = accuracy;
-  }
 
   public Account getAccount() {
     return account;
@@ -147,11 +139,19 @@ public class LocationSample implements Serializable {
     this.houseNumber = houseNumber;
   }
 
-  public double getAltitude() {
+  public Double getAccuracy() {
+    return accuracy;
+  }
+
+  public void setAccuracy(Double accuracy) {
+    this.accuracy = accuracy;
+  }
+
+  public Double getAltitude() {
     return altitude;
   }
 
-  public void setAltitude(double altitude) {
+  public void setAltitude(Double altitude) {
     this.altitude = altitude;
   }
 
