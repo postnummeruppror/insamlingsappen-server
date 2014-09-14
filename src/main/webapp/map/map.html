@@ -334,7 +334,7 @@ function downloadOSMXML() {
       if (httpRequest.status == 200) {
 
         var blob = new Blob([httpRequest.responseText], {type: "text/xml;charset=utf-8"});
-        saveAs(blob, "postnummeruppror-" + new Date().getTime() + ".txt");
+        saveAs(blob, "postnummeruppror-" + new Date().getTime() + ".osm.xml");
 
       } else {
         // todo notify user of error
