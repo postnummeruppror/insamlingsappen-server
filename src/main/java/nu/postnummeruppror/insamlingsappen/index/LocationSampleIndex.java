@@ -143,7 +143,7 @@ public class LocationSampleIndex {
     addField(document, LocationSampleIndexFields.latitude, locationSample.getLatitude(), null);
     addField(document, LocationSampleIndexFields.longitude, locationSample.getLongitude(), null);
 
-    addField(document, LocationSampleIndexFields.postalCode, locationSample.getPostalCode() == null ? null : locationSample.getPostalCode().getPostalCode());
+    addField(document, LocationSampleIndexFields.postalCode, locationSample.getPostalCode());
 
     return document;
   }

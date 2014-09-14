@@ -60,7 +60,7 @@ public class ServerStatisticsServlet extends HttpServlet {
 
       responseJSON.put("numberOfLocationSamples", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().size());
       responseJSON.put("numberOfAccounts", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getAccounts().size());
-      responseJSON.put("numberOfPostalCodes", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getPostalCodes().size());
+      responseJSON.put("numberOfPostalCodes", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getPostalCodeIntern().getMap().size());
       responseJSON.put("numberOfPostalTowns", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getPostalTownIntern().getMap().size());
 
       responseJSON.put("success", true);

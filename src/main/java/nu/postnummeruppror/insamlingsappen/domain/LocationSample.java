@@ -35,8 +35,7 @@ public class LocationSample implements Serializable {
   private Double accuracy;
   private Double altitude;
 
-  private PostalCode postalCode;
-
+  private String postalCode;
   private String streetName;
   private String houseNumber;
   private String houseName;
@@ -57,7 +56,7 @@ public class LocationSample implements Serializable {
     sb.append(", longitude=").append(longitude);
     sb.append(", accuracy=").append(accuracy);
     sb.append(", altitude=").append(altitude);
-    sb.append(", postalCode.postalCode=").append(postalCode.getPostalCode());
+    sb.append(", postalCode='").append(postalCode).append('\'');
     sb.append(", streetName='").append(streetName).append('\'');
     sb.append(", houseNumber='").append(houseNumber).append('\'');
     sb.append(", houseName='").append(houseName).append('\'');
@@ -66,11 +65,11 @@ public class LocationSample implements Serializable {
     return sb.toString();
   }
 
-  public PostalCode getPostalCode() {
+  public String getPostalCode() {
     return postalCode;
   }
 
-  public void setPostalCode(PostalCode postalCode) {
+  public void setPostalCode(String postalCode) {
     this.postalCode = postalCode;
   }
 

@@ -142,7 +142,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
         searchResultJSON.put("identity", locationSample.getIdentity());
 
-        searchResultJSON.put("postalCode", locationSample.getPostalCode() != null ? locationSample.getPostalCode().getPostalCode() : null);
+        searchResultJSON.put("postalCode", locationSample.getPostalCode());
         searchResultJSON.put("postalTown", locationSample.getPostalTown());
         searchResultJSON.put("streetName", locationSample.getStreetName());
         searchResultJSON.put("houseNumber", locationSample.getHouseNumber());

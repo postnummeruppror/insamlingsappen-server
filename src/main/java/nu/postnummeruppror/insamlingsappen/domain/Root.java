@@ -17,7 +17,7 @@ public class Root implements Serializable {
 
   private Map<String, Account> accounts = new HashMap<>();
   private Map<Long, LocationSample> locationSamples = new HashMap<>();
-  private Map<String, PostalCode> postalCodes = new HashMap<>();
+
 
   private Intern<String> applicationIntern = new Intern<>();
   private Intern<String> applicationVersionIntern = new Intern<>();
@@ -25,6 +25,7 @@ public class Root implements Serializable {
   private Intern<String> streetNameIntern = new Intern<>();
   private Intern<String> houseNumberIntern = new Intern<>();
   private Intern<String> houseNameIntern = new Intern<>();
+  private Intern<String> postalCodeIntern = new Intern<>();
   private Intern<String> postalTownIntern = new Intern<>();
 
   public Map<String, Account> getAccounts() {
@@ -51,12 +52,12 @@ public class Root implements Serializable {
     this.locationSamples = locationSamples;
   }
 
-  public Map<String, PostalCode> getPostalCodes() {
-    return postalCodes;
+  public Intern<String> getPostalCodeIntern() {
+    return postalCodeIntern;
   }
 
-  public void setPostalCodes(Map<String, PostalCode> postalCodes) {
-    this.postalCodes = postalCodes;
+  public void setPostalCodeIntern(Intern<String> postalCodeIntern) {
+    this.postalCodeIntern = postalCodeIntern;
   }
 
   public Intern<String> getProviderIntern() {

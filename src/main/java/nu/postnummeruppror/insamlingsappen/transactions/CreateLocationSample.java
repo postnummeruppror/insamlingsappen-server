@@ -2,7 +2,6 @@ package nu.postnummeruppror.insamlingsappen.transactions;
 
 import nu.postnummeruppror.insamlingsappen.domain.Account;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
-import nu.postnummeruppror.insamlingsappen.domain.PostalCode;
 import nu.postnummeruppror.insamlingsappen.domain.Root;
 import org.prevayler.TransactionWithQuery;
 
@@ -67,15 +66,8 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     locationSample.setAltitude(altitude);
 
 
-    if (this.postalCode != null) {
-      PostalCode postalCode = root.getPostalCodes().get(this.postalCode);
-      if (postalCode == null) {
-        postalCode = new PostalCode();
-        postalCode.setPostalCode(this.postalCode);
-        root.getPostalCodes().put(postalCode.getPostalCode(), postalCode);
-      }
-      locationSample.setPostalCode(postalCode);
-      postalCode.getLocationSamples().add(locationSample);
+    if (postalCode != null) {
+      locationSample.setPostalCode(root.getPostalCodeIntern().intern(postalCode));
     }
 
     if (streetName != null) {
