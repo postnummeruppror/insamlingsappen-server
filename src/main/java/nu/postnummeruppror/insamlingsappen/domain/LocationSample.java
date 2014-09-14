@@ -1,6 +1,7 @@
 package nu.postnummeruppror.insamlingsappen.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author kalle
@@ -41,13 +42,15 @@ public class LocationSample implements Serializable {
   private String houseName;
   private String postalTown;
 
+  private List<LocationSampleUpdate> updates;
+
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("LocationSample{");
     sb.append("identity=").append(identity);
-    sb.append(", account.identity=").append(account.getIdentity());
+    sb.append(", account.identity='").append(account.getIdentity()).append('\'');
     sb.append(", application='").append(application).append('\'');
     sb.append(", applicationVersion='").append(applicationVersion).append('\'');
     sb.append(", provider='").append(provider).append('\'');
@@ -61,6 +64,8 @@ public class LocationSample implements Serializable {
     sb.append(", houseNumber='").append(houseNumber).append('\'');
     sb.append(", houseName='").append(houseName).append('\'');
     sb.append(", postalTown='").append(postalTown).append('\'');
+    sb.append(", postalTown='").append(postalTown).append('\'');
+    sb.append(", updates=").append(updates);
     sb.append('}');
     return sb.toString();
   }
@@ -184,5 +189,13 @@ public class LocationSample implements Serializable {
 
   public void setHouseName(String houseName) {
     this.houseName = houseName;
+  }
+
+  public List<LocationSampleUpdate> getUpdates() {
+    return updates;
+  }
+
+  public void setUpdates(List<LocationSampleUpdate> updates) {
+    this.updates = updates;
   }
 }

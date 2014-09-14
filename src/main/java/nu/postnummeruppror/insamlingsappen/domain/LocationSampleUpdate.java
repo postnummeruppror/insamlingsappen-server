@@ -49,24 +49,151 @@ public class LocationSampleUpdate implements Serializable {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("LocationSample{");
-    sb.append("identity=").append(identity);
-    sb.append(", account.identity=").append(account.getIdentity());
-    sb.append(", application='").append(application).append('\'');
-    sb.append(", applicationVersion='").append(applicationVersion).append('\'');
-    sb.append(", provider='").append(provider).append('\'');
-    sb.append(", timestamp=").append(timestamp);
-    sb.append(", latitude=").append(latitude);
-    sb.append(", longitude=").append(longitude);
-    sb.append(", accuracy=").append(accuracy);
-    sb.append(", altitude=").append(altitude);
-    sb.append(", postalCode='").append(postalCode).append('\'');
-    sb.append(", streetName='").append(streetName).append('\'');
-    sb.append(", houseNumber='").append(houseNumber).append('\'');
-    sb.append(", houseName='").append(houseName).append('\'');
-    sb.append(", postalTown='").append(postalTown).append('\'');
-    sb.append('}');
-    return sb.toString();
+    return "LocationSampleUpdate{" +
+        "locationSample.identity=" + locationSample.getIdentity() +
+        ", identity=" + identity +
+        ", account.identity='" + account.getIdentity() + '\'' +
+        ", application='" + application + '\'' +
+        ", applicationVersion='" + applicationVersion + '\'' +
+        ", provider='" + provider + '\'' +
+        ", timestamp=" + timestamp +
+        ", latitude=" + latitude +
+        ", longitude=" + longitude +
+        ", accuracy=" + accuracy +
+        ", altitude=" + altitude +
+        ", postalCode='" + postalCode + '\'' +
+        ", streetName='" + streetName + '\'' +
+        ", houseNumber='" + houseNumber + '\'' +
+        ", houseName='" + houseName + '\'' +
+        ", postalTown='" + postalTown + '\'' +
+        '}';
+  }
+
+  public LocationSample getLocationSample() {
+    return locationSample;
+  }
+
+  public void setLocationSample(LocationSample locationSample) {
+    this.locationSample = locationSample;
+  }
+
+  public Long getIdentity() {
+    return identity;
+  }
+
+  public void setIdentity(Long identity) {
+    this.identity = identity;
+  }
+
+  public Account getAccount() {
+    return account;
+  }
+
+  public void setAccount(Account account) {
+    this.account = account;
+  }
+
+  public String getApplication() {
+    return application;
+  }
+
+  public void setApplication(String application) {
+    this.application = application;
+  }
+
+  public String getApplicationVersion() {
+    return applicationVersion;
+  }
+
+  public void setApplicationVersion(String applicationVersion) {
+    this.applicationVersion = applicationVersion;
+  }
+
+  public String getProvider() {
+    return provider;
+  }
+
+  public void setProvider(String provider) {
+    this.provider = provider;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(long timestamp) {
+    this.timestamp = timestamp;
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public void setLatitude(double latitude) {
+    this.latitude = latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
+  }
+
+  public void setLongitude(double longitude) {
+    this.longitude = longitude;
+  }
+
+  public Double getAccuracy() {
+    return accuracy;
+  }
+
+  public void setAccuracy(Double accuracy) {
+    this.accuracy = accuracy;
+  }
+
+  public Double getAltitude() {
+    return altitude;
+  }
+
+  public void setAltitude(Double altitude) {
+    this.altitude = altitude;
+  }
+
+  public String getPostalCode() {
+    return postalCode;
+  }
+
+  public void setPostalCode(String postalCode) {
+    this.postalCode = postalCode;
+  }
+
+  public String getStreetName() {
+    return streetName;
+  }
+
+  public void setStreetName(String streetName) {
+    this.streetName = streetName;
+  }
+
+  public String getHouseNumber() {
+    return houseNumber;
+  }
+
+  public void setHouseNumber(String houseNumber) {
+    this.houseNumber = houseNumber;
+  }
+
+  public String getHouseName() {
+    return houseName;
+  }
+
+  public void setHouseName(String houseName) {
+    this.houseName = houseName;
+  }
+
+  public String getPostalTown() {
+    return postalTown;
+  }
+
+  public void setPostalTown(String postalTown) {
+    this.postalTown = postalTown;
   }
 }

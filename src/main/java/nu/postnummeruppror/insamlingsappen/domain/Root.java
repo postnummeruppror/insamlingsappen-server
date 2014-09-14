@@ -18,6 +18,7 @@ public class Root implements Serializable {
   private Map<String, Account> accounts = new HashMap<>();
   private Map<Long, LocationSample> locationSamples = new HashMap<>();
 
+  private Map<Long, Comment> comments = new HashMap<>();
 
   private Intern<String> applicationIntern = new Intern<>();
   private Intern<String> applicationVersionIntern = new Intern<>();
@@ -114,5 +115,13 @@ public class Root implements Serializable {
 
   public void setHouseNameIntern(Intern<String> houseNameIntern) {
     this.houseNameIntern = houseNameIntern;
+  }
+
+  public Map<Long, Comment> getComments() {
+    return comments;
+  }
+
+  public void setComments(Map<Long, Comment> comments) {
+    this.comments = comments;
   }
 }

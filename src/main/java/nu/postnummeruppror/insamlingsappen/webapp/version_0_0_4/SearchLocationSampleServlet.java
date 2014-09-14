@@ -3,6 +3,7 @@ package nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4;
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -15,6 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -24,6 +29,26 @@ import java.util.*;
 public class SearchLocationSampleServlet extends HttpServlet {
 
   private static final Logger log = LoggerFactory.getLogger(SearchLocationSampleServlet.class);
+
+  private Map<String, ResponseFormatSerializer> responseFormatSerializers = new HashMap<>();
+
+  private abstract class ResponseFormatSerializer {
+    public abstract String getContentType();
+
+    public abstract String getCharacterEncoding();
+
+    public abstract void writeOutput(OutputStream output, List<Map.Entry<LocationSample, Float>> searchResults,
+                                     Object reference, int startIndex, int limit, boolean score) throws Exception;
+
+  }
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+
+    responseFormatSerializers.put("json", new JSONResponseFormatSerializer());
+    responseFormatSerializers.put("osm.xml", new OSMXMLResponseFormatSerializer());
+  }
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -39,6 +64,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
     documentation.append("  \"score\": Optional. Boolean value. If search results is to be scored.\n");
     documentation.append("  \"startIndex\": Optional. Integer value. Zero-base index of first search result in response.\n");
     documentation.append("  \"limit\": Optional. Integer value. Maximum number of search results.\n");
+    documentation.append("  \"format\": Optional. String value. Response format. 'json' or'osm-xml'.\n");
     documentation.append("\n");
     documentation.append("  \"query\": {\n");
     documentation.append("   }\n");
@@ -119,6 +145,43 @@ public class SearchLocationSampleServlet extends HttpServlet {
       int limit = requestJSON.has("limit") ? requestJSON.getInt("limit") : Integer.MAX_VALUE;
       int startIndex = requestJSON.has("startIndex") ? requestJSON.getInt("startIndex") : 0;
 
+      String format;
+      if (requestJSON.has("format")) {
+        format = requestJSON.getString("format");
+      } else {
+        format = "json";
+      }
+
+      ResponseFormatSerializer responseFormatSerializer = responseFormatSerializers.get(format);
+
+      response.setCharacterEncoding(responseFormatSerializer.getCharacterEncoding());
+      response.setContentType(responseFormatSerializer.getContentType());
+
+      responseFormatSerializer.writeOutput(response.getOutputStream(), orderedSearchResults, reference, startIndex, limit, score);
+
+    } catch (Exception e) {
+
+      throw new RuntimeException(e);
+
+    }
+
+
+  }
+
+  private class JSONResponseFormatSerializer extends ResponseFormatSerializer {
+    @Override
+    public String getContentType() {
+      return "application/json";
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+      return "UTF-8";
+    }
+
+    @Override
+    public void writeOutput(OutputStream output, List<Map.Entry<LocationSample, Float>> searchResults, Object reference, int startIndex, int limit, boolean score) throws Exception {
+
       JSONObject responseJSON = new JSONObject();
 
       responseJSON.put("success", true);
@@ -128,10 +191,10 @@ public class SearchLocationSampleServlet extends HttpServlet {
       JSONArray searchResultsJSON = new JSONArray();
       responseJSON.put("searchResults", searchResultsJSON);
 
-      for (int index = startIndex; index < limit && index < orderedSearchResults.size(); index++) {
+      for (int index = startIndex; index < startIndex + limit && index < searchResults.size(); index++) {
         JSONObject searchResultJSON = new JSONObject();
 
-        Map.Entry<LocationSample, Float> searchResult = orderedSearchResults.get(index);
+        Map.Entry<LocationSample, Float> searchResult = searchResults.get(index);
 
         LocationSample locationSample = searchResult.getKey();
 
@@ -157,22 +220,116 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
       }
 
-      response.setCharacterEncoding("UTF-8");
-      response.setContentType("application/json");
-      response.getOutputStream().write(responseJSON.toString().getBytes("UTF-8"));
-
-    } catch (Exception e) {
-
-      throw new RuntimeException(e);
+      output.write(responseJSON.toString().getBytes("UTF-8"));
 
     }
-
-
   }
 
+  private class OSMXMLResponseFormatSerializer extends ResponseFormatSerializer {
+
+    @Override
+    public String getContentType() {
+      return "text/xml;charset=UTF-8";
+    }
+
+    @Override
+    public String getCharacterEncoding() {
+      return "UTF-8";
+    }
+
+    @Override
+    public void writeOutput(OutputStream output, List<Map.Entry<LocationSample, Float>> searchResults, Object reference, int startIndex, int limit, boolean score) throws Exception {
+
+      OutputStreamWriter xml = new OutputStreamWriter(output, "UTF-8");
+      try {
 
 
+        xml.write("<?xml version='1.0' encoding='UTF-8'?>\n");
+        xml.write("<osm version='");
+        xml.write("0.6");
+        xml.write("' upload='");
+        xml.write("true");
+        xml.write("'");
+        xml.write(" generator='");
+        xml.write(getClass().getName());
+        xml.write("'>\n");
+
+        int id = 0;
+        DecimalFormat df = new DecimalFormat("#.##################################");
+
+        for (int index = startIndex; index < startIndex + limit && index < searchResults.size(); index++) {
+
+          LocationSample locationSample = searchResults.get(index).getKey();
+
+          xml.write("\t<node ");
+          xml.write(" id='");
+          xml.write(String.valueOf(--id));
+          xml.write("'");
+
+          xml.write(" lat='");
+          xml.write(df.format(locationSample.getLatitude()));
+          xml.write("'");
+
+          xml.write(" lon='");
+          xml.write(df.format(locationSample.getLongitude()));
+          xml.write("'");
+
+          xml.write(" >\n");
 
 
+          if (locationSample.getStreetName() != null) {
+            xml.write("\t\t<tag k='");
+            xml.write("addr:street");
+            xml.write("' v='");
+            xml.write(StringEscapeUtils.escapeXml(locationSample.getStreetName()));
+            xml.write("' />\n");
+          }
+
+          if (locationSample.getHouseNumber() != null) {
+            xml.write("\t\t<tag k='");
+            xml.write("addr:housenumber");
+            xml.write("' v='");
+            xml.write(StringEscapeUtils.escapeXml(locationSample.getHouseNumber()));
+            xml.write("' />\n");
+          }
+
+          if (locationSample.getHouseName() != null) {
+            xml.write("\t\t<tag k='");
+            xml.write("addr:housename");
+            xml.write("' v='");
+            xml.write(StringEscapeUtils.escapeXml(locationSample.getHouseName()));
+            xml.write("' />\n");
+          }
+
+          if (locationSample.getPostalCode() != null) {
+            xml.write("\t\t<tag k='");
+            xml.write("addr:postcode");
+            xml.write("' v='");
+            xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalCode()));
+            xml.write("' />\n");
+          }
+
+          if (locationSample.getPostalTown() != null) {
+            xml.write("\t\t<tag k='");
+            xml.write("addr:city");
+            xml.write("' v='");
+            xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalTown()));
+            xml.write("' />\n");
+          }
+
+
+          xml.write("\t</node>\n");
+
+        }
+
+        xml.write("</osm>\n");
+
+
+      } finally {
+        xml.flush();
+      }
+
+    }
+  }
 
 }
