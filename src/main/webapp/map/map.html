@@ -40,12 +40,6 @@
       height: 100%;
     }
 
-    download-osm-xml {
-      position: absolute;
-      right: 20px;
-      bottom: 20px;
-    }
-
     #map div.locationSampleMarker {
       font-family: 'Roboto', helvetica, sans-serif;
       color: #000000;
@@ -365,7 +359,8 @@ function start() {
 
 </script>
 
-<button id="download-osm-xml" onclick="downloadOSMXML();">Spara som OSM.xml</button>
+<button style="position: absolute; right: 20px; top: 20px;" onclick="downloadOSMXML();">Spara som OSM.xml
+</button>
 
 </body>
 
