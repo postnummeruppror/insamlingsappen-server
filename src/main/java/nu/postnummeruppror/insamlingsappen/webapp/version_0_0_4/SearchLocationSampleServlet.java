@@ -110,7 +110,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
         Collections.sort(orderedSearchResults, new Comparator<Map.Entry<LocationSample, Float>>() {
           @Override
           public int compare(Map.Entry<LocationSample, Float> o1, Map.Entry<LocationSample, Float> o2) {
-            return o1.getKey().getIdentity().compareTo(o2.getKey().getIdentity());
+            return o2.getKey().getIdentity().compareTo(o1.getKey().getIdentity());
           }
         });
       }
