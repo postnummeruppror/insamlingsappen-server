@@ -277,7 +277,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
           xml.write(" >\n");
 
 
-          if (locationSample.getStreetName() != null) {
+          if (locationSample.getStreetName() != null && !locationSample.getStreetName().isEmpty()) {
             xml.write("\t\t<tag k='");
             xml.write("addr:street");
             xml.write("' v='");
@@ -285,7 +285,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
             xml.write("' />\n");
           }
 
-          if (locationSample.getHouseNumber() != null) {
+          if (locationSample.getHouseNumber() != null && !locationSample.getHouseNumber().isEmpty()) {
             xml.write("\t\t<tag k='");
             xml.write("addr:housenumber");
             xml.write("' v='");
@@ -293,7 +293,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
             xml.write("' />\n");
           }
 
-          if (locationSample.getHouseName() != null) {
+          if (locationSample.getHouseName() != null && !locationSample.getHouseName().isEmpty()) {
             xml.write("\t\t<tag k='");
             xml.write("addr:housename");
             xml.write("' v='");
@@ -301,7 +301,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
             xml.write("' />\n");
           }
 
-          if (locationSample.getPostalCode() != null) {
+          if (locationSample.getPostalCode() != null && !locationSample.getPostalCode().isEmpty()) {
             xml.write("\t\t<tag k='");
             xml.write("addr:postcode");
             xml.write("' v='");
@@ -309,7 +309,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
             xml.write("' />\n");
           }
 
-          if (locationSample.getPostalTown() != null) {
+          if (locationSample.getPostalTown() != null && !locationSample.getPostalTown().isEmpty()) {
             xml.write("\t\t<tag k='");
             xml.write("addr:city");
             xml.write("' v='");
