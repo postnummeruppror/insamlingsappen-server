@@ -318,7 +318,7 @@ function processSearchResultsMap(searchResponse) {
 
       locationSamplesMarkersLayer.addLayer(marker);
       var circle = L.circle(
-          [searchResult.latitude, searchResult.longitude], searchResult.accuracy
+          [searchResult.coordinate.latitude, searchResult.coordinate.longitude], searchResult.coordinate.accuracy
       );
       locationSamplesMarkersLayer.addLayer(circle);
 
