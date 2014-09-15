@@ -65,4 +65,56 @@
     <url-pattern>/api/0.0.4/statistics/server</url-pattern>
   </servlet-mapping>
 
+  <!-- version 0.0.5 -->
+
+  <servlet>
+    <servlet-name>0.0.5/SetAccount</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.SetAccountServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.5/SetAccount</servlet-name>
+    <url-pattern>/api/0.0.5/account/set</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.5/AccountExists</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.AccountExistsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.5/AccountExists</servlet-name>
+    <url-pattern>/api/0.0.5/account/exists</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.5/CreateLocationSample</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.CreateLocationSampleServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.5/CreateLocationSample</servlet-name>
+    <url-pattern>/api/0.0.5/location_sample/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.5/SearchLocationSample</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.SearchLocationSampleServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.5/SearchLocationSample</servlet-name>
+    <url-pattern>/api/0.0.5/location_sample/search</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.5/ServerStatistics</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.ServerStatisticsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.5/ServerStatistics</servlet-name>
+    <url-pattern>/api/0.0.5/statistics/server</url-pattern>
+  </servlet-mapping>
+
 </web-app>

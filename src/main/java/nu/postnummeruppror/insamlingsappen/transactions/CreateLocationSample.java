@@ -1,8 +1,6 @@
 package nu.postnummeruppror.insamlingsappen.transactions;
 
-import nu.postnummeruppror.insamlingsappen.domain.Account;
-import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
-import nu.postnummeruppror.insamlingsappen.domain.Root;
+import nu.postnummeruppror.insamlingsappen.domain.*;
 import org.prevayler.TransactionWithQuery;
 
 import java.io.Serializable;
@@ -25,18 +23,9 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
   private String application;
   private String applicationVersion;
 
-  private String provider;
-  private double latitude;
-  private double longitude;
-
-  private Double accuracy;
-  private Double altitude;
-
-  private String postalCode;
-  private String postalTown;
-  private String streetName;
-  private String houseNumber;
-  private String houseName;
+  private String name;
+  private PostalAddress postalAddress;
+  private Coordinate coordinate;
 
 
   @Override
@@ -59,32 +48,88 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     locationSample.setApplication(root.getApplicationIntern().intern(application));
     locationSample.setApplicationVersion(root.getApplicationVersionIntern().intern(applicationVersion));
 
-    locationSample.setProvider(root.getProviderIntern().intern(provider));
-    locationSample.setAccuracy(accuracy);
-    locationSample.setLatitude(latitude);
-    locationSample.setLongitude(longitude);
-    locationSample.setAltitude(altitude);
+    if (postalAddress != null) {
 
+      if (postalAddress.getPostalTown() != null) {
+        postalAddress.setPostalTown(postalAddress.getPostalTown().trim());
+        if (postalAddress.getPostalTown().isEmpty()) {
+          postalAddress.setPostalTown(null);
+        } else {
+          postalAddress.setPostalTown(root.getPostalTownIntern().intern(postalAddress.getPostalTown()));
+        }
+      }
 
-    if (postalCode != null) {
-      locationSample.setPostalCode(root.getPostalCodeIntern().intern(postalCode));
+      if (postalAddress.getPostalCode() != null) {
+        postalAddress.setPostalCode(postalAddress.getPostalCode().trim());
+        if (postalAddress.getPostalCode().isEmpty()) {
+          postalAddress.setPostalCode(null);
+        } else {
+          postalAddress.setPostalCode(root.getPostalCodeIntern().intern(postalAddress.getPostalCode()));
+        }
+      }
+
+      if (postalAddress.getStreetName() != null) {
+        postalAddress.setStreetName(postalAddress.getStreetName().trim());
+        if (postalAddress.getStreetName().isEmpty()) {
+          postalAddress.setStreetName(null);
+        } else {
+          postalAddress.setStreetName(root.getStreetNameIntern().intern(postalAddress.getStreetName()));
+        }
+      }
+
+      if (postalAddress.getHouseNumber() != null) {
+        postalAddress.setHouseNumber(postalAddress.getHouseNumber().trim());
+        if (postalAddress.getHouseNumber().isEmpty()) {
+          postalAddress.setHouseNumber(null);
+        } else {
+          postalAddress.setHouseNumber(root.getHouseNumberIntern().intern(postalAddress.getHouseNumber()));
+        }
+      }
+
+      if (postalAddress.getHouseName() != null) {
+        postalAddress.setHouseName(postalAddress.getHouseName().trim());
+        if (postalAddress.getHouseName().isEmpty()) {
+          postalAddress.setHouseName(null);
+        } else {
+          postalAddress.setHouseName(root.getHouseNameIntern().intern(postalAddress.getHouseName()));
+        }
+      }
+
+      if (postalAddress.getStreetName() == null
+          && postalAddress.getHouseNumber() == null
+          && postalAddress.getHouseName() == null
+          && postalAddress.getPostalCode() == null
+          && postalAddress.getPostalCode() == null) {
+
+        // All fields are null! todo is this an exception?
+
+      } else {
+        locationSample.setPostalAddress(postalAddress);
+      }
     }
 
-    if (streetName != null) {
-      locationSample.setStreetName(root.getStreetNameIntern().intern(streetName));
+    if (coordinate != null) {
+
+      if (coordinate.getProvider() != null) {
+        coordinate.setProvider(coordinate.getProvider().trim());
+        if (coordinate.getProvider().isEmpty()) {
+          coordinate.setProvider(null);
+        } else {
+          coordinate.setProvider(root.getProviderIntern().intern(coordinate.getProvider()));
+        }
+      }
+
+      locationSample.setCoordinate(coordinate);
+
     }
 
-    if (houseNumber != null) {
-      locationSample.setHouseNumber(root.getHouseNumberIntern().intern(houseNumber));
+    if (name != null) {
+      name = name.trim();
+      if (!name.isEmpty()) {
+        locationSample.setName(root.getNameIntern().intern(name));
+      }
     }
 
-    if (houseName != null) {
-      locationSample.setHouseName(root.getHouseNameIntern().intern(houseName));
-    }
-
-    if (postalTown != null) {
-      locationSample.setPostalTown(root.getPostalTownIntern().intern(postalTown));
-    }
 
     locationSample.setAccount(account);
     account.getLocationSamples().add(locationSample);
@@ -111,78 +156,6 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     this.locationSampleIdentity = locationSampleIdentity;
   }
 
-  public String getProvider() {
-    return provider;
-  }
-
-  public void setProvider(String provider) {
-    this.provider = provider;
-  }
-
-  public double getLatitude() {
-    return latitude;
-  }
-
-  public void setLatitude(double latitude) {
-    this.latitude = latitude;
-  }
-
-  public double getLongitude() {
-    return longitude;
-  }
-
-  public void setLongitude(double longitude) {
-    this.longitude = longitude;
-  }
-
-  public Double getAccuracy() {
-    return accuracy;
-  }
-
-  public void setAccuracy(Double accuracy) {
-    this.accuracy = accuracy;
-  }
-
-  public Double getAltitude() {
-    return altitude;
-  }
-
-  public void setAltitude(Double altitude) {
-    this.altitude = altitude;
-  }
-
-  public String getPostalCode() {
-    return postalCode;
-  }
-
-  public void setPostalCode(String postalCode) {
-    this.postalCode = postalCode;
-  }
-
-  public String getStreetName() {
-    return streetName;
-  }
-
-  public void setStreetName(String streetName) {
-    this.streetName = streetName;
-  }
-
-  public String getHouseNumber() {
-    return houseNumber;
-  }
-
-  public void setHouseNumber(String houseNumber) {
-    this.houseNumber = houseNumber;
-  }
-
-
-  public String getPostalTown() {
-    return postalTown;
-  }
-
-  public void setPostalTown(String postalTown) {
-    this.postalTown = postalTown;
-  }
 
   public String getApplication() {
     return application;
@@ -200,11 +173,27 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     this.applicationVersion = applicationVersion;
   }
 
-  public String getHouseName() {
-    return houseName;
+  public PostalAddress getPostalAddress() {
+    return postalAddress;
   }
 
-  public void setHouseName(String houseName) {
-    this.houseName = houseName;
+  public void setPostalAddress(PostalAddress postalAddress) {
+    this.postalAddress = postalAddress;
+  }
+
+  public Coordinate getCoordinate() {
+    return coordinate;
+  }
+
+  public void setCoordinate(Coordinate coordinate) {
+    this.coordinate = coordinate;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }

@@ -188,7 +188,7 @@ function searchMap() {
     delayedSearchTimeout = null;
   }
 
-  var url = "/api/0.0.4/location_sample/search";
+  var url = "/api/0.0.5/location_sample/search";
 
   var searchRequest = searchRequestFactory();
   searchRequest.limit = 100;
@@ -234,69 +234,81 @@ function processSearchResultsMap(searchResponse) {
     var searchResult = searchResponse.searchResults[i];
 
     var text = "";
-    if (searchResult.streetName) {
-      text += searchResult.streetName;
-    }
 
-    if (searchResult.houseNumber
-        || searchResult.houseName) {
+    if (!searchResult.postalAddress) {
+      text = "/?\\";
 
-      if (searchResult.streetName) {
-        text += "&nbsp;";
+    } else {
+      if (searchResult.postalAddress.streetName) {
+        text += searchResult.postalAddress.streetName;
       }
 
+      if (searchResult.postalAddress.houseNumber
+          || searchResult.postalAddress.houseName) {
 
-      if (searchResult.houseNumber) {
-        text += searchResult.houseNumber;
-      }
-
-      if (searchResult.houseName) {
-        if (searchResult.houseNumber) {
-          text += ":";
-        }
-        text += searchResult.houseName;
-
-      }
-    }
-
-
-    if (searchResult.postalCode
-        || searchResult.postalTown) {
-
-      if (searchResult.streetName
-          || searchResult.houseNumber
-          || searchResult.houseName) {
-
-        text += "<br/>";
-      }
-
-      if (searchResult.postalCode) {
-        text += searchResult.postalCode;
-      }
-
-      if (searchResult.postalTown) {
-        if (searchResult.postalCode) {
+        if (searchResult.postalAddress.streetName) {
           text += "&nbsp;";
         }
-        text += searchResult.postalTown;
+
+
+        if (searchResult.postalAddress.houseNumber) {
+          text += searchResult.postalAddress.houseNumber;
+        }
+
+        if (searchResult.postalAddress.houseName) {
+          if (searchResult.postalAddress.houseNumber) {
+            text += ":";
+          }
+          text += searchResult.postalAddress.houseName;
+
+        }
+      }
+
+
+      if (searchResult.postalAddress.postalCode
+          || searchResult.postalAddress.postalTown) {
+
+        if (searchResult.postalAddress.streetName
+            || searchResult.postalAddress.houseNumber
+            || searchResult.postalAddress.houseName) {
+
+          text += "<br/>";
+        }
+
+        if (searchResult.postalAddress.postalCode) {
+          text += searchResult.postalAddress.postalCode;
+        }
+
+        if (searchResult.postalAddress.postalTown) {
+          if (searchResult.postalAddress.postalCode) {
+            text += "&nbsp;";
+          }
+          text += searchResult.postalAddress.postalTown;
+        }
       }
     }
 
     var className = 'locationSampleMarker accuracy-';
-    if (!searchResult.accuracy) {
-      className += "null"
-    } else if (searchResult.accuracy <= 10) {
-      className += "10";
-    } else if (searchResult.accuracy <= 20) {
-      className += "20";
-    } else if (searchResult.accuracy <= 30) {
-      className += "30";
-    } else if (searchResult.accuracy <= 40) {
-      className += "40";
-    } else {
-      className += "50";
-    }
 
+    if (!searchResult.coordinate) {
+      className += "null"
+    } else {
+
+      if (!searchResult.coordinate.accuracy) {
+        className += "null"
+      } else if (searchResult.coordinate.accuracy <= 10) {
+        className += "10";
+      } else if (searchResult.coordinate.accuracy <= 20) {
+        className += "20";
+      } else if (searchResult.coordinate.accuracy <= 30) {
+        className += "30";
+      } else if (searchResult.coordinate.accuracy <= 40) {
+        className += "40";
+      } else {
+        className += "50";
+      }
+
+    }
 
     var marker = L.marker(
         [searchResult.latitude, searchResult.longitude], {
@@ -320,7 +332,7 @@ function processSearchResultsMap(searchResponse) {
 
 function downloadOSMXML() {
 
-  var url = "/api/0.0.4/location_sample/search";
+  var url = "/api/0.0.5/location_sample/search";
 
   var searchRequest = searchRequestFactory();
   searchRequest.format = 'osm.xml';

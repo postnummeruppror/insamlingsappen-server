@@ -1,4 +1,4 @@
-package nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4;
+package nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -85,19 +84,24 @@ public class SearchLocationSampleServlet extends HttpServlet {
     documentation.append("\n");
     documentation.append("      \"identity\": LocationSample identity\n");
     documentation.append("\n");
-    documentation.append("      \"postalCode\": String value. E.g. '12345'\n");
-    documentation.append("      \"postalTown\": String value. E.g. 'Stockholm'\n");
-    documentation.append("      \"streetName\": String value. E.g. 'Drottningatan'\n");
-    documentation.append("      \"houseNumber\": String value. E.g '12'\n");
-    documentation.append("      \"houseName\": String value. E.g. 'A'\n");
+    documentation.append("      \"postalAddress\": { \n");
+    documentation.append("        \"postalCode\": String value. E.g. '12345'\n");
+    documentation.append("        \"postalTown\": String value. E.g. 'Stockholm'\n");
+    documentation.append("        \"streetName\": String value. E.g. 'Drottningatan'\n");
+    documentation.append("        \"houseNumber\": String value. E.g '12'\n");
+    documentation.append("        \"houseName\": String value. E.g. 'A'\n");
+    documentation.append("      }\n");
     documentation.append("\n");
     documentation.append("      \"name\": String value. Generic POI location name. e.g. 'A och B livsmedelsbutik'\n");
     documentation.append("\n");
-    documentation.append("      \"provider\": String value. Source of location, e.g. 'gps', 'network', 'human', etc.\n");
-    documentation.append("      \"accuracy\": Double value. Maximum error in meters.\n");
-    documentation.append("      \"latitude\": Double value. EPSG:3857\n");
-    documentation.append("      \"longitude\": Double value. EPSG:3857\n");
-    documentation.append("      \"altitude\": Double value. Meters altitude above sea.\"\n");
+    documentation.append("      \"coordinate\": {\n");
+    documentation.append("        \"provider\": String value. Source of location, e.g. 'gps', 'network', 'human', etc.\n");
+    documentation.append("        \"accuracy\": Double value. Maximum error in meters.\n");
+    documentation.append("        \"latitude\": Double value. EPSG:3857\n");
+    documentation.append("        \"longitude\": Double value. EPSG:3857\n");
+    documentation.append("        \"altitude\": Double value. Meters altitude above sea.\"\n");
+    documentation.append("      }\n");
+    documentation.append("\n");
     documentation.append("  } ]\n");
     documentation.append("\n");
     documentation.append("}\n");
@@ -209,11 +213,14 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
         if (locationSample.getPostalAddress() != null) {
 
-          searchResultJSON.put("postalCode", locationSample.getPostalAddress().getPostalCode());
-          searchResultJSON.put("postalTown", locationSample.getPostalAddress().getPostalTown());
-          searchResultJSON.put("streetName", locationSample.getPostalAddress().getStreetName());
-          searchResultJSON.put("houseNumber", locationSample.getPostalAddress().getHouseNumber());
-          searchResultJSON.put("houseName", locationSample.getPostalAddress().getHouseName());
+          JSONObject postalAddressJSON = new JSONObject();
+          searchResultJSON.put("postalAddress", postalAddressJSON);
+
+          postalAddressJSON.put("postalCode", locationSample.getPostalAddress().getPostalCode());
+          postalAddressJSON.put("postalTown", locationSample.getPostalAddress().getPostalTown());
+          postalAddressJSON.put("streetName", locationSample.getPostalAddress().getStreetName());
+          postalAddressJSON.put("houseNumber", locationSample.getPostalAddress().getHouseNumber());
+          postalAddressJSON.put("houseName", locationSample.getPostalAddress().getHouseName());
 
         }
 
@@ -221,10 +228,13 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
         if (locationSample.getCoordinate() != null) {
 
-          searchResultJSON.put("latitude", locationSample.getCoordinate().getLatitude());
-          searchResultJSON.put("longitude", locationSample.getCoordinate().getLongitude());
-          searchResultJSON.put("accuracy", locationSample.getCoordinate().getAccuracy());
-          searchResultJSON.put("altitude", locationSample.getCoordinate().getAltitude());
+          JSONObject coordinateJSON = new JSONObject();
+          searchResultJSON.put("coordinate", coordinateJSON);
+
+          coordinateJSON.put("latitude", locationSample.getCoordinate().getLatitude());
+          coordinateJSON.put("longitude", locationSample.getCoordinate().getLongitude());
+          coordinateJSON.put("accuracy", locationSample.getCoordinate().getAccuracy());
+          coordinateJSON.put("altitude", locationSample.getCoordinate().getAltitude());
 
         }
 
@@ -241,7 +251,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
     @Override
     public String getContentType() {
-      return "text/xml;charset=UTF-8";
+      return "text/xml;charset=" + getCharacterEncoding();
     }
 
     @Override
@@ -256,7 +266,10 @@ public class SearchLocationSampleServlet extends HttpServlet {
       try {
 
 
-        xml.write("<?xml version='1.0' encoding='UTF-8'?>\n");
+        xml.write("<?xml version='1.0' encoding='");
+        xml.write(getCharacterEncoding());
+        xml.write("'?>\n");
+
         xml.write("<osm version='");
         xml.write("0.6");
         xml.write("' upload='");

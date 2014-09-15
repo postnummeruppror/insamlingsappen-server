@@ -1,7 +1,9 @@
 package nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
+import nu.postnummeruppror.insamlingsappen.domain.Coordinate;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
+import nu.postnummeruppror.insamlingsappen.domain.PostalAddress;
 import nu.postnummeruppror.insamlingsappen.transactions.CreateLocationSample;
 import nu.postnummeruppror.insamlingsappen.transactions.IdentityFactory;
 import org.apache.commons.io.IOUtils;
@@ -89,34 +91,92 @@ public class CreateLocationSampleServlet extends HttpServlet {
       createLocationSample.setApplication(requestJSON.getString("application"));
       createLocationSample.setApplicationVersion(requestJSON.getString("applicationVersion"));
 
+      createLocationSample.setPostalAddress(new PostalAddress());
+
       if (requestJSON.has("postalCode")) {
-        createLocationSample.setPostalCode(requestJSON.getString("postalCode"));
+        String postalCode = requestJSON.getString("postalCode").trim();
+        if (!postalCode.isEmpty()) {
+          createLocationSample.getPostalAddress().setPostalCode(postalCode);
+        }
       }
 
       if (requestJSON.has("postalTown")) {
-        createLocationSample.setPostalTown(requestJSON.getString("postalTown"));
+        String postalTown = requestJSON.getString("postalTown").trim();
+        if (!postalTown.isEmpty()) {
+          createLocationSample.getPostalAddress().setPostalTown(postalTown);
+        }
       }
 
       if (requestJSON.has("streetName")) {
-        createLocationSample.setStreetName(requestJSON.getString("streetName"));
+        String streetName = requestJSON.getString("streetName").trim();
+        if (!streetName.isEmpty()) {
+          createLocationSample.getPostalAddress().setStreetName(streetName);
+        }
       }
 
       if (requestJSON.has("houseNumber")) {
-        createLocationSample.setHouseNumber(requestJSON.getString("houseNumber"));
+        String houseNumber = requestJSON.getString("houseNumber");
+        if (!houseNumber.isEmpty()) {
+          createLocationSample.getPostalAddress().setHouseNumber(houseNumber);
+        }
       }
 
       if (requestJSON.has("houseName")) {
-        createLocationSample.setHouseName(requestJSON.getString("houseName"));
+        String houseName = requestJSON.getString("houseName").trim();
+        if (!houseName.isEmpty()) {
+          createLocationSample.getPostalAddress().setHouseName(houseName);
+        }
       }
 
-      createLocationSample.setProvider(requestJSON.getString("provider"));
-      createLocationSample.setLatitude(requestJSON.getDouble("latitude"));
-      createLocationSample.setLongitude(requestJSON.getDouble("longitude"));
+
+      if (createLocationSample.getPostalAddress().getStreetName() == null
+          && createLocationSample.getPostalAddress().getHouseNumber() == null
+          && createLocationSample.getPostalAddress().getHouseName() == null
+          && createLocationSample.getPostalAddress().getPostalCode() == null
+          && createLocationSample.getPostalAddress().getPostalTown() == null) {
+        createLocationSample.setPostalAddress(null);
+      }
+
+
+      if (requestJSON.has("name")) {
+        String name = requestJSON.getString("name").trim();
+        if (!name.isEmpty()) {
+          createLocationSample.setName(name);
+        }
+      }
+
+
+      createLocationSample.setCoordinate(new Coordinate());
+
+      if (requestJSON.has("provider")) {
+        String provider = requestJSON.getString("provider").trim();
+        if (!provider.isEmpty()) {
+          createLocationSample.getCoordinate().setProvider(provider);
+        }
+      }
+
+      if (requestJSON.has("latitude")) {
+        createLocationSample.getCoordinate().setLatitude(requestJSON.getDouble("latitude"));
+      }
+
+      if (requestJSON.has("longitude")){
+        createLocationSample.getCoordinate().setLongitude(requestJSON.getDouble("longitude"));
+      }
+
+
       if (requestJSON.has("accuracy")) {
-        createLocationSample.setAccuracy(requestJSON.getDouble("accuracy"));
+        createLocationSample.getCoordinate().setAccuracy(requestJSON.getDouble("accuracy"));
       }
       if (requestJSON.has("altitude")) {
-        createLocationSample.setAltitude(requestJSON.getDouble("altitude"));
+        createLocationSample.getCoordinate().setAltitude(requestJSON.getDouble("altitude"));
+      }
+
+      if (createLocationSample.getCoordinate().getProvider() == null
+          && createLocationSample.getCoordinate().getLatitude() == null
+          && createLocationSample.getCoordinate().getLongitude() == null
+          && createLocationSample.getCoordinate().getAccuracy() == null
+          && createLocationSample.getCoordinate().getAltitude() == null) {
+        createLocationSample.setCoordinate(null);
       }
 
       LocationSample locationSample = Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);

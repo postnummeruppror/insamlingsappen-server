@@ -23,26 +23,15 @@ public class LocationSample implements Serializable {
   /** 0.0.1 or what not */
   private String applicationVersion;
 
-  /**
-   * gps, network, wifi, human, etc.
-   */
-  private String provider;
-
   private long timestamp;
 
-  private double latitude;
-  private double longitude;
+  private Coordinate coordinate;
 
-  private Double accuracy;
-  private Double altitude;
 
-  private String postalCode;
-  private String streetName;
-  private String houseNumber;
-  private String houseName;
-  private String postalTown;
+  /** Generic POI name. 'A och B livsmedelsbutik */
+  private String name;
 
-  private List<LocationSampleUpdate> updates;
+  private PostalAddress postalAddress;
 
 
   @Override
@@ -53,30 +42,14 @@ public class LocationSample implements Serializable {
     sb.append(", account.identity='").append(account.getIdentity()).append('\'');
     sb.append(", application='").append(application).append('\'');
     sb.append(", applicationVersion='").append(applicationVersion).append('\'');
-    sb.append(", provider='").append(provider).append('\'');
     sb.append(", timestamp=").append(timestamp);
-    sb.append(", latitude=").append(latitude);
-    sb.append(", longitude=").append(longitude);
-    sb.append(", accuracy=").append(accuracy);
-    sb.append(", altitude=").append(altitude);
-    sb.append(", postalCode='").append(postalCode).append('\'');
-    sb.append(", streetName='").append(streetName).append('\'');
-    sb.append(", houseNumber='").append(houseNumber).append('\'');
-    sb.append(", houseName='").append(houseName).append('\'');
-    sb.append(", postalTown='").append(postalTown).append('\'');
-    sb.append(", postalTown='").append(postalTown).append('\'');
-    sb.append(", updates=").append(updates);
+    sb.append(", coordinate=").append(coordinate);
+    sb.append(", name='").append(name).append('\'');
+    sb.append(", postalAddress=").append(postalAddress);
     sb.append('}');
     return sb.toString();
   }
 
-  public String getPostalCode() {
-    return postalCode;
-  }
-
-  public void setPostalCode(String postalCode) {
-    this.postalCode = postalCode;
-  }
 
   public Long getIdentity() {
     return identity;
@@ -86,36 +59,12 @@ public class LocationSample implements Serializable {
     this.identity = identity;
   }
 
-  public String getProvider() {
-    return provider;
-  }
-
-  public void setProvider(String provider) {
-    this.provider = provider;
-  }
-
   public long getTimestamp() {
     return timestamp;
   }
 
   public void setTimestamp(long timestamp) {
     this.timestamp = timestamp;
-  }
-
-  public double getLatitude() {
-    return latitude;
-  }
-
-  public void setLatitude(double latitude) {
-    this.latitude = latitude;
-  }
-
-  public double getLongitude() {
-    return longitude;
-  }
-
-  public void setLongitude(double longitude) {
-    this.longitude = longitude;
   }
 
 
@@ -127,45 +76,6 @@ public class LocationSample implements Serializable {
     this.account = account;
   }
 
-  public String getStreetName() {
-    return streetName;
-  }
-
-  public void setStreetName(String streetName) {
-    this.streetName = streetName;
-  }
-
-  public String getHouseNumber() {
-    return houseNumber;
-  }
-
-  public void setHouseNumber(String houseNumber) {
-    this.houseNumber = houseNumber;
-  }
-
-  public Double getAccuracy() {
-    return accuracy;
-  }
-
-  public void setAccuracy(Double accuracy) {
-    this.accuracy = accuracy;
-  }
-
-  public Double getAltitude() {
-    return altitude;
-  }
-
-  public void setAltitude(Double altitude) {
-    this.altitude = altitude;
-  }
-
-  public String getPostalTown() {
-    return postalTown;
-  }
-
-  public void setPostalTown(String postalTown) {
-    this.postalTown = postalTown;
-  }
 
   public String getApplication() {
     return application;
@@ -183,19 +93,27 @@ public class LocationSample implements Serializable {
     this.applicationVersion = applicationVersion;
   }
 
-  public String getHouseName() {
-    return houseName;
+  public String getName() {
+    return name;
   }
 
-  public void setHouseName(String houseName) {
-    this.houseName = houseName;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public List<LocationSampleUpdate> getUpdates() {
-    return updates;
+  public Coordinate getCoordinate() {
+    return coordinate;
   }
 
-  public void setUpdates(List<LocationSampleUpdate> updates) {
-    this.updates = updates;
+  public void setCoordinate(Coordinate coordinate) {
+    this.coordinate = coordinate;
+  }
+
+  public PostalAddress getPostalAddress() {
+    return postalAddress;
+  }
+
+  public void setPostalAddress(PostalAddress postalAddress) {
+    this.postalAddress = postalAddress;
   }
 }

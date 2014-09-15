@@ -28,6 +28,7 @@ public class Root implements Serializable {
   private Intern<String> houseNameIntern = new Intern<>();
   private Intern<String> postalCodeIntern = new Intern<>();
   private Intern<String> postalTownIntern = new Intern<>();
+  private Intern<String> nameIntern = new Intern<>();
 
   public Map<String, Account> getAccounts() {
     return accounts;
@@ -123,5 +124,13 @@ public class Root implements Serializable {
 
   public void setComments(Map<Long, Comment> comments) {
     this.comments = comments;
+  }
+
+  public Intern<String> getNameIntern() {
+    return nameIntern;
+  }
+
+  public void setNameIntern(Intern<String> nameIntern) {
+    this.nameIntern = nameIntern;
   }
 }

@@ -140,10 +140,14 @@ public class LocationSampleIndex {
     addField(document, LocationSampleIndexFields.timestamp, locationSample.getTimestamp(), null);
 
 
-    addField(document, LocationSampleIndexFields.latitude, locationSample.getLatitude(), null);
-    addField(document, LocationSampleIndexFields.longitude, locationSample.getLongitude(), null);
+    if (locationSample.getCoordinate() != null) {
+      addField(document, LocationSampleIndexFields.latitude, locationSample.getCoordinate().getLatitude(), null);
+      addField(document, LocationSampleIndexFields.longitude, locationSample.getCoordinate().getLongitude(), null);
+    }
 
-    addField(document, LocationSampleIndexFields.postalCode, locationSample.getPostalCode());
+    if (locationSample.getPostalAddress() != null) {
+      addField(document, LocationSampleIndexFields.postalCode, locationSample.getPostalAddress().getPostalCode());
+    }
 
     return document;
   }
