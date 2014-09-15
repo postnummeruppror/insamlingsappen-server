@@ -308,21 +308,22 @@ function processSearchResultsMap(searchResponse) {
         className += "50";
       }
 
+      var marker = L.marker(
+          [searchResult.coordinate.latitude, searchResult.coordinate.longitude], {
+            icon: L.divIcon({
+              className: className,
+              html: text
+            })
+          });
+
+      locationSamplesMarkersLayer.addLayer(marker);
+      var circle = L.circle(
+          [searchResult.latitude, searchResult.longitude], searchResult.accuracy
+      );
+      locationSamplesMarkersLayer.addLayer(circle);
+
     }
 
-    var marker = L.marker(
-        [searchResult.latitude, searchResult.longitude], {
-          icon: L.divIcon({
-            className: className,
-            html: text
-          })
-        });
-
-    locationSamplesMarkersLayer.addLayer(marker);
-    var circle = L.circle(
-        [searchResult.latitude, searchResult.longitude], searchResult.accuracy
-    );
-    locationSamplesMarkersLayer.addLayer(circle);
 
   }
 
