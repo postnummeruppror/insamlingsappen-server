@@ -69,7 +69,7 @@
 
   <servlet>
     <servlet-name>0.0.5/SetAccount</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.SetAccountServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.SetAccountServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -79,7 +79,7 @@
 
   <servlet>
     <servlet-name>0.0.5/AccountExists</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.AccountExistsServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.AccountExistsServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -89,7 +89,7 @@
 
   <servlet>
     <servlet-name>0.0.5/CreateLocationSample</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.CreateLocationSampleServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.CreateLocationSampleServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -99,7 +99,7 @@
 
   <servlet>
     <servlet-name>0.0.5/SearchLocationSample</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.SearchLocationSampleServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.SearchLocationSampleServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -109,7 +109,7 @@
 
   <servlet>
     <servlet-name>0.0.5/ServerStatistics</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.ServerStatisticsServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.ServerStatisticsServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
