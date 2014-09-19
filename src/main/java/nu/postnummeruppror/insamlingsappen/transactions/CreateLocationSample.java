@@ -27,6 +27,8 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
   private PostalAddress postalAddress;
   private Coordinate coordinate;
 
+  private String ipAddress;
+  private String ipAddressHost;
 
   @Override
   public LocationSample executeAndQuery(Root root, Date executionTime) throws Exception {
@@ -47,6 +49,9 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
     locationSample.setApplication(root.getApplicationIntern().intern(application));
     locationSample.setApplicationVersion(root.getApplicationVersionIntern().intern(applicationVersion));
+
+    locationSample.setIpAddress(ipAddress);
+    locationSample.setIpAddressHost(ipAddressHost);
 
     if (postalAddress != null) {
 
@@ -195,5 +200,21 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getIpAddress() {
+    return ipAddress;
+  }
+
+  public void setIpAddress(String ipAddress) {
+    this.ipAddress = ipAddress;
+  }
+
+  public String getIpAddressHost() {
+    return ipAddressHost;
+  }
+
+  public void setIpAddressHost(String ipAddressHost) {
+    this.ipAddressHost = ipAddressHost;
   }
 }

@@ -27,6 +27,8 @@ public class LocationSample implements Serializable {
 
   private Coordinate coordinate;
 
+  private String ipAddress;
+  private String ipAddressHost;
 
   /** Generic POI name. 'A och B livsmedelsbutik */
   private String name;
@@ -43,6 +45,8 @@ public class LocationSample implements Serializable {
     sb.append(", application='").append(application).append('\'');
     sb.append(", applicationVersion='").append(applicationVersion).append('\'');
     sb.append(", timestamp=").append(timestamp);
+    sb.append(", ipAddress='").append(ipAddress).append('\'');
+    sb.append(", ipAddressHost='").append(ipAddressHost).append('\'');
     sb.append(", coordinate=").append(coordinate);
     sb.append(", name='").append(name).append('\'');
     sb.append(", postalAddress=").append(postalAddress);
@@ -50,6 +54,13 @@ public class LocationSample implements Serializable {
     return sb.toString();
   }
 
+  public String getIpAddress() {
+    return ipAddress;
+  }
+
+  public void setIpAddress(String ipAddress) {
+    this.ipAddress = ipAddress;
+  }
 
   public Long getIdentity() {
     return identity;
@@ -115,5 +126,13 @@ public class LocationSample implements Serializable {
 
   public void setPostalAddress(PostalAddress postalAddress) {
     this.postalAddress = postalAddress;
+  }
+
+  public String getIpAddressHost() {
+    return ipAddressHost;
+  }
+
+  public void setIpAddressHost(String ipAddressHost) {
+    this.ipAddressHost = ipAddressHost;
   }
 }

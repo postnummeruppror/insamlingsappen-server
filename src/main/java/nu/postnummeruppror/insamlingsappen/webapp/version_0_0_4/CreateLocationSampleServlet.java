@@ -179,6 +179,9 @@ public class CreateLocationSampleServlet extends HttpServlet {
         createLocationSample.setCoordinate(null);
       }
 
+      createLocationSample.setIpAddress(request.getRemoteAddr());
+      createLocationSample.setIpAddressHost(request.getRemoteHost());
+
       LocationSample locationSample = Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
 
       log.info("Created location sample " + requestJSON.toString());
