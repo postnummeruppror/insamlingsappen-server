@@ -6,6 +6,7 @@ import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.domain.PostalAddress;
 import nu.postnummeruppror.insamlingsappen.transactions.CreateLocationSample;
 import nu.postnummeruppror.insamlingsappen.transactions.IdentityFactory;
+import nu.postnummeruppror.util.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -170,18 +171,18 @@ public class CreateLocationSampleServlet extends HttpServlet {
         }
 
         if (coordinateJSON.has("latitude")) {
-          createLocationSample.getCoordinate().setLatitude(coordinateJSON.getDouble("latitude"));
+          createLocationSample.getCoordinate().setLatitude(JSONParser.getDouble(coordinateJSON, "latitude"));
         }
 
         if (coordinateJSON.has("longitude")) {
-          createLocationSample.getCoordinate().setLongitude(coordinateJSON.getDouble("longitude"));
+          createLocationSample.getCoordinate().setLongitude(JSONParser.getDouble(coordinateJSON, "longitude"));
         }
 
         if (coordinateJSON.has("accuracy")) {
-          createLocationSample.getCoordinate().setAccuracy(coordinateJSON.getDouble("accuracy"));
+          createLocationSample.getCoordinate().setAccuracy(JSONParser.getDouble(coordinateJSON, "accuracy"));
         }
         if (coordinateJSON.has("altitude")) {
-          createLocationSample.getCoordinate().setAltitude(coordinateJSON.getDouble("altitude"));
+          createLocationSample.getCoordinate().setAltitude(JSONParser.getDouble(coordinateJSON, "altitude"));
         }
 
         if (createLocationSample.getCoordinate().getProvider() == null
@@ -193,6 +194,10 @@ public class CreateLocationSampleServlet extends HttpServlet {
         }
 
       }
+
+      createLocationSample.setIpAddress(request.getRemoteAddr());
+      createLocationSample.setIpAddressHost(request.getRemoteHost());
+
 
       LocationSample locationSample = Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
 

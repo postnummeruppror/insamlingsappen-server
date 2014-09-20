@@ -6,6 +6,7 @@ import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.domain.PostalAddress;
 import nu.postnummeruppror.insamlingsappen.transactions.CreateLocationSample;
 import nu.postnummeruppror.insamlingsappen.transactions.IdentityFactory;
+import nu.postnummeruppror.util.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -156,19 +157,19 @@ public class CreateLocationSampleServlet extends HttpServlet {
       }
 
       if (requestJSON.has("latitude")) {
-        createLocationSample.getCoordinate().setLatitude(requestJSON.getDouble("latitude"));
+        createLocationSample.getCoordinate().setLatitude(JSONParser.getDouble(requestJSON, "latitude"));
       }
 
       if (requestJSON.has("longitude")){
-        createLocationSample.getCoordinate().setLongitude(requestJSON.getDouble("longitude"));
+        createLocationSample.getCoordinate().setLongitude(JSONParser.getDouble(requestJSON, "longitude"));
       }
 
 
       if (requestJSON.has("accuracy")) {
-        createLocationSample.getCoordinate().setAccuracy(requestJSON.getDouble("accuracy"));
+        createLocationSample.getCoordinate().setAccuracy(JSONParser.getDouble(requestJSON, "accuracy"));
       }
       if (requestJSON.has("altitude")) {
-        createLocationSample.getCoordinate().setAltitude(requestJSON.getDouble("altitude"));
+        createLocationSample.getCoordinate().setAltitude(JSONParser.getDouble(requestJSON, "altitude"));
       }
 
       if (createLocationSample.getCoordinate().getProvider() == null
