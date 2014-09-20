@@ -301,6 +301,18 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
           xml.write(" >\n");
 
+          xml.write("\t\t<tag k='");
+          xml.write("source");
+          xml.write("' v='");
+          xml.write("postnummeruppror.nu");
+          xml.write("' />\n");
+
+          xml.write("\t\t<tag k='");
+          xml.write("postnummeruppror.nu:location_sample:id");
+          xml.write("' v='");
+          xml.write(String.valueOf(locationSample.getIdentity()));
+          xml.write("' />\n");
+
           if (locationSample.getPostalAddress() != null) {
 
             if (locationSample.getPostalAddress().getStreetName() != null) {
