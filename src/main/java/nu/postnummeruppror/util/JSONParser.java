@@ -15,6 +15,11 @@ public class JSONParser {
       return null;
     }
     Object object = jsonObject.get(key);
+
+    if (object == null) {
+      return null;
+    }
+
     if (object instanceof Number) {
       return ((Number)object).doubleValue();
     } else {
@@ -32,6 +37,11 @@ public class JSONParser {
       return null;
     }
     Object object = jsonObject.get(key);
+
+    if (object == null) {
+      return null;
+    }
+
     if (object instanceof Number) {
       return ((Number)object).floatValue();
     } else {
