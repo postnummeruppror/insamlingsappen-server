@@ -19,14 +19,13 @@
   <!--<meta http-equiv="pragma" content="no-cache">-->
   <meta http-equiv="content-language" content="sv">
 
-  <script src="../lib/leaflet/leaflet-src.js" type="text/javascript"></script>
-  <script src="../lib/FileSaver.js" type="text/javascript"></script>
+  <script src="../../lib/leaflet/leaflet-src.js" type="text/javascript"></script>
 
-  <script src="../lib/randomseed.js" type="text/javascript"></script>
+  <script src="../../lib/randomseed.js" type="text/javascript"></script>
 
-  <link rel="stylesheet" href="../lib/leaflet/leaflet.css" type="text/css"/>
+  <link rel="stylesheet" href="../../lib/leaflet/leaflet.css" type="text/css"/>
   <!--[if lte IE 8]>
-  <link rel="stylesheet" href="../lib/leaflet/leaflet.ie.css"/>
+  <link rel="stylesheet" href="../../lib/leaflet/leaflet.ie.css"/>
   <![endif]-->
 
   <style type="text/css">
@@ -128,7 +127,7 @@
 
   map.setView(new L.LatLng(62.915233039476135, 15.8203125), 5);
 
-  var geojson = {"type":"FeatureCollection","features":[]};
+  var geojson = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"class":"211"},"geometry":{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[7.933747759999999,50.54016964],[7.933747759999999,54.82656243328712],[7.933747759999999,64.40975082],[8.11512953767036,64.40975082],[12.997285901949438,55.802185220446205],[13.008642287825754,55.63702373471395],[13.009704558552807,55.60669463075044],[13.011185572168662,55.586198991058495],[12.832528972203626,50.54016964],[7.933747759999999,50.54016964]]]}]}},{"type":"Feature","properties":{"class":"212"},"geometry":{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[13.008642287825754,55.63702373471395],[12.997285901949438,55.802185220446205],[13.092942235595137,55.65846902117769],[13.18998680237856,55.521001898722034],[16.040992398980244,50.54016964],[14.43057638326058,50.54016964],[12.832528972203626,50.54016964],[13.011185572168662,55.586198991058495],[13.009704558552807,55.60669463075044],[13.008642287825754,55.63702373471395]]]}]}},{"type":"Feature","properties":{"class":"223"},"geometry":{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[13.187138771947179,55.60511648289256],[13.003743491170047,61.018869431096945],[13.807466913865948,59.94741350914722],[17.289155421790795,55.30592533909744],[20.85761839776475,50.54016964],[16.040992398980244,50.54016964],[13.18998680237856,55.521001898722034],[13.187138771947179,55.60511648289256]]]}]}},{"type":"Feature","properties":{"class":"113"},"geometry":{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[10.477292981446586,64.40975082],[14.005753422796781,64.40975082],[23.12279072,64.40975082],[23.12279072,63.23793059821159],[23.12279072,58.79115010197977],[23.12279072,50.54016964],[20.85761839776475,50.54016964],[17.289155421790795,55.30592533909744],[13.807466913865948,59.94741350914722],[13.003743491170047,61.018869431096945],[10.477292981446586,64.40975082]]]}]}},{"type":"Feature","properties":{"class":"227"},"geometry":{"type":"GeometryCollection","geometries":[{"type":"Polygon","coordinates":[[[8.11512953767036,64.40975082],[10.477292981446586,64.40975082],[13.003743491170047,61.018869431096945],[13.187138771947179,55.60511648289256],[13.18998680237856,55.521001898722034],[13.092942235595137,55.65846902117769],[12.997285901949438,55.802185220446205],[8.11512953767036,64.40975082]]]}]}}]};
 
   L.geoJson(geojson, {
 
