@@ -13,5 +13,6 @@
   </root>
 
   <logger name="nu.postnummeruppror" level="DEBUG" />
+  <logger name="se.kodapan.osm.jts.voronoi" level="DEBUG" />
 
 </configuration>

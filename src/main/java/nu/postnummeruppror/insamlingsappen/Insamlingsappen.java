@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author kalle
+ * @author kalle@kodapan.se
  * @since 2014-09-06 00:42
  */
 public class Insamlingsappen {

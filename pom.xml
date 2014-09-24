@@ -20,6 +20,12 @@
   <dependencies>
 
     <dependency>
+      <groupId>se.kodapan.osm.common</groupId>
+      <artifactId>jts</artifactId>
+      <version>0.0.3-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
       <version>2.6</version>
@@ -106,5 +112,12 @@
 
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>maven.kodapan.se</id>
+      <url>http://maven.kodapan.se/maven2/</url>
+    </repository>
+  </repositories>
 
 </project>
