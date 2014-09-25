@@ -201,7 +201,7 @@ public class CreateLocationSampleServlet extends HttpServlet {
 
       LocationSample locationSample = Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
 
-      log.info("Created location sample " + requestJSON.toString());
+      log.info("Created location sample " + locationSample.toString());
 
       JSONObject responseJSON = new JSONObject();
 
