@@ -104,7 +104,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
           && postalAddress.getHouseNumber() == null
           && postalAddress.getHouseName() == null
           && postalAddress.getPostalCode() == null
-          && postalAddress.getPostalCode() == null) {
+          && postalAddress.getPostalTown() == null) {
 
         // All fields are null! todo is this an exception?
 
