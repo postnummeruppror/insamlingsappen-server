@@ -117,4 +117,16 @@
     <url-pattern>/api/0.0.5/statistics/server</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>0.0.5/PostalTownVoronoi</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.PostalTownVoronoiServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.5/PostalTownVoronoi</servlet-name>
+    <url-pattern>/api/0.0.5/postal_town/voronoi</url-pattern>
+  </servlet-mapping>
+
+
+
 </web-app>
