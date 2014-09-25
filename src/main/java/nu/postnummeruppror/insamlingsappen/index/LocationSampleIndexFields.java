@@ -15,5 +15,6 @@ public class LocationSampleIndexFields {
   public static final String longitude = "longitude";
 
   public static final String postalCode = "postalCode";
+  public static final String postalTown = "postalTown";
 
 }
