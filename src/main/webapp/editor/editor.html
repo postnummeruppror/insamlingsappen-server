@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+
+<html>
+<head>
+
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+  <meta charset="utf-8">
+
+  <!--<meta http-equiv="cache-control" content="no-cache">-->
+  <!--<meta http-equiv="pragma" content="no-cache">-->
+  <meta http-equiv="content-language" content="sv">
+
+  <script src="lib/leaflet/leaflet-src.js" type="text/javascript"></script>
+  <script src="lib/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="lib/jquery.cookie.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css" type="text/css"/>
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="lib/leaflet/leaflet.ie.css"/>
+  <![endif]-->
+
+  <style type="text/css">
+    html, body, div, span, textarea, button, input, table, tr, td {
+      font-family: arial, helvetica, sans-serif;
+      font-size: 13px
+    }
+
+    html, body {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+    }
+
+    #map div.locationSampleMarker {
+      font-family: 'Roboto', helvetica, sans-serif;
+      color: #000000;
+      font-size: .8rem;
+      font-weight: 500;
+      /*line-height: 0.3rem;*/
+      /*height: 1.4rem;*/
+      /*min-width: 1.4rem;*/
+      /*width: auto;*/
+      text-align: center;
+      padding: .4rem .4rem;
+      border: 1px solid #000000;
+      white-space: nowrap;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      -webkit-transform: translateZ(0);
+      -moz-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      -moz-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-transition: 300ms ease;
+      -moz-transition: 300ms ease;
+      transition: 300ms ease;
+    }
+
+    #map div.accuracy-null {
+      background: #aaaaaa;
+    }
+
+    #map div.accuracy-10 {
+      background: #7cff33;
+    }
+
+    #map div.accuracy-20 {
+      background: #d8ff33;
+    }
+
+    #map div.accuracy-30 {
+      background: #ffe933;
+    }
+
+    #map div.accuracy-40 {
+      background: #ff9c33;
+    }
+
+    #map div.accuracy-50 {
+      background: #ff5233;
+    }
+
+  </style>
+
+
+</head>
+<body onload="start();">
+<div id="map" role="main" style="width: 100%; height:100%"></div>
+
+<div
+    id="create_account_div"
+    style="z-index:1000; display: none; background-color: #ffffff; padding: 10px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)"
+  >
+  <table>
+    <tr>
+      <td><label for="firstName">Förnamn</label></td>
+      <td><input id="firstName" type="text"/></td>
+    </tr>
+    <tr>
+      <td><label for="lastName">Efternamn</label></td>
+      <td><input id="lastName" type="text"/></td>
+    </tr>
+    <tr>
+      <td><label for="emailAddress">Epost</label></td>
+      <td><input type="text" id="emailAddress"/></td>
+    </tr>
+    <tr>
+      <td colspan="2"><label for="acceptingCcZero">Godkänner CC0 1.0 Universal</label><input id="acceptingCcZero" type="checkbox"/></td>
+    </tr>
+  </table>
+  <button onclick="registerAccount();">Registrera</button>
+  </div>
+
+<div
+    id="geolocation"
+    style="display: block; background-color: #ffffff; padding: 10px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)"
+    >
+  Var god dröj medan vi letar upp din nuvarande position...
+</div>
+
+<div
+    id="location_sample_form"
+    style="display: none; background-color: #ffffff; padding: 10px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)"
+    >
+  <table>
+    <tr>
+      <td><label for="postalTown">Postort</label></td>
+      <td><input id="postalTown"/></td>
+    </tr>
+    <tr>
+      <td><label for="postalCode">Postnummer</label></td>
+      <td><input id="postalCode"/></td>
+    </tr>
+    <tr>
+      <td><label for="streetName">Gata</label></td>
+      <td><input id="streetName"/></td>
+    </tr>
+    <tr>
+      <td><label for="houseNumber">Husnummer</label></td>
+      <td><input id="houseNumber"/></td>
+    </tr>
+    <tr>
+      <td><label for="houseName">Uppgång</label></td>
+      <td><input id="houseName"/></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <hr/>
+      </td>
+    </tr>
+    <tr>
+      <td><label for="latitude">Latitud</label></td>
+      <td><span id="latitude"></span></td>
+    </tr>
+    <tr>
+      <td><label for="longitude">Longitud</label></td>
+      <td><span id="longitude"></span></td>
+    </tr>
+  </table>
+  <table style="width: 100%;">
+    <tr>
+      <td style="float:left;"><button onclick="report();">Rapportera punkt</button></td>
+      <td style="float: right;"><button onclick="cancel();">Avbryt</button></td>
+    </tr>
+  </table>
+
+
+</div>
+
+<script type="text/javascript">
+
+  var accountIdentity;
+
+  var geolocation_div = document.getElementById("geolocation");
+
+  var locationSampleForm = document.getElementById("location_sample_form");
+
+  var postalTown_input = document.getElementById("postalTown");
+  var postalCode_input = document.getElementById("postalCode");
+  var streetName_input = document.getElementById("streetName");
+  var houseNumber_input = document.getElementById("houseNumber");
+  var houseName_input = document.getElementById("houseName");
+
+  var latitude_span = document.getElementById("latitude");
+  var longitude_span = document.getElementById("longitude");
+
+  var ek = new L.TileLayer('http://mapproxy.openstreetmap.se/tms/1.0.0/ek_EPSG3857/{z}/{x}/{y}.png', {
+    subdomains: "abc",
+    attribution: 'Kartbilder via <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a>',
+    tms: true,
+    minZoom: 13,
+    maxZoom: 18
+  });
+
+
+  var full = new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+    subdomains: "abc",
+    attribution: 'Kartbilder och kartdata från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a>',
+    maxZoom: 18
+  });
+
+  var reportedMarkers = new L.LayerGroup();
+
+  var marker = null;
+
+  var map = new L.Map('map');
+
+  map.doubleClickZoom.disable();
+
+
+  map.addLayer(ek);
+  map.addLayer(reportedMarkers);
+
+
+  map.setView(new L.LatLng(62.915233039476135, 15.8203125), 5);
+
+
+  var locationSamples = [];
+
+  map.on('dblclick', function (mouseEvent) {
+
+    if (marker) {
+      // we already created a marker. user need to cancel!
+      return;
+    }
+
+    marker = new L.Marker(mouseEvent.latlng, {
+      draggable: true
+    });
+
+    function updateMarkerLatLng(latlng) {
+
+      latitude_span.innerHTML = latlng.lat;
+      longitude_span.innerHTML = latlng.lng;
+    }
+
+    updateMarkerLatLng(mouseEvent.latlng);
+
+    marker.on('drag', function (event) {
+      updateMarkerLatLng(event.target.getLatLng());
+    });
+
+    marker.addTo(map);
+
+
+    locationSampleForm.style.display = "block";
+
+  });
+
+
+  function clear() {
+    locationSampleForm.style.display = "none";
+    map.removeLayer(marker);
+    marker = null;
+    postalTown_input.value = "";
+    postalCode_input.value = "";
+    streetName_input.value = "";
+    houseNumber_input.value = "";
+    houseName_input.value = "";
+  }
+
+  function report() {
+
+    var locationSample = {
+
+      accountIdentity: "",
+      application: "insamplingsappen map input",
+      applicationVersion: "0.0.1",
+
+      postalAddress: {
+
+        postalTown: postalTown_input.value,
+        postalCode: postalCode_input.value,
+        streetName: streetName_input.value,
+        houseNumber: houseNumber_input.value,
+        houseName: houseName_input.value
+
+      },
+
+      coordinate: {
+        latitude: marker.getLatLng().lat,
+        longitude: marker.getLatLng().lng,
+        provider: "human",
+        accuracy: 100
+//        altitude: null
+      }
+
+    };
+
+    var jsonRequest = JSON.stringify(locationSample);
+
+    var posting = $.post("/api/0.0.5/location_sample/create", jsonRequest);
+    posting.done(function (data) {
+      alert("Tack för din rapport!");
+      new L.CircleMarker(marker.getLatLng(), {
+        color: "#009900",
+        opacity: 1,
+        fillOpacity: 1,
+        radius: 5
+      }).addTo(map);
+      clear();
+    });
+
+  }
+
+  function cancel() {
+    clear();
+  }
+
+  function registerAccount() {
+
+
+
+    var account = {
+      identity: guid(),
+      firstName: document.getElementById('firstName').value,
+      lastName: document.getElementById('firstName').value,
+      acceptingCcZero: document.getElementById('acceptingCcZero').checked,
+      emailAddress: document.getElementById('emailAddress').value
+    };
+
+    var accountJSON = JSON.stringify(account);
+
+    var posting = $.post("http://"+serverAddress+"/api/0.0.5/account/set", accountJSON);
+    posting.done(function (data) {
+      accountIdentity = account.identity;
+      $.cookie('insamlingsapp-uuid', accountIdentity, { expires: 999, path: '/' });
+      alert("Du är nu registreread!");
+      document.getElementById('create_account_div').display="none";
+    });
+
+
+  }
+
+  function start() {
+
+    map.on('locationfound', function(){
+      geolocation_div.style.display = "none";
+    });
+    map.on('locationerror', function() {
+      geolocation_div.style.display = "none";
+    });
+
+    geolocation_div.style.display = "block";
+
+    map.locate({setView: true, maxZoom: 13});
+
+
+    if($.cookie('insamlingsapp-uuid') === undefined) {
+      document.getElementById('create_account_div').display="block";
+    } else {
+      accountIdentity = $.cookie('insamlingsapp-uuid')
+    }
+
+
+  }
+
+  var guid = (function () {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+    }
+
+    return function () {
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+          s4() + '-' + s4() + s4() + s4();
+    };
+  })();
+
+
+</script>
+
+
+</body>
+
+</html>
