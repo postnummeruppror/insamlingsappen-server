@@ -207,17 +207,15 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
         searchResultJSON.put("identity", locationSample.getIdentity());
 
-        if (locationSample.getPostalAddress() != null) {
 
-          searchResultJSON.put("postalCode", locationSample.getPostalAddress().getPostalCode());
-          searchResultJSON.put("postalTown", locationSample.getPostalAddress().getPostalTown());
-          searchResultJSON.put("streetName", locationSample.getPostalAddress().getStreetName());
-          searchResultJSON.put("houseNumber", locationSample.getPostalAddress().getHouseNumber());
-          searchResultJSON.put("houseName", locationSample.getPostalAddress().getHouseName());
+          searchResultJSON.put("postalCode", locationSample.getTag("addr:postcode"));
+          searchResultJSON.put("postalTown", locationSample.getTag("addr:city"));
+          searchResultJSON.put("streetName", locationSample.getTag("addr:street"));
+          searchResultJSON.put("houseNumber", locationSample.getTag("addr:housenumber"));
+          searchResultJSON.put("houseName", locationSample.getTag("addr:housename"));
 
-        }
 
-        searchResultJSON.put("name", locationSample.getName());
+        searchResultJSON.put("name", locationSample.getTag("name"));
 
         if (locationSample.getCoordinate() != null) {
 
@@ -288,57 +286,14 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
           xml.write(" >\n");
 
-          if (locationSample.getPostalAddress() != null) {
-
-            if (locationSample.getPostalAddress().getStreetName() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:street");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getStreetName()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getHouseNumber() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:housenumber");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getHouseNumber()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getHouseName() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:housename");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getHouseName()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getPostalCode() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:postcode");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getPostalCode()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getPostalTown() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:city");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getPostalTown()));
-              xml.write("' />\n");
-            }
-
-          }
-
-          if (locationSample.getName() != null) {
+          for (Map.Entry<String, String> tag : locationSample.getTags().entrySet()) {
             xml.write("\t\t<tag k='");
-            xml.write("name");
+            xml.write(StringEscapeUtils.escapeXml(tag.getKey()));
             xml.write("' v='");
-            xml.write(StringEscapeUtils.escapeXml(locationSample.getName()));
+            xml.write(StringEscapeUtils.escapeXml(tag.getValue()));
             xml.write("' />\n");
           }
+
 
           if (locationSample.getCoordinate().getProvider() != null) {
             xml.write("\t\t<tag k='");

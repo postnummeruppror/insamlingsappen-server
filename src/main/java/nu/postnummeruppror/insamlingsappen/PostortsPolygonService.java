@@ -177,13 +177,12 @@ public class PostortsPolygonService {
       if (locationSample.getCoordinate() != null
           && locationSample.getCoordinate().getLatitude() != null
           && locationSample.getCoordinate().getLongitude() != null
-          && locationSample.getPostalAddress() != null
-          && locationSample.getPostalAddress().getPostalTown() != null
+          && locationSample.getTag("addr:city") != null
           && locationSample.getCoordinate().getAccuracy() != null
           && locationSample.getTimestamp() >= timestampFrom
           && locationSample.getTimestamp() <= timestampTo) {
 
-        String postalTown = locationSample.getPostalAddress().getPostalTown().trim().toUpperCase();
+        String postalTown = locationSample.getTag("addr:city").trim().toUpperCase();
         if (postalTown.isEmpty()) {
           continue;
         }

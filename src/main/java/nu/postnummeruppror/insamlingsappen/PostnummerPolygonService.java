@@ -186,13 +186,12 @@ public class PostnummerPolygonService {
       if (locationSample.getCoordinate() != null
           && locationSample.getCoordinate().getLatitude() != null
           && locationSample.getCoordinate().getLongitude() != null
-          && locationSample.getPostalAddress() != null
-          && locationSample.getPostalAddress().getPostalCode() != null
+          && locationSample.getTag("addr:postcode") != null
           && locationSample.getCoordinate().getAccuracy() != null
           && locationSample.getTimestamp() >= timestampFrom
           && locationSample.getTimestamp() <= timestampTo) {
 
-        String postalCode = locationSample.getPostalAddress().getPostalCode().replaceAll("\\s+", "");
+        String postalCode = locationSample.getTag("addr:postcode").replaceAll("\\s+", "");
         if (!postalCode.matches("[0-9]{5}")) {
           continue;
         }

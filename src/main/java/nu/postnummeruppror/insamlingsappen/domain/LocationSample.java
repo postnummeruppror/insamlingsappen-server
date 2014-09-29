@@ -1,7 +1,9 @@
 package nu.postnummeruppror.insamlingsappen.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author kalle
@@ -27,13 +29,15 @@ public class LocationSample implements Serializable {
 
   private Coordinate coordinate;
 
-  private String ipAddress;
-  private String ipAddressHost;
+  private Map<String, String> tags = new HashMap<>();
 
-  /** Generic POI name. 'A och B livsmedelsbutik */
-  private String name;
+  public String setTag(String key, String value) {
+    return getTags().put(key, value);
+  }
 
-  private PostalAddress postalAddress;
+  public String getTag(String key) {
+    return getTags().get(key);
+  }
 
 
   @Override
@@ -45,22 +49,12 @@ public class LocationSample implements Serializable {
     sb.append(", application='").append(application).append('\'');
     sb.append(", applicationVersion='").append(applicationVersion).append('\'');
     sb.append(", timestamp=").append(timestamp);
-    sb.append(", ipAddress='").append(ipAddress).append('\'');
-    sb.append(", ipAddressHost='").append(ipAddressHost).append('\'');
     sb.append(", coordinate=").append(coordinate);
-    sb.append(", name='").append(name).append('\'');
-    sb.append(", postalAddress=").append(postalAddress);
+    sb.append(", tags=").append(tags);
     sb.append('}');
     return sb.toString();
   }
 
-  public String getIpAddress() {
-    return ipAddress;
-  }
-
-  public void setIpAddress(String ipAddress) {
-    this.ipAddress = ipAddress;
-  }
 
   public Long getIdentity() {
     return identity;
@@ -104,14 +98,6 @@ public class LocationSample implements Serializable {
     this.applicationVersion = applicationVersion;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public Coordinate getCoordinate() {
     return coordinate;
   }
@@ -120,19 +106,11 @@ public class LocationSample implements Serializable {
     this.coordinate = coordinate;
   }
 
-  public PostalAddress getPostalAddress() {
-    return postalAddress;
+  public Map<String, String> getTags() {
+    return tags;
   }
 
-  public void setPostalAddress(PostalAddress postalAddress) {
-    this.postalAddress = postalAddress;
-  }
-
-  public String getIpAddressHost() {
-    return ipAddressHost;
-  }
-
-  public void setIpAddressHost(String ipAddressHost) {
-    this.ipAddressHost = ipAddressHost;
+  public void setTags(Map<String, String> tags) {
+    this.tags = tags;
   }
 }

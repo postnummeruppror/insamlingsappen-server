@@ -147,13 +147,17 @@ public class PostalTownVoronoiServlet extends HttpServlet {
         if (locationSample.getCoordinate() != null
             && locationSample.getCoordinate().getLatitude() != null
             && locationSample.getCoordinate().getLongitude() != null
-            && locationSample.getPostalAddress() != null
-            && locationSample.getPostalAddress().getPostalTown() != null
+            && locationSample.getTag("addr:city") != null
             && locationSample.getCoordinate().getAccuracy() != null
             && locationSample.getTimestamp() >= timestampFrom
             && locationSample.getTimestamp() <= timestampTo) {
 
-          String postalTown = locationSample.getPostalAddress().getPostalTown().trim().toUpperCase();
+          String postalTown = locationSample.getTag("addr:city");
+          postalTown = postalTown.replaceAll("-", " ");
+          postalTown = postalTown.replaceAll("\\s+", " ");
+          postalTown = postalTown.toUpperCase();
+          postalTown = postalTown.trim();
+
           if (postalTown.isEmpty()) {
             continue;
           }

@@ -211,20 +211,18 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
         searchResultJSON.put("identity", locationSample.getIdentity());
 
-        if (locationSample.getPostalAddress() != null) {
 
-          JSONObject postalAddressJSON = new JSONObject();
-          searchResultJSON.put("postalAddress", postalAddressJSON);
+        JSONObject postalAddressJSON = new JSONObject();
+        searchResultJSON.put("postalAddress", postalAddressJSON);
 
-          postalAddressJSON.put("postalCode", locationSample.getPostalAddress().getPostalCode());
-          postalAddressJSON.put("postalTown", locationSample.getPostalAddress().getPostalTown());
-          postalAddressJSON.put("streetName", locationSample.getPostalAddress().getStreetName());
-          postalAddressJSON.put("houseNumber", locationSample.getPostalAddress().getHouseNumber());
-          postalAddressJSON.put("houseName", locationSample.getPostalAddress().getHouseName());
+        postalAddressJSON.put("postalCode", locationSample.getTag("addr:postcode"));
+        postalAddressJSON.put("postalTown", locationSample.getTag("addr:city"));
+        postalAddressJSON.put("streetName", locationSample.getTag("addr:street"));
+        postalAddressJSON.put("houseNumber", locationSample.getTag("addr:housenumber"));
+        postalAddressJSON.put("houseName", locationSample.getTag("addr:housename"));
 
-        }
 
-        searchResultJSON.put("name", locationSample.getName());
+        searchResultJSON.put("name", locationSample.getTag("name"));
 
         if (locationSample.getCoordinate() != null) {
 
@@ -313,55 +311,11 @@ public class SearchLocationSampleServlet extends HttpServlet {
           xml.write(String.valueOf(locationSample.getIdentity()));
           xml.write("' />\n");
 
-          if (locationSample.getPostalAddress() != null) {
-
-            if (locationSample.getPostalAddress().getStreetName() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:street");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getStreetName()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getHouseNumber() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:housenumber");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getHouseNumber()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getHouseName() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:housename");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getHouseName()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getPostalCode() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:postcode");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getPostalCode()));
-              xml.write("' />\n");
-            }
-
-            if (locationSample.getPostalAddress().getPostalTown() != null) {
-              xml.write("\t\t<tag k='");
-              xml.write("addr:city");
-              xml.write("' v='");
-              xml.write(StringEscapeUtils.escapeXml(locationSample.getPostalAddress().getPostalTown()));
-              xml.write("' />\n");
-            }
-
-          }
-
-          if (locationSample.getName() != null) {
+          for (Map.Entry<String, String> tag : locationSample.getTags().entrySet())  {
             xml.write("\t\t<tag k='");
-            xml.write("name");
+            xml.write(StringEscapeUtils.escapeXml(tag.getKey()));
             xml.write("' v='");
-            xml.write(StringEscapeUtils.escapeXml(locationSample.getName()));
+            xml.write(StringEscapeUtils.escapeXml(tag.getValue()));
             xml.write("' />\n");
           }
 

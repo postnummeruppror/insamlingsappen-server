@@ -128,5 +128,68 @@
   </servlet-mapping>
 
 
+  <!-- version 0.0.6 -->
+
+  <servlet>
+    <servlet-name>0.0.6/SetAccount</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.SetAccountServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.6/SetAccount</servlet-name>
+    <url-pattern>/api/0.0.6/account/set</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.6/AccountExists</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.AccountExistsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.6/AccountExists</servlet-name>
+    <url-pattern>/api/0.0.6/account/exists</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.6/CreateLocationSample</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_6.CreateLocationSampleServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.6/CreateLocationSample</servlet-name>
+    <url-pattern>/api/0.0.6/location_sample/create</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.6/SearchLocationSample</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_6.SearchLocationSampleServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.6/SearchLocationSample</servlet-name>
+    <url-pattern>/api/0.0.6/location_sample/search</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.6/ServerStatistics</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.ServerStatisticsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.6/ServerStatistics</servlet-name>
+    <url-pattern>/api/0.0.6/statistics/server</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>0.0.6/TagVoronoi</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_6.TagVoronoiServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.6/TagVoronoi</servlet-name>
+    <url-pattern>/api/0.0.6/location_sample/voronoi</url-pattern>
+  </servlet-mapping>
+
+
 
 </web-app>

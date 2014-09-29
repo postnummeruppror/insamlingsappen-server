@@ -18,17 +18,11 @@ public class Root implements Serializable {
   private Map<String, Account> accounts = new HashMap<>();
   private Map<Long, LocationSample> locationSamples = new HashMap<>();
 
-  private Map<Long, Comment> comments = new HashMap<>();
-
   private Intern<String> applicationIntern = new Intern<>();
   private Intern<String> applicationVersionIntern = new Intern<>();
   private Intern<String> providerIntern = new Intern<>();
-  private Intern<String> streetNameIntern = new Intern<>();
-  private Intern<String> houseNumberIntern = new Intern<>();
-  private Intern<String> houseNameIntern = new Intern<>();
-  private Intern<String> postalCodeIntern = new Intern<>();
-  private Intern<String> postalTownIntern = new Intern<>();
-  private Intern<String> nameIntern = new Intern<>();
+
+  private TagsIntern tagsIntern = new TagsIntern();
 
   public Map<String, Account> getAccounts() {
     return accounts;
@@ -54,13 +48,6 @@ public class Root implements Serializable {
     this.locationSamples = locationSamples;
   }
 
-  public Intern<String> getPostalCodeIntern() {
-    return postalCodeIntern;
-  }
-
-  public void setPostalCodeIntern(Intern<String> postalCodeIntern) {
-    this.postalCodeIntern = postalCodeIntern;
-  }
 
   public Intern<String> getProviderIntern() {
     return providerIntern;
@@ -70,29 +57,6 @@ public class Root implements Serializable {
     this.providerIntern = providerIntern;
   }
 
-  public Intern<String> getStreetNameIntern() {
-    return streetNameIntern;
-  }
-
-  public void setStreetNameIntern(Intern<String> streetNameIntern) {
-    this.streetNameIntern = streetNameIntern;
-  }
-
-  public Intern<String> getHouseNumberIntern() {
-    return houseNumberIntern;
-  }
-
-  public void setHouseNumberIntern(Intern<String> houseNumberIntern) {
-    this.houseNumberIntern = houseNumberIntern;
-  }
-
-  public Intern<String> getPostalTownIntern() {
-    return postalTownIntern;
-  }
-
-  public void setPostalTownIntern(Intern<String> postalTownIntern) {
-    this.postalTownIntern = postalTownIntern;
-  }
 
   public Intern<String> getApplicationIntern() {
     return applicationIntern;
@@ -110,27 +74,12 @@ public class Root implements Serializable {
     this.applicationVersionIntern = applicationVersionIntern;
   }
 
-  public Intern<String> getHouseNameIntern() {
-    return houseNameIntern;
+
+  public TagsIntern getTagsIntern() {
+    return tagsIntern;
   }
 
-  public void setHouseNameIntern(Intern<String> houseNameIntern) {
-    this.houseNameIntern = houseNameIntern;
-  }
-
-  public Map<Long, Comment> getComments() {
-    return comments;
-  }
-
-  public void setComments(Map<Long, Comment> comments) {
-    this.comments = comments;
-  }
-
-  public Intern<String> getNameIntern() {
-    return nameIntern;
-  }
-
-  public void setNameIntern(Intern<String> nameIntern) {
-    this.nameIntern = nameIntern;
+  public void setTagsIntern(TagsIntern tagsIntern) {
+    this.tagsIntern = tagsIntern;
   }
 }

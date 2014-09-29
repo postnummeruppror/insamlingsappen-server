@@ -50,9 +50,6 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     locationSample.setApplication(root.getApplicationIntern().intern(application));
     locationSample.setApplicationVersion(root.getApplicationVersionIntern().intern(applicationVersion));
 
-    locationSample.setIpAddress(ipAddress);
-    locationSample.setIpAddressHost(ipAddressHost);
-
     if (postalAddress != null) {
 
       if (postalAddress.getPostalTown() != null) {
@@ -60,7 +57,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
         if (postalAddress.getPostalTown().isEmpty()) {
           postalAddress.setPostalTown(null);
         } else {
-          postalAddress.setPostalTown(root.getPostalTownIntern().intern(postalAddress.getPostalTown()));
+          locationSample.setTag(root.getTagsIntern().internKey("addr:city"), root.getTagsIntern().internValue("addr:city", postalAddress.getPostalTown()));
         }
       }
 
@@ -69,7 +66,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
         if (postalAddress.getPostalCode().isEmpty()) {
           postalAddress.setPostalCode(null);
         } else {
-          postalAddress.setPostalCode(root.getPostalCodeIntern().intern(postalAddress.getPostalCode()));
+          locationSample.setTag(root.getTagsIntern().internKey("addr:postcode"), root.getTagsIntern().internValue("addr:postcode", postalAddress.getPostalCode()));
         }
       }
 
@@ -78,7 +75,8 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
         if (postalAddress.getStreetName().isEmpty()) {
           postalAddress.setStreetName(null);
         } else {
-          postalAddress.setStreetName(root.getStreetNameIntern().intern(postalAddress.getStreetName()));
+          locationSample.setTag(root.getTagsIntern().internKey("addr:street"), root.getTagsIntern().internValue("addr:street", postalAddress.getStreetName()));
+
         }
       }
 
@@ -87,7 +85,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
         if (postalAddress.getHouseNumber().isEmpty()) {
           postalAddress.setHouseNumber(null);
         } else {
-          postalAddress.setHouseNumber(root.getHouseNumberIntern().intern(postalAddress.getHouseNumber()));
+          locationSample.setTag(root.getTagsIntern().internKey("addr:housenumber"), root.getTagsIntern().internValue("addr:housenumber", postalAddress.getHouseNumber()));
         }
       }
 
@@ -96,20 +94,8 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
         if (postalAddress.getHouseName().isEmpty()) {
           postalAddress.setHouseName(null);
         } else {
-          postalAddress.setHouseName(root.getHouseNameIntern().intern(postalAddress.getHouseName()));
+          locationSample.setTag(root.getTagsIntern().internKey("addr:housename"), root.getTagsIntern().internValue("addr:housename", postalAddress.getHouseName()));
         }
-      }
-
-      if (postalAddress.getStreetName() == null
-          && postalAddress.getHouseNumber() == null
-          && postalAddress.getHouseName() == null
-          && postalAddress.getPostalCode() == null
-          && postalAddress.getPostalTown() == null) {
-
-        // All fields are null! todo is this an exception?
-
-      } else {
-        locationSample.setPostalAddress(postalAddress);
       }
     }
 
@@ -131,7 +117,7 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     if (name != null) {
       name = name.trim();
       if (!name.isEmpty()) {
-        locationSample.setName(root.getNameIntern().intern(name));
+        locationSample.setTag(root.getTagsIntern().internKey("name"), root.getTagsIntern().internValue("name", name));
       }
     }
 

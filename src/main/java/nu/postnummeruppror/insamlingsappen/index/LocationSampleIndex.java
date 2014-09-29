@@ -145,8 +145,8 @@ public class LocationSampleIndex {
       addField(document, LocationSampleIndexFields.longitude, locationSample.getCoordinate().getLongitude(), null);
     }
 
-    if (locationSample.getPostalAddress() != null) {
-      addField(document, LocationSampleIndexFields.postalCode, locationSample.getPostalAddress().getPostalCode());
+    if (locationSample.getTag("addr:postcode") != null) {
+      addField(document, LocationSampleIndexFields.postalCode, locationSample.getTag("addr:postcode"));
     }
 
     return document;
