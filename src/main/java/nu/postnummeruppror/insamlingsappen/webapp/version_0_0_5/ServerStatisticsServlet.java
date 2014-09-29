@@ -1,6 +1,7 @@
 package nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5;
 
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
+import nu.postnummeruppror.insamlingsappen.queries.CountUniquePostalTowns;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class ServerStatisticsServlet extends HttpServlet {
       responseJSON.put("numberOfLocationSamples", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().size());
       responseJSON.put("numberOfAccounts", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getAccounts().size());
       responseJSON.put("numberOfPostalCodes", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getTagsIntern().getValues().get("addr:postcode").getMap().size());
-      responseJSON.put("numberOfPostalTowns", Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getTagsIntern().getValues().get("addr:city").getMap().size());
+      responseJSON.put("numberOfPostalTowns", Insamlingsappen.getInstance().getPrevayler().execute(new CountUniquePostalTowns()));
 
       responseJSON.put("success", true);
 
