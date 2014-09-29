@@ -111,6 +111,18 @@
 
 <script type="text/javascript">
 
+  function getURLParameter(parameter, defaultValue) {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++)     {
+      var sParameterName = sURLVariables[i].split('=');
+      if (sParameterName[0] === parameter)      {
+        return sParameterName[1];
+      }
+    }
+    return defaultValue;
+  }
+
   function hash(str) {
     var hash = 0;
     if (str.length == 0) return hash;
@@ -135,8 +147,10 @@
 
   map.setView(new L.LatLng(62.915233039476135, 15.8203125), 5);
 
+
+
   var request = {
-    tag: "addr:city"
+    tag: getURLParameter("tag", "addr:city")
   };
 
   var requestJSON = JSON.stringify(request);
