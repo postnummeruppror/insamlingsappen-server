@@ -30,11 +30,14 @@ public class StatisticsServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    response.setHeader("Access-Control-Allow-Origin", "*");
 
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    response.setHeader("Access-Control-Allow-Origin", "*");
 
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");

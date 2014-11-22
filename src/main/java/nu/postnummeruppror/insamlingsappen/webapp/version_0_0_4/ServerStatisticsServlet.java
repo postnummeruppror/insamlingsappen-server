@@ -25,6 +25,8 @@ public class ServerStatisticsServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+    response.setHeader("Access-Control-Allow-Origin", "*");
+
     StringBuilder documentation = new StringBuilder(1024);
     documentation.append("This service accept UTF-8 encoded HTTP post.\n");
     documentation.append("\n");
@@ -54,6 +56,8 @@ public class ServerStatisticsServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    response.setHeader("Access-Control-Allow-Origin", "*");
 
     try {
 

@@ -30,6 +30,8 @@ public class CreateLocationSampleServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+    response.setHeader("Access-Control-Allow-Origin", "*");
+
     StringBuilder documentation = new StringBuilder(1024);
     documentation.append("This service accept UTF-8 encoded HTTP post.\n");
     documentation.append("The server will create a new LocationSample based on the JSON request.\n");
@@ -80,6 +82,8 @@ public class CreateLocationSampleServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    response.setHeader("Access-Control-Allow-Origin", "*");
 
     try {
 

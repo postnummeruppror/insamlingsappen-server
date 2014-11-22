@@ -131,6 +131,8 @@ public class PostalTownVoronoiServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+    response.setHeader("Access-Control-Allow-Origin", "*");
+
     try {
 
       JSONObject requestJSON = new JSONObject(new JSONTokener(IOUtils.toString(request.getInputStream(), "UTF-8")));
