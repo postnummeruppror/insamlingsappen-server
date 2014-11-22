@@ -12,6 +12,7 @@ import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.kodapan.lucene.query.CoordinateCircleEnvelopeQueryFactory;
+import se.kodapan.lucene.query.JSONQueryUnmarshaller;
 import se.kodapan.osm.domain.*;
 import se.kodapan.osm.domain.root.PojoRoot;
 import se.kodapan.osm.jts.voronoi.AdjacentClassVoronoiClusterer;
@@ -128,18 +129,6 @@ public class TagVoronoiServlet extends HttpServlet {
     }
   }
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    try {
-
-      contructVoronoi(response, request.getParameter("tag"));
-
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-
-  }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -150,125 +139,134 @@ public class TagVoronoiServlet extends HttpServlet {
 
       log.debug("Incoming request: " + requestJSON.toString());
 
-      contructVoronoi(response, requestJSON.getString("tag"));
+      String tag = requestJSON.getString("tag");
 
+      Set<LocationSample> locationSamples = Insamlingsappen.getInstance().getLocationSampleIndex().search(
+          new JSONQueryUnmarshaller().parseJsonQuery(requestJSON.getJSONObject("query")), false).keySet();
+
+      long timestampFrom = Long.MIN_VALUE;
+      long timestampTo = Long.MAX_VALUE;
+      long maximumAccuracy = 999;
+
+      Map<String, Set<LocationSample>> gatheredPerNormalizedPostalTown = new HashMap<>(2000);
+
+      for (LocationSample locationSample : locationSamples) {
+        if (locationSample.getCoordinate() != null
+            && locationSample.getCoordinate().getLatitude() != null
+            && locationSample.getCoordinate().getLongitude() != null
+            && locationSample.getTag(tag) != null
+            && locationSample.getCoordinate().getAccuracy() != null
+            && locationSample.getTimestamp() >= timestampFrom
+            && locationSample.getTimestamp() <= timestampTo) {
+
+          String tagValue = locationSample.getTag(tag);
+          tagValue = tagValue.replaceAll("-", " ");
+          tagValue = tagValue.replaceAll("\\s+", " ");
+          tagValue = tagValue.toUpperCase();
+          tagValue = tagValue.trim();
+
+          if (tagValue.isEmpty()) {
+            continue;
+          }
+
+          Set<LocationSample> perNormalizedTagValue = gatheredPerNormalizedPostalTown.get(tagValue);
+          if (perNormalizedTagValue == null) {
+            perNormalizedTagValue = new HashSet<>(4096);
+            gatheredPerNormalizedPostalTown.put(tagValue, perNormalizedTagValue);
+          }
+          perNormalizedTagValue.add(locationSample);
+
+        }
+      }
+
+      AdjacentClassVoronoiClusterer<String> voronoiClusterer = new AdjacentClassVoronoiClusterer<>(new GeometryFactory());
+      voronoiClusterer.setNumberOfThreads(1);
+
+      for (Map.Entry<String, Set<LocationSample>> entry : gatheredPerNormalizedPostalTown.entrySet()) {
+
+        String tagValue = entry.getKey();
+        for (LocationSample locationSample : entry.getValue()) {
+
+          if (locationSample.getCoordinate().getAccuracy() > maximumAccuracy) {
+
+            // allow if this is the only sample in the accuracy area
+
+            Map<LocationSample, Float> searchResults = Insamlingsappen.getInstance().getLocationSampleIndex().search(
+                new CoordinateCircleEnvelopeQueryFactory()
+                    .setCentroidLatitude(locationSample.getCoordinate().getLatitude())
+                    .setCentroidLongitude(locationSample.getCoordinate().getLongitude())
+                    .setRadiusKilometers(locationSample.getCoordinate().getAccuracy() / 1000d)
+                    .setLatitudeField(LocationSampleIndexFields.latitude)
+                    .setLongitudeField(LocationSampleIndexFields.longitude)
+                    .build()
+            );
+
+            if (searchResults.size() > 1) {
+              continue;
+            } else {
+              System.currentTimeMillis();
+            }
+
+          }
+
+
+          voronoiClusterer.addCoordinate(tagValue, locationSample.getCoordinate().getLongitude(), locationSample.getCoordinate().getLatitude());
+
+
+        }
+
+      }
+
+      GeometryPrecisionReducer foo = new GeometryPrecisionReducer(new PrecisionModel(PrecisionModel.maximumPreciseValue));
+
+
+      Map<String, List<Polygon>> voronoiClusters = voronoiClusterer.build();
+
+      for (Map.Entry<String, List<Polygon>> entry : voronoiClusters.entrySet()) {
+
+        List<Polygon> polygons = new ArrayList<>();
+
+        for (Polygon polygon : entry.getValue()) {
+          Geometry geometry = foo.reduce(polygon).intersection(foo.reduce(swedenMultipolygon));
+          if (geometry instanceof Polygon) {
+            polygons.add((Polygon) geometry);
+          } else if (geometry instanceof GeometryCollection) {
+            GeometryCollection geometryCollection = (GeometryCollection) geometry;
+            for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
+              polygons.add((Polygon) geometryCollection.getGeometryN(i));
+            }
+          } else {
+            throw new RuntimeException(geometry.getClass().getName());
+          }
+        }
+
+        entry.getValue().clear();
+        entry.getValue().addAll(polygons);
+
+        System.currentTimeMillis();
+      }
+
+      GeoJSONVoronoiFactory<String> geoJSONVoronoiFactory = new GeoJSONVoronoiFactory<>();
+      geoJSONVoronoiFactory.factory(voronoiClusters);
+
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+
+      JSONObject responseJSON = new JSONObject();
+
+      if (requestJSON.has("reference")) {
+        responseJSON.put("reference", requestJSON.get("reference"));
+      }
+
+      responseJSON.put("voronoi", new JSONObject(new JSONTokener(geoJSONVoronoiFactory.getRoot().toJSON())));
+
+      response.getWriter().write(responseJSON.toString());
 
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
 
-
   }
 
-  private void contructVoronoi(HttpServletResponse response, String tag) throws Exception {
 
-    long timestampFrom = Long.MIN_VALUE;
-    long timestampTo = Long.MAX_VALUE;
-    long maximumAccuracy = 999;
-
-    Map<String, Set<LocationSample>> gatheredPerNormalizedPostalTown = new HashMap<>(2000);
-
-    for (LocationSample locationSample : Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().values()) {
-      if (locationSample.getCoordinate() != null
-          && locationSample.getCoordinate().getLatitude() != null
-          && locationSample.getCoordinate().getLongitude() != null
-          && locationSample.getTag(tag) != null
-          && locationSample.getCoordinate().getAccuracy() != null
-          && locationSample.getTimestamp() >= timestampFrom
-          && locationSample.getTimestamp() <= timestampTo) {
-
-        String tagValue = locationSample.getTag(tag);
-        tagValue = tagValue.replaceAll("-", " ");
-        tagValue = tagValue.replaceAll("\\s+", " ");
-        tagValue = tagValue.toUpperCase();
-        tagValue = tagValue.trim();
-
-        if (tagValue.isEmpty()) {
-          continue;
-        }
-
-        Set<LocationSample> perNormalizedTagValue = gatheredPerNormalizedPostalTown.get(tagValue);
-        if (perNormalizedTagValue == null) {
-          perNormalizedTagValue = new HashSet<>(4096);
-          gatheredPerNormalizedPostalTown.put(tagValue, perNormalizedTagValue);
-        }
-        perNormalizedTagValue.add(locationSample);
-
-      }
-    }
-
-    AdjacentClassVoronoiClusterer<String> voronoiClusterer = new AdjacentClassVoronoiClusterer<>(new GeometryFactory());
-    voronoiClusterer.setNumberOfThreads(1);
-
-    for (Map.Entry<String, Set<LocationSample>> entry : gatheredPerNormalizedPostalTown.entrySet()) {
-
-      String tagValue = entry.getKey();
-      for (LocationSample locationSample : entry.getValue()) {
-
-        if (locationSample.getCoordinate().getAccuracy() > maximumAccuracy) {
-
-          // allow if this is the only sample in the accuracy area
-
-          Map<LocationSample, Float> searchResults = Insamlingsappen.getInstance().getLocationSampleIndex().search(
-              new CoordinateCircleEnvelopeQueryFactory()
-                  .setCentroidLatitude(locationSample.getCoordinate().getLatitude())
-                  .setCentroidLongitude(locationSample.getCoordinate().getLongitude())
-                  .setRadiusKilometers(locationSample.getCoordinate().getAccuracy() / 1000d)
-                  .setLatitudeField(LocationSampleIndexFields.latitude)
-                  .setLongitudeField(LocationSampleIndexFields.longitude)
-                  .build()
-          );
-
-          if (searchResults.size() > 1) {
-            continue;
-          } else {
-            System.currentTimeMillis();
-          }
-
-        }
-
-
-        voronoiClusterer.addCoordinate(tagValue, locationSample.getCoordinate().getLongitude(), locationSample.getCoordinate().getLatitude());
-
-
-      }
-
-    }
-
-    GeometryPrecisionReducer foo = new GeometryPrecisionReducer(new PrecisionModel(PrecisionModel.maximumPreciseValue));
-
-
-    Map<String, List<Polygon>> voronoiClusters = voronoiClusterer.build();
-
-    for (Map.Entry<String, List<Polygon>> entry : voronoiClusters.entrySet()) {
-
-      List<Polygon> polygons = new ArrayList<>();
-
-      for (Polygon polygon : entry.getValue()) {
-        Geometry geometry = foo.reduce(polygon).intersection(foo.reduce(swedenMultipolygon));
-        if (geometry instanceof Polygon) {
-          polygons.add((Polygon) geometry);
-        } else if (geometry instanceof GeometryCollection) {
-          GeometryCollection geometryCollection = (GeometryCollection) geometry;
-          for (int i = 0; i < geometryCollection.getNumGeometries(); i++) {
-            polygons.add((Polygon) geometryCollection.getGeometryN(i));
-          }
-        } else {
-          throw new RuntimeException(geometry.getClass().getName());
-        }
-      }
-
-      entry.getValue().clear();
-      entry.getValue().addAll(polygons);
-
-      System.currentTimeMillis();
-    }
-
-    GeoJSONVoronoiFactory<String> geoJSONVoronoiFactory = new GeoJSONVoronoiFactory<>();
-    geoJSONVoronoiFactory.factory(voronoiClusters);
-
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
-    geoJSONVoronoiFactory.getRoot().writeJSON(response.getWriter());
-  }
 }

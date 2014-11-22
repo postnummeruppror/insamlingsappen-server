@@ -139,6 +139,7 @@ public class LocationSampleIndex {
 
     addField(document, LocationSampleIndexFields.timestamp, locationSample.getTimestamp(), null);
 
+    addField(document, LocationSampleIndexFields.accountIdentity, locationSample.getAccount().getIdentity());
 
     if (locationSample.getCoordinate() != null) {
       addField(document, LocationSampleIndexFields.latitude, locationSample.getCoordinate().getLatitude(), null);

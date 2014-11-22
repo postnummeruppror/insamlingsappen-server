@@ -9,6 +9,8 @@ public class LocationSampleIndexFields {
   public static final String identity_indexed = "identity_indexed";
   public static final String identity_docValue = "identity_docValue";
 
+  public static final String accountIdentity = "accountIdentity";
+
   public static final String timestamp = "timestamp";
 
   public static final String latitude = "latitude";

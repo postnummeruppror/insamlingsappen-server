@@ -43,6 +43,10 @@ public class JSONQueryUnmarshaller {
 
       return booleanQuery;
 
+    } else if ("match all documents".equalsIgnoreCase(type)) {
+
+      return new MatchAllDocsQuery();
+
     } else if ("term".equalsIgnoreCase(type)) {
 
       return new TermQuery(new Term(jsonQuery.getString("field"), jsonQuery.getString("value")));

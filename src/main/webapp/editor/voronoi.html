@@ -102,7 +102,7 @@
 
 <div
     id="please_wait"
-    style="z-index:1000; display: block; background-color: #ffffff; padding: 10px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)"
+    style="z-index:1000; display: none; background-color: #ffffff; padding: 10px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)"
     >
   Var god dröj, skapar polygoner...
 </div>
@@ -114,9 +114,9 @@
   function getURLParameter(parameter, defaultValue) {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++)     {
+    for (var i = 0; i < sURLVariables.length; i++) {
       var sParameterName = sURLVariables[i].split('=');
-      if (sParameterName[0] === parameter)      {
+      if (sParameterName[0] === parameter) {
         return sParameterName[1];
       }
     }
@@ -148,52 +148,115 @@
   map.setView(new L.LatLng(62.915233039476135, 15.8203125), 5);
 
 
+  var moveStarted = null;
 
-  var request = {
-    tag: getURLParameter("tag", "addr:city")
-  };
-
-  var requestJSON = JSON.stringify(request);
-
-  var posting = $.post("/api/0.0.6/location_sample/voronoi", requestJSON);
-  posting.done(function (data) {
-
-    document.getElementById("please_wait").style.display = "none";
-
-    L.geoJson(data, {
-
-      style: function (feature) {
-
-        Math.seedrandom(feature.properties.class);
-        var rgb = "#";
-        for (var i = 0; i < 3; i++) {
-          rgb += parseInt(Math.random() * 255).toString(16);
-        }
-
-        return {
-          stroke: true,
-          color: '#ffffff',
-          weight: 1,
-          opacity: 1,
-
-          fillColor: rgb,
-          fillOpacity: 0.5
-        };
-
-      },
+  map.on('movestart', function (mouseEvent) {
+    moveStarted = new Date().getTime();
+  });
+  map.on('dragend', function (mouseEvent) {
+    // todo did we move far enough? would be better
+    var millisecondsSpent = new Date().getTime() - moveStarted;
+    if (millisecondsSpent < 100) {
+      return;
+    }
+    console.log("dragend");
+    delayedSearch(100);
+  });
+  map.on('zoomend', function (mouseEvent) {
+    console.log("zoomend");
+    delayedSearch(200);
+  });
+  map.on('resize', function (mouseEvent) {
+    console.log("resized");
+    delayedSearch(500);
+  });
 
 
-      onEachFeature: function onEachFeature(feature, layer) {
-        if (feature.properties && feature.properties.class) {
-          layer.bindPopup(feature.properties.class);
+  var delayedSearchTimeout = null;
+  function delayedSearch(millisecondsDelay) {
+    if (delayedSearchTimeout) {
+      window.clearTimeout(delayedSearchTimeout);
+    }
+    delayedSearchTimeout = window.setTimeout(function () {
+      search();
+    }, millisecondsDelay);
+  }
 
 
-        }
+  var geojsonLayer = new L.LayerGroup();
+  geojsonLayer.addTo(map);
+
+  function search() {
+
+    if (map.getZoom() < 10) {
+      return;
+    }
+
+
+    var request = {
+      reference: new Date().getTime(),
+      tag: getURLParameter("tag", "addr:postcode"),
+      query: {
+        type: "coordinate envelope",
+        latitudeField: "latitude",
+        longitudeField: "longitude",
+        southLatitude: map.getBounds().getSouth(),
+        westLongitude: map.getBounds().getWest(),
+        northLatitude: map.getBounds().getNorth(),
+        eastLongitude: map.getBounds().getEast()
+      }
+    };
+
+    var requestJSON = JSON.stringify(request);
+
+    document.getElementById("please_wait").style.display = "block";
+
+    var posting = $.post("/api/0.0.6/location_sample/voronoi", requestJSON);
+    posting.done(function (data) {
+
+      document.getElementById("please_wait").style.display = "none";
+
+      if (data.reference !== request.reference) {
+        return;
       }
 
-    }).addTo(map);
 
-  });
+      var voronoi = L.geoJson(data.voronoi, {
+
+        style: function (feature) {
+
+          Math.seedrandom(feature.properties.class);
+          var rgb = "#";
+          for (var i = 0; i < 3; i++) {
+            rgb += parseInt(Math.random() * 255).toString(16);
+          }
+
+          return {
+            stroke: true,
+            color: '#ffffff',
+            weight: 1,
+            opacity: 1,
+
+            fillColor: rgb,
+            fillOpacity: 0.5
+          };
+
+        },
+
+        onEachFeature: function onEachFeature(feature, layer) {
+          if (feature.properties && feature.properties.class) {
+            layer.bindPopup(feature.properties.class);
+          }
+        }
+      });
+
+      geojsonLayer.clearLayers();
+      geojsonLayer.addLayer(voronoi);
+
+    });
+
+
+  }
 
 
 </script>

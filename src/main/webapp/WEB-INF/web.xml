@@ -13,6 +13,25 @@
   </listener>
 
 
+  <!-- Allow CORS requests from anyone -->
+
+
+  <filter>
+    <filter-name>CORS</filter-name>
+    <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+
+    <init-param>
+      <param-name>cors.allowOrigin</param-name>
+      <param-value>*</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>CORS</filter-name>
+    <url-pattern>/api/*</url-pattern>
+  </filter-mapping>
+
+
   <!-- version 0.0.4 -->
 
   <servlet>
@@ -69,7 +88,7 @@
 
   <servlet>
     <servlet-name>0.0.5/SetAccount</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.SetAccountServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.SetAccountServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -79,7 +98,7 @@
 
   <servlet>
     <servlet-name>0.0.5/AccountExists</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.AccountExistsServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.AccountExistsServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -109,7 +128,7 @@
 
   <servlet>
     <servlet-name>0.0.5/ServerStatistics</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.ServerStatisticsServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.ServerStatisticsServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -132,7 +151,7 @@
 
   <servlet>
     <servlet-name>0.0.6/SetAccount</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.SetAccountServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.SetAccountServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -142,7 +161,7 @@
 
   <servlet>
     <servlet-name>0.0.6/AccountExists</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.AccountExistsServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.AccountExistsServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -172,7 +191,7 @@
 
   <servlet>
     <servlet-name>0.0.6/ServerStatistics</servlet-name>
-    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_5.ServerStatisticsServlet</servlet-class>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_4.ServerStatisticsServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>

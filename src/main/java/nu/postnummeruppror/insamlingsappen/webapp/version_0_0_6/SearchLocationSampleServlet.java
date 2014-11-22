@@ -82,22 +82,24 @@ public class SearchLocationSampleServlet extends HttpServlet {
     documentation.append("      \"index\": Integer value. Position in search results, ordered by score.\n");
     documentation.append("      \"score\": Float value. Similarity between query and result\n");
     documentation.append("\n");
-    documentation.append("      \"identity\": LocationSample identity\n");
+    documentation.append("      \"locationSample\": {\n");
+    documentation.append("        \"identity\": LocationSample identity\n");
     documentation.append("\n");
-    documentation.append("      \"tags\": [ OSM style tags, all string values \n");
-    documentation.append("        \"addr:postcode\": String value. E.g. '12345'\n");
-    documentation.append("        \"addr:city\": String value. E.g. 'Stockholm'\n");
-    documentation.append("        \"addr:street\": String value. E.g. 'Drottningatan'\n");
-    documentation.append("        \"addr:housenumber\": String value. E.g '12'\n");
-    documentation.append("        \"addr:housename\": String value. E.g. 'A'\n");
-    documentation.append("      ]\n");
+    documentation.append("        \"tags\": [ OSM style tags, all string values \n");
+    documentation.append("          \"addr:postcode\": String value. E.g. '12345'\n");
+    documentation.append("          \"addr:city\": String value. E.g. 'Stockholm'\n");
+    documentation.append("          \"addr:street\": String value. E.g. 'Drottningatan'\n");
+    documentation.append("          \"addr:housenumber\": String value. E.g '12'\n");
+    documentation.append("          \"addr:housename\": String value. E.g. 'A'\n");
+    documentation.append("        ]\n");
     documentation.append("\n");
-    documentation.append("      \"coordinate\": {\n");
-    documentation.append("        \"provider\": String value. Source of location, e.g. 'gps', 'network', 'human', etc.\n");
-    documentation.append("        \"accuracy\": Double value. Maximum error in meters.\n");
-    documentation.append("        \"latitude\": Double value. EPSG:3857\n");
-    documentation.append("        \"longitude\": Double value. EPSG:3857\n");
-    documentation.append("        \"altitude\": Double value. Meters altitude above sea.\"\n");
+    documentation.append("        \"coordinate\": {\n");
+    documentation.append("          \"provider\": String value. Source of location, e.g. 'gps', 'network', 'human', etc.\n");
+    documentation.append("          \"accuracy\": Double value. Maximum error in meters.\n");
+    documentation.append("          \"latitude\": Double value. EPSG:3857\n");
+    documentation.append("          \"longitude\": Double value. EPSG:3857\n");
+    documentation.append("          \"altitude\": Double value. Meters altitude above sea.\"\n");
+    documentation.append("        }\n");
     documentation.append("      }\n");
     documentation.append("\n");
     documentation.append("  } ]\n");
@@ -197,6 +199,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
       for (int index = startIndex; index < startIndex + limit && index < searchResults.size(); index++) {
         JSONObject searchResultJSON = new JSONObject();
+        searchResultsJSON.put(searchResultJSON);
 
         Map.Entry<LocationSample, Float> searchResult = searchResults.get(index);
 
@@ -207,11 +210,15 @@ public class SearchLocationSampleServlet extends HttpServlet {
           searchResultJSON.put("score", searchResult.getValue());
         }
 
-        searchResultJSON.put("identity", locationSample.getIdentity());
+        JSONObject locationSampleJSON = new JSONObject();
+        searchResultJSON.put("locationSample", locationSampleJSON);
+
+
+        locationSampleJSON.put("identity", locationSample.getIdentity());
 
 
         JSONArray tagsJSON = new JSONArray();
-        searchResultJSON.put("tags", tagsJSON);
+        locationSampleJSON.put("tags", tagsJSON);
 
         for (Map.Entry<String, String> tag : locationSample.getTags().entrySet()) {
           JSONObject tagJSON = new JSONObject();
@@ -222,7 +229,7 @@ public class SearchLocationSampleServlet extends HttpServlet {
         if (locationSample.getCoordinate() != null) {
 
           JSONObject coordinateJSON = new JSONObject();
-          searchResultJSON.put("coordinate", coordinateJSON);
+          locationSampleJSON.put("coordinate", coordinateJSON);
 
           coordinateJSON.put("latitude", locationSample.getCoordinate().getLatitude());
           coordinateJSON.put("longitude", locationSample.getCoordinate().getLongitude());
@@ -231,7 +238,6 @@ public class SearchLocationSampleServlet extends HttpServlet {
 
         }
 
-        searchResultsJSON.put(searchResultJSON);
 
       }
 
