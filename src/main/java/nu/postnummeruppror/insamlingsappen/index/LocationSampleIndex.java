@@ -150,6 +150,12 @@ public class LocationSampleIndex {
       addField(document, LocationSampleIndexFields.postalCode, locationSample.getTag("addr:postcode"));
     }
 
+    if (locationSample.getTag("addr:city") != null) {
+      addField(document, LocationSampleIndexFields.postalTown, locationSample.getTag("addr:city").toUpperCase());
+    }
+
+
+
     return document;
   }
 

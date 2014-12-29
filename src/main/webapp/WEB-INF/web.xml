@@ -210,5 +210,16 @@
   </servlet-mapping>
 
 
+  <servlet>
+    <servlet-name>0.0.6/FindPostalTownFromPostalCodeServlet</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_6.FindPostalTownFromPostalCodeServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>0.0.6/FindPostalTownFromPostalCodeServlet</servlet-name>
+    <url-pattern>/api/0.0.6/postalTown/findUsingPostalCode</url-pattern>
+  </servlet-mapping>
+
+
 
 </web-app>

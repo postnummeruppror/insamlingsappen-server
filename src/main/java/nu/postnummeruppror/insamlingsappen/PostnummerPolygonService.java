@@ -34,7 +34,8 @@ public class PostnummerPolygonService {
 
       PostnummerPolygonService service = new PostnummerPolygonService();
 
-      service.animate(df.parse("2014-09-14 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24);
+//      service.animate(df.parse("2014-09-14 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24);
+      service.animate(df.parse("2014-12-27 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24);
 
     } finally {
       Insamlingsappen.getInstance().close();
