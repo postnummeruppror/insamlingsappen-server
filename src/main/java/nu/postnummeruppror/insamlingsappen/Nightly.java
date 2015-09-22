@@ -123,7 +123,9 @@ public class Nightly {
 
           for (LocationSample locationSample : new ArrayList<>(Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().values())) {
 
-            if (locationSample.getCoordinate() == null) {
+            if (locationSample.getCoordinate() == null
+                || locationSample.getCoordinate().getLatitude() == null
+                || locationSample.getCoordinate().getLongitude() == null) {
               continue;
             }
 
