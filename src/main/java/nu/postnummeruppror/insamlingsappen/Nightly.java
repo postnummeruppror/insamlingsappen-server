@@ -1,17 +1,14 @@
 package nu.postnummeruppror.insamlingsappen;
 
+import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalTowns;
+import org.apache.commons.lang.StringEscapeUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,6 +33,8 @@ public class Nightly {
 
   private static class NightlyRunnable implements Runnable {
 
+    File nightlyPath = new File("src/main/webapp/nightly/");
+
     private boolean stopping = false;
 
     private void stop() {
@@ -51,6 +50,15 @@ public class Nightly {
 
       while (!stopping) {
 
+        if (!nightlyPath.exists()) {
+          nightlyPath.mkdirs();
+          try {
+            execute();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+          continue;
+        }
 
         Long hour = Long.valueOf(sdf.format(new Date(System.currentTimeMillis())));
         if (hour == 0) {
@@ -76,8 +84,6 @@ public class Nightly {
 
     private void execute() throws Exception {
 
-      File nightlyPath = new File("src/main/webapp/nightly/");
-      nightlyPath.mkdirs();
 
       {
         Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postorter.utf8.txt")), "UTF8");
@@ -91,6 +97,108 @@ public class Nightly {
           out.write("\n");
         }
         out.close();
+      }
+
+
+      {
+
+        Writer xml = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "samples-with-coordinates.osm.ml")), "UTF-8");
+        try {
+
+          xml.write("<?xml version='1.0' encoding='");
+          xml.write("UTF8");
+          xml.write("'?>\n");
+
+          xml.write("<osm version='");
+          xml.write("0.6");
+          xml.write("' upload='");
+          xml.write("true");
+          xml.write("'");
+          xml.write(" generator='");
+          xml.write("postnummeruppror.nu nightly");
+          xml.write("'>\n");
+
+          int id = 0;
+          DecimalFormat df = new DecimalFormat("#.##################################");
+
+          for (LocationSample locationSample : new ArrayList<>(Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().values())) {
+
+            if (locationSample.getCoordinate() == null) {
+              continue;
+            }
+
+            xml.write("\t<node ");
+            xml.write(" id='");
+            xml.write(String.valueOf(--id));
+            xml.write("'");
+
+            xml.write(" lat='");
+            xml.write(df.format(locationSample.getCoordinate().getLatitude()));
+            xml.write("'");
+
+            xml.write(" lon='");
+            xml.write(df.format(locationSample.getCoordinate().getLongitude()));
+            xml.write("'");
+
+            xml.write(" >\n");
+
+            xml.write("\t\t<tag k='");
+            xml.write("source");
+            xml.write("' v='");
+            xml.write("postnummeruppror.nu");
+            xml.write("' />\n");
+
+            xml.write("\t\t<tag k='");
+            xml.write("postnummeruppror.nu:location_sample:id");
+            xml.write("' v='");
+            xml.write(String.valueOf(locationSample.getIdentity()));
+            xml.write("' />\n");
+
+            for (Map.Entry<String, String> tag : locationSample.getTags().entrySet()) {
+              xml.write("\t\t<tag k='");
+              xml.write(StringEscapeUtils.escapeXml(tag.getKey()));
+              xml.write("' v='");
+              xml.write(StringEscapeUtils.escapeXml(tag.getValue()));
+              xml.write("' />\n");
+            }
+
+            if (locationSample.getCoordinate().getProvider() != null) {
+              xml.write("\t\t<tag k='");
+              xml.write("position:provider");
+              xml.write("' v='");
+              xml.write(StringEscapeUtils.escapeXml(locationSample.getCoordinate().getProvider()));
+              xml.write("' />\n");
+            }
+
+            if (locationSample.getCoordinate().getAccuracy() != null) {
+              xml.write("\t\t<tag k='");
+              xml.write("position:accuracy");
+              xml.write("' v='");
+              xml.write(StringEscapeUtils.escapeXml(df.format(locationSample.getCoordinate().getAccuracy())));
+              xml.write("' />\n");
+            }
+
+            if (locationSample.getCoordinate().getAltitude() != null) {
+              xml.write("\t\t<tag k='");
+              xml.write("position:altitude");
+              xml.write("' v='");
+              xml.write(StringEscapeUtils.escapeXml(df.format(locationSample.getCoordinate().getAltitude())));
+              xml.write("' />\n");
+            }
+
+
+            xml.write("\t</node>\n");
+
+          }
+
+          xml.write("</osm>\n");
+
+
+        } finally {
+          xml.flush();
+        }
+
+
       }
 
     }
