@@ -102,7 +102,7 @@ public class Nightly {
 
       {
 
-        Writer xml = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "samples-with-coordinates.osm.ml")), "UTF-8");
+        Writer xml = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "samples-with-coordinates.osm.xml")), "UTF-8");
         try {
 
           xml.write("<?xml version='1.0' encoding='");
