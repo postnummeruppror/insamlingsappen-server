@@ -5,16 +5,15 @@ import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalCodes;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalTowns;
 import org.apache.commons.lang.StringEscapeUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 /**
  * @author kalle
