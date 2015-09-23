@@ -1,6 +1,7 @@
 package nu.postnummeruppror.insamlingsappen;
 
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
+import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalCodes;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalTowns;
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -10,6 +11,10 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 /**
  * @author kalle
@@ -94,6 +99,32 @@ public class Nightly {
         Collections.sort(postalTowns);
         for (String postalTown : postalTowns) {
           out.write(postalTown);
+          out.write("\n");
+        }
+        out.close();
+      }
+
+      {
+        Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postnummer_postort.utf8.txt")), "UTF8");
+        out.write("# Postnummer och postort i postnummeruppror.nu ");
+        out.write(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(System.currentTimeMillis())));
+        out.write("\n");
+        out.write("# Notera att postorten inte är 100% säker, detta är en sammanställning av postnummer med en i databasen slumpmässigt förekommande postort för det givna postnummret.\n");
+        List<Map.Entry<String, String>> postalCodes = new ArrayList<>(Insamlingsappen.getInstance().getPrevayler().execute(new GetUniquePostalCodes()));
+        Collections.sort(postalCodes, new Comparator<Map.Entry<String, String>>() {
+          @Override
+          public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+            int ret = o2.getKey().compareTo(o2.getKey());
+            if (ret == 0) {
+              ret = o1.getValue().compareTo(o1.getValue());
+            }
+            return ret;
+          }
+        });
+        for (Map.Entry<String, String> postalCode : postalCodes) {
+          out.write(postalCode.getKey());
+          out.write("\t");
+          out.write(postalCode.getValue());
           out.write("\n");
         }
         out.close();
