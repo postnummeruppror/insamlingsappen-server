@@ -104,7 +104,7 @@ public class Nightly {
       }
 
       {
-        Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postnummer_postort.utf8.txt")), "UTF8");
+        Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postort_postnummer.utf8.txt")), "UTF8");
         out.write("# Postnummer och postort i postnummeruppror.nu ");
         out.write(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(System.currentTimeMillis())));
         out.write("\n");
@@ -116,6 +116,29 @@ public class Nightly {
             int ret = o1.getValue().compareTo(o2.getValue());
             if (ret == 0) {
               ret = o1.getKey().compareTo(o2.getKey());
+            }
+            return ret;
+          }
+        });
+        for (Map.Entry<String, String> postalCode : postalCodes) {
+          out.write(postalCode.getValue());
+          out.write("\t");
+          out.write(postalCode.getKey());
+          out.write("\n");
+        }
+        out.close();
+
+        out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postnummer_postort.utf8.txt")), "UTF8");
+        out.write("# Postnummer och postort i postnummeruppror.nu ");
+        out.write(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(System.currentTimeMillis())));
+        out.write("\n");
+        out.write("# Notera att postorten inte är 100% säker, detta är en sammanställning av postnummer med en i databasen slumpmässigt förekommande postort för det givna postnummret.\n");
+        Collections.sort(postalCodes, new Comparator<Map.Entry<String, String>>() {
+          @Override
+          public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+            int ret = o1.getKey().compareTo(o2.getKey());
+            if (ret == 0) {
+              ret = o1.getValue().compareTo(o2.getValue());
             }
             return ret;
           }
