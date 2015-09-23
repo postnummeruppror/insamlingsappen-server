@@ -113,9 +113,9 @@ public class Nightly {
         Collections.sort(postalCodes, new Comparator<Map.Entry<String, String>>() {
           @Override
           public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-            int ret = o2.getKey().compareTo(o2.getKey());
+            int ret = o1.getValue().compareTo(o2.getValue());
             if (ret == 0) {
-              ret = o1.getValue().compareTo(o1.getValue());
+              ret = o1.getKey().compareTo(o2.getKey());
             }
             return ret;
           }
