@@ -1,0 +1,36 @@
+För API är det kanske lättast är kanske att titta på vad vår www-insamlingsapp gör:
+<https://github.com/postnummeruppror/insamlingsappen-www>
+
+Alla våra API:er fungerar på sådant vis att man POST:ar JSON och får ett JSON tillbaka som svar. Skickar man en GET så får man i stället dokumentation om JSON som skall POSTas och den som kommer tillbaka, åtminstone är det tänkt att vara så. Kan vara lite si och så med hur detaljerad dokumentationen är.
+
+Alla anrop finns listade här:
+
+<https://github.com/postnummeruppror/insamlingsappen-server/blob/master/src/main/webapp/WEB-INF/web.xml>
+
+Intressanta för er är kanske:
+(Var så god och klicka på länkarna för, i de flesta fall, att se dokumentation.)
+
+Kontrollera och skapa användare:
+<http://insamling.postnummeruppror.nu/api/0.0.6/account/exists>
+<http://insamling.postnummeruppror.nu/api/0.0.6/account/set>
+
+Skapa en rapport:
+Ju mer data ni stoppar in i rapporten desto bättre. Det är exempelvis inga krav på datakällan för koordinaten, men det är bra för oss att veta om det kommer från en WiFi-triangulering eller GPS, att det är si och så många meter över havet osv, inte minst när vi i framtiden skall börja tvätta bort vad som verkar vara felaktiga rapporter.
+<http://insamling.postnummeruppror.nu/api/0.0.6/location_sample/create>
+
+Söka bland rapporter:
+Dåligt dokumenterad, men för statistik till användaren om antal rapporter inom olika avstånd, skicka en notifiering om man befinner sig väldigt långt från existerande rapporter och be om att leta upp ett postnummer, eller liknande funktioner.
+<http://insamling.postnummeruppror.nu/api/0.0.6/location_sample/search>
+
+Generell statisk från servern:
+<http://insamling.postnummeruppror.nu/api/0.0.6/statistics/server>
+
+Föreslå postort givet ett postnummer:
+<http://insamling.postnummeruppror.nu/api/0.0.6/postalTown/findUsingPostalCode>
+
+Det finns även ett API för att skapa s.k. voronoi-kluster, dvs polygoner över datapunkter. Det kan exempelvis användas för att rita upp gränserna för postorter, kommuner, etc så som vi tror de ser ut baserat på de inrapporterade datapunkterna. Detta är något som tar mycket kräm från vår server så om ni använder detta ber vi er att utföra sådana uträkningar från någon annan server och spara undan resultatet på något ställe och skicka vidare dem till användarna av appen snarare än att låta varje användare göra ett eget anrop mot APIet så tjänsten går ner.
+<http://insamling.postnummeruppror.nu/api/0.0.6/location_sample/voronoi>
+Exempel på resultat från detta har ni här:
+<http://insamling.postnummeruppror.nu/map/postorter/2016-03-13_23:59.html>
+
+Vi rekommenderar att ni under utveckling startar upp en kopia av vår server och arbetar mot den så det inte kommer in massa felaktiga data hos oss som vi måste städa bort. Vi kan hjälpa till med det, exempelvis genom att skapa en VirtualBox-maskin ni kan köra lokalt, eller sätta upp en test-miljö hos oss ni kan prata mot. Det är dock ganska trångt med tid på vår sida. Det är dock inga konstigheter, installera Java 1.8 och Maven, installer dependencies (några får ni kompilera själva) och starta sedan servern <https://github.com/postnummeruppror/insamlingsappen-server>  från terminalen med "mvn jetty:run”. Ni kan naturligtvis få hela vår databas att arbeta mot.
