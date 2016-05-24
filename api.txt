@@ -1,3 +1,5 @@
+Vid utveckling använd dev.insamling.postnummeruppror.nu
+
 För API är det kanske lättast är kanske att titta på vad vår www-insamlingsapp gör:
 <https://github.com/postnummeruppror/insamlingsappen-www>
 
