@@ -31,7 +31,7 @@ public class PostortsPolygonService {
 
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-      new PostortsPolygonService().animate(df.parse("2014-09-14 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24);
+      new PostortsPolygonService().animate(df.parse("2016-03-13 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24);
 
     } finally {
       Insamlingsappen.getInstance().close();

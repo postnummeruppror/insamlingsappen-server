@@ -18,6 +18,7 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author kalle
@@ -35,7 +36,7 @@ public class PostnummerPolygonService {
       PostnummerPolygonService service = new PostnummerPolygonService();
 
 //      service.animate(df.parse("2014-09-14 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24);
-      service.animate(df.parse("2014-12-27 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24);
+      service.animate(df.parse("2016-03-14 23:59").getTime(), System.currentTimeMillis() + 1000 * 60 * 60 * 24, TimeUnit.DAYS.toMillis(30));
 
     } finally {
       Insamlingsappen.getInstance().close();
