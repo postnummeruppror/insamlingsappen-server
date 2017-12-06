@@ -4,6 +4,7 @@ import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalCodes;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalTowns;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -88,6 +89,12 @@ public class Nightly {
 
     private void execute() throws Exception {
 
+      {
+        Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "stats.json")), "UTF8");
+        JSONArray json = new ProduceTimeLineStatistics().execute();
+        json.write(out);
+        out.close();
+      }
 
       {
         Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postorter.utf8.txt")), "UTF8");
