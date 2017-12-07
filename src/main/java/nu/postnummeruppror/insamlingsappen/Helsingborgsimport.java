@@ -23,7 +23,7 @@ public class Helsingborgsimport {
       InstantiatedOsmXmlParser parser = InstantiatedOsmXmlParser.newInstance();
       parser.setRoot(pojoRoot);
 
-      parser.parse(Skolimport.class.getResourceAsStream("/helsingborg adresspunkter.osm.xml"));
+      parser.parse(Helsingborgsimport.class.getResourceAsStream("/helsingborg adresspunkter.osm.xml"));
 
       int counter = 0;
 
@@ -43,7 +43,7 @@ public class Helsingborgsimport {
         createLocationSample.getCoordinate().setProvider("geojson converted");
         String postcode = node.getTag("addr:postcode");
         if (postcode != null) {
-          postcode = postcode.replaceAll(" ", "");
+          postcode = postcode.replaceAll("\\s", "");
           if (postcode.matches("[0-9]{5}")) {
             createLocationSample.getTags().put("addr:postcode", postcode);
           }

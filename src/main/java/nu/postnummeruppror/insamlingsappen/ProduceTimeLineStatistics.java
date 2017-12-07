@@ -24,7 +24,7 @@ public class ProduceTimeLineStatistics {
   public static void main (String[] args) throws Exception {
     Insamlingsappen.getInstance().open();
     try {
-      Writer out = new OutputStreamWriter(new FileOutputStream(new File("stats.json")), "UTF8");
+      Writer out = new OutputStreamWriter(new FileOutputStream(new File("src/main/webapp/nightly/stats.json")), "UTF8");
       JSONArray stats = new ProduceTimeLineStatistics().execute();
       stats.write(out);
       out.close();

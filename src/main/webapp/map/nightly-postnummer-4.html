@@ -19,14 +19,15 @@
   <!--<meta http-equiv="pragma" content="no-cache">-->
   <meta http-equiv="content-language" content="sv">
 
-  <script src="../lib/leaflet/leaflet-src.js" type="text/javascript"></script>
-  <script src="../lib/FileSaver.js" type="text/javascript"></script>
+  <script src="lib/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="lib/leaflet/leaflet-src.js" type="text/javascript"></script>
+  <script src="lib/FileSaver.js" type="text/javascript"></script>
 
-  <script src="../lib/randomseed.js" type="text/javascript"></script>
+  <script src="lib/randomseed.js" type="text/javascript"></script>
 
-  <link rel="stylesheet" href="../lib/leaflet/leaflet.css" type="text/css"/>
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css" type="text/css"/>
   <!--[if lte IE 8]>
-  <link rel="stylesheet" href="../lib/leaflet/leaflet.ie.css"/>
+  <link rel="stylesheet" href="lib/leaflet/leaflet.ie.css"/>
   <![endif]-->
 
   <style type="text/css">
@@ -104,20 +105,9 @@
 
 <script type="text/javascript">
 
-  function hash(str) {
-      var hash = 0;
-      if (str.length == 0) return hash;
-      for (var i = 0; i < str.length; i++) {
-        var c = str.charCodeAt(i);
-        hash = ((hash<<5)-hash)+c;
-        hash = hash & hash; // Convert to 32bit integer
-      }
-      return hash;
-  }
-
   var map = new L.Map('map');
 
-  var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a> | Postorter från <a href="http://postnummeruppror.nu">Postnummeruppror</a>';
+  var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a> | Postnummer från <a href="http://postnummeruppror.nu">Postnummeruppror</a>';
 
   new L.TileLayer('http://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
     subdomains: "abc",
@@ -128,41 +118,43 @@
 
   map.setView(new L.LatLng(62.915233039476135, 15.8203125), 5);
 
-  var geojson = {"type":"FeatureCollection","features":[]};
+  $.getJSON('../nightly/postnummer_polygons_4.geo.json', function (geojson) {
+    L.geoJson(geojson, {
 
-  L.geoJson(geojson, {
+      style: function(feature) {
 
-    style: function(feature) {
+        Math.seedrandom(feature.properties.class);
+        var rgb = "#";
+        for (var i = 0; i<3; i++) {
+          rgb += parseInt(Math.random() * 255).toString(16);
+        }
 
-      Math.seedrandom(feature.properties.class);
-      var rgb = "#";
-      for (var i = 0; i<3; i++) {
-        rgb += parseInt(Math.random() * 255).toString(16);
+        return {
+          stroke: true,
+          color: '#ffffff',
+          weight: 1,
+          opacity: 1,
+
+          fillColor: rgb,
+          fillOpacity: 0.5
+        };
+
+      },
+
+
+      onEachFeature: function onEachFeature(feature, layer) {
+        if (feature.properties && feature.properties.class) {
+          layer.bindPopup(feature.properties.class);
+
+
+
+        }
       }
 
-      return {
-        stroke: true,
-        color: '#ffffff',
-        weight: 1,
-        opacity: 1,
-
-        fillColor: rgb,
-        fillOpacity: 0.5
-      };
-
-    },
+    }).addTo(map);
+  });
 
 
-    onEachFeature: function onEachFeature(feature, layer) {
-      if (feature.properties && feature.properties.class) {
-        layer.bindPopup(feature.properties.class);
-
-
-
-      }
-    }
-
-  }).addTo(map);
 
 
 

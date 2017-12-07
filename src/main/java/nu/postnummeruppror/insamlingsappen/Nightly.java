@@ -1,15 +1,15 @@
 package nu.postnummeruppror.insamlingsappen;
 
+import com.vividsolutions.jts.geom.GeometryFactory;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalCodes;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalTowns;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
+import se.kodapan.osm.jts.voronoi.GeoJSONVoronoiFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -22,6 +22,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class Nightly {
 
+  public static void main(String[] args) throws Exception {
+    Insamlingsappen.getInstance().open();
+    try {
+      new Nightly.NightlyRunnable().execute();
+    } finally {
+      Insamlingsappen.getInstance().close();
+    }
+  }
 
   private NightlyRunnable runnable;
 
@@ -87,13 +95,45 @@ public class Nightly {
       }
     }
 
-    private void execute() throws Exception {
+    public void execute() throws Exception {
 
+      // statistik
       {
         Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "stats.json")), "UTF8");
         JSONArray json = new ProduceTimeLineStatistics().execute();
         json.write(out);
         out.close();
+      }
+
+      // postnummerpolygoner
+      {
+        GeometryFactory geometryFactory = new GeometryFactory();
+        Sweden sweden = new Sweden(geometryFactory);
+
+        PostnummerPolygonProducer postnummerPolygonProducer = new PostnummerPolygonProducer(geometryFactory, sweden.getSwedenMultipolygon());
+
+        for (int postnummerLength = 1; postnummerLength <= 5; postnummerLength++) {
+          postnummerPolygonProducer.setPostalCodeLength(postnummerLength);
+          Writer geojson = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postnummer_polygons_" + postnummerLength + ".geo.json")), StandardCharsets.UTF_8);
+          GeoJSONVoronoiFactory<String> geojsonFactory = new GeoJSONVoronoiFactory<>();
+          geojsonFactory.factory(postnummerPolygonProducer.execute());
+          geojsonFactory.getRoot().writeJSON(geojson);
+          geojson.close();
+        }
+      }
+
+      // postortpolygoner
+      {
+        GeometryFactory geometryFactory = new GeometryFactory();
+        Sweden sweden = new Sweden(geometryFactory);
+
+        PostortPolygonProducer postortPolygonProducer = new PostortPolygonProducer(geometryFactory, sweden.getSwedenMultipolygon());
+        Writer geojson = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postort_polygons.geo.json")), StandardCharsets.UTF_8);
+        GeoJSONVoronoiFactory<String> geojsonFactory = new GeoJSONVoronoiFactory<>();
+        geojsonFactory.factory(postortPolygonProducer.execute());
+        geojsonFactory.getRoot().writeJSON(geojson);
+        geojson.close();
+
       }
 
       {
