@@ -37,6 +37,7 @@ public class PostortPolygonProducer {
       if (locationSample.getCoordinate() != null
           && locationSample.getCoordinate().getLatitude() != null
           && locationSample.getCoordinate().getLongitude() != null
+          && !"true".equalsIgnoreCase(locationSample.getTag("deprecated"))
           && locationSample.getTag("addr:city") != null
           && locationSample.getCoordinate().getAccuracy() != null
           && locationSample.getTimestamp() >= timestampFrom
