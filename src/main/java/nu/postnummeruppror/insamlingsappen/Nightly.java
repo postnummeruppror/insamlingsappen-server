@@ -6,6 +6,8 @@ import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalCodes;
 import nu.postnummeruppror.insamlingsappen.queries.GetUniquePostalTowns;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.kodapan.osm.jts.voronoi.GeoJSONVoronoiFactory;
 
 import java.io.*;
@@ -31,6 +33,8 @@ public class Nightly {
     }
   }
 
+  private Logger log = LoggerFactory.getLogger(getClass());
+
   private NightlyRunnable runnable;
 
   public void start() {
@@ -45,6 +49,8 @@ public class Nightly {
   }
 
   private static class NightlyRunnable implements Runnable {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     File nightlyPath = new File("src/main/webapp/nightly/");
 
@@ -64,14 +70,21 @@ public class Nightly {
       while (!stopping) {
 
         if (!nightlyPath.exists()) {
-          nightlyPath.mkdirs();
+          log.info("Creating path {}", nightlyPath.getAbsolutePath());
+          if (!nightlyPath.mkdirs()) {
+            log.error("Nightly will not run. Unable to mkdirs {}", nightlyPath.getAbsolutePath());
+            return;
+          }
+
           try {
             execute();
+            previousExecution = System.currentTimeMillis();
           } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Caught exception running nightly on new path", e);
           }
           continue;
         }
+
 
         Long hour = Long.valueOf(sdf.format(new Date(System.currentTimeMillis())));
         if (hour == 0) {

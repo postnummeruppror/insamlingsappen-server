@@ -39,6 +39,7 @@ public class PostnummerPolygonProducer {
       if (locationSample.getCoordinate() != null
           && locationSample.getCoordinate().getLatitude() != null
           && locationSample.getCoordinate().getLongitude() != null
+          && !"true".equalsIgnoreCase(locationSample.getTag("deprecated"))
           && locationSample.getTag("addr:postcode") != null
           && locationSample.getCoordinate().getAccuracy() != null
           && locationSample.getTimestamp() >= timestampFrom

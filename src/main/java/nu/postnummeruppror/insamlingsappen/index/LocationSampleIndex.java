@@ -93,8 +93,11 @@ public class LocationSampleIndex {
 
     log.info("Reconstructing index using " + numberOfQueueUpdaterThreads + " threads.");
 
+
     final ConcurrentLinkedQueue<LocationSample> queue = new ConcurrentLinkedQueue<>();
     queue.addAll(Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().values());
+
+    indexWriter.deleteAll();
 
     Thread[] threads = new Thread[numberOfQueueUpdaterThreads];
     for (int i = 0; i < threads.length; i++) {
@@ -248,7 +251,11 @@ public class LocationSampleIndex {
           }
           long identity = identities.get(doc);
           LocationSample locationSample = Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().get(identity);
-          results.put(locationSample, doScore ? scorer.score() : null);
+          if (locationSample == null) {
+            log.error("Inconsistency, no location sample with identity " + identity);
+          } else {
+            results.put(locationSample, doScore ? scorer.score() : null);
+          }
         }
 
         @Override
