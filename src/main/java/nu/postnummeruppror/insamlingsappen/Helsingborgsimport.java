@@ -2,6 +2,7 @@ package nu.postnummeruppror.insamlingsappen;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import nu.postnummeruppror.insamlingsappen.domain.Account;
 import nu.postnummeruppror.insamlingsappen.domain.Coordinate;
@@ -54,21 +55,8 @@ public class Helsingborgsimport {
 
       Set<LocationSample> deprecationSamples = new HashSet<>();
 
-      PojoRoot hullRoot = new PojoRoot();
-      {
-        InstantiatedOsmXmlParser parser = InstantiatedOsmXmlParser.newInstance();
-        parser.setRoot(hullRoot);
-        parser.parse(Helsingborgsimport.class.getResourceAsStream("/helsingborg hull.osm.xml"));
-      }
-      Way hullWay = hullRoot.getWays().values().iterator().next();
-      com.vividsolutions.jts.geom.Coordinate[] hullCoordinates = new com.vividsolutions.jts.geom.Coordinate[hullWay.getNodes().size()];
-      List<Node> nodes = hullWay.getNodes();
-      for (int i = 0; i < nodes.size(); i++) {
-        Node node = nodes.get(i);
-        hullCoordinates[i] = new com.vividsolutions.jts.geom.Coordinate(node.getX(), node.getY());
-      }
-      LinearRing hullShell = geometryFactory.createLinearRing(hullCoordinates);
-      Polygon hullPolygon = new Polygon(hullShell, null, geometryFactory);
+      MultiPolygon hullPolygon = new Sweden(geometryFactory).getMultiPolygon("name", "Helsingborgs kommun");
+
       for (LocationSample sample : Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().values()) {
         if (sample.getCoordinate() != null
             && sample.getCoordinate().getLatitude() != null

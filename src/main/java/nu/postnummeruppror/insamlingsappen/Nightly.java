@@ -110,7 +110,7 @@ public class Nightly {
         GeometryFactory geometryFactory = new GeometryFactory();
         Sweden sweden = new Sweden(geometryFactory);
 
-        PostnummerPolygonProducer postnummerPolygonProducer = new PostnummerPolygonProducer(geometryFactory, sweden.getSwedenMultipolygon());
+        PostnummerPolygonProducer postnummerPolygonProducer = new PostnummerPolygonProducer(geometryFactory, sweden.getSwedenMultiPolygon());
 
         for (int postnummerLength = 1; postnummerLength <= 5; postnummerLength++) {
           postnummerPolygonProducer.setPostalCodeLength(postnummerLength);
@@ -127,7 +127,7 @@ public class Nightly {
         GeometryFactory geometryFactory = new GeometryFactory();
         Sweden sweden = new Sweden(geometryFactory);
 
-        PostortPolygonProducer postortPolygonProducer = new PostortPolygonProducer(geometryFactory, sweden.getSwedenMultipolygon());
+        PostortPolygonProducer postortPolygonProducer = new PostortPolygonProducer(geometryFactory, sweden.getSwedenMultiPolygon());
         Writer geojson = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postort_polygons.geo.json")), StandardCharsets.UTF_8);
         GeoJSONVoronoiFactory<String> geojsonFactory = new GeoJSONVoronoiFactory<>();
         geojsonFactory.factory(postortPolygonProducer.execute());

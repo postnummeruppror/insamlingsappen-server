@@ -18,8 +18,6 @@ public class Sweden {
   private GeometryFactory geometryFactory;
 
   private PojoRoot sweden;
-  private List<LinearRing> swedenLinearRings;
-  private MultiPolygon swedenMultipolygon;
 
   public Sweden(GeometryFactory geometryFactory) throws Exception {
 
@@ -28,12 +26,26 @@ public class Sweden {
     sweden = new PojoRoot();
     InstantiatedOsmXmlParser parser = InstantiatedOsmXmlParser.newInstance();
     parser.setRoot(sweden);
-    parser.parse(getClass().getResourceAsStream("/sverige-odbl.osm.xml"));
+    parser.parse(getClass().getResourceAsStream("/kodapan-cc0-graenser.osm.xml"));
 
-    swedenLinearRings = new ArrayList<>();
+  }
 
-    Relation rootRelation = sweden.getRelation(52822);
+  public MultiPolygon getSwedenMultiPolygon() {
+    return getMultiPolygon("name", "Sverige");
+  }
 
+  public MultiPolygon getMultiPolygon(String key, String value) {
+    for (Relation relation : sweden.getRelations().values()) {
+      if (value.equals(relation.getTag(key))) {
+        return extractMultiPolygon(relation);
+      }
+    }
+    return null;
+  }
+
+  private MultiPolygon extractMultiPolygon(Relation rootRelation) {
+
+    List<LinearRing> linearRings = new ArrayList<>();
 
 
     List<Node> nodes = new ArrayList<>();
@@ -93,33 +105,17 @@ public class Sweden {
           coordinates[i] = new Coordinate(node.getX(), node.getY());
         }
         coordinates[coordinates.length - 1] = coordinates[0];
-        swedenLinearRings.add(new LinearRing(new CoordinateArraySequence(coordinates), geometryFactory));
+        linearRings.add(new LinearRing(new CoordinateArraySequence(coordinates), geometryFactory));
         firstNode = null;
         nodes.clear();
       }
     }
 
-    Polygon[] polygons = new Polygon[swedenLinearRings.size()];
-    for (int i = 0; i < swedenLinearRings.size(); i++) {
-      polygons[i] = new Polygon(swedenLinearRings.get(i), null, geometryFactory);
+    Polygon[] polygons = new Polygon[linearRings.size()];
+    for (int i = 0; i < linearRings.size(); i++) {
+      polygons[i] = new Polygon(linearRings.get(i), null, geometryFactory);
     }
-    swedenMultipolygon = new MultiPolygon(polygons, geometryFactory);
-
+    return new MultiPolygon(polygons, geometryFactory);
   }
 
-  public GeometryFactory getGeometryFactory() {
-    return geometryFactory;
-  }
-
-  public PojoRoot getSweden() {
-    return sweden;
-  }
-
-  public List<LinearRing> getSwedenLinearRings() {
-    return swedenLinearRings;
-  }
-
-  public MultiPolygon getSwedenMultipolygon() {
-    return swedenMultipolygon;
-  }
 }

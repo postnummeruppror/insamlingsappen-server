@@ -88,7 +88,7 @@ public class PostnummerPolygonService {
   private int postalCodeLength = 5;
 
   public Map<String, List<Polygon>> factory() throws Exception {
-    PostnummerPolygonProducer producer = new PostnummerPolygonProducer(geometryFactory, sweden.getSwedenMultipolygon());
+    PostnummerPolygonProducer producer = new PostnummerPolygonProducer(geometryFactory, sweden.getSwedenMultiPolygon());
     producer.setTimestampFrom(timestampFrom);
     producer.setTimestampTo(timestampTo);
     producer.setMaximumAccuracy(maximumAccuracy);

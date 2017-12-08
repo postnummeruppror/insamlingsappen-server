@@ -88,7 +88,7 @@ public class PostortsPolygonService {
   private double maximumAccuracy = 1000;
 
   public Map<String, List<Polygon>> factory() throws Exception {
-    PostortPolygonProducer producer = new PostortPolygonProducer(geometryFactory, sweden.getSwedenMultipolygon());
+    PostortPolygonProducer producer = new PostortPolygonProducer(geometryFactory, sweden.getSwedenMultiPolygon());
     producer.setTimestampFrom(timestampFrom);
     producer.setTimestampTo(timestampTo);
     producer.setMaximumAccuracy(maximumAccuracy);
