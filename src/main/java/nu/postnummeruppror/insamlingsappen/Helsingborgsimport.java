@@ -14,6 +14,7 @@ import se.kodapan.osm.domain.Way;
 import se.kodapan.osm.domain.root.PojoRoot;
 import se.kodapan.osm.parser.xml.instantiated.InstantiatedOsmXmlParser;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -145,12 +146,13 @@ public class Helsingborgsimport {
         parser.parse(Helsingborgsimport.class.getResourceAsStream("/helsingborg adresspunkter.osm.xml"));
       }
 
+      String accountIdentity = "Helsingborgimport " + new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
       for (Node node : dataRoot.getNodes().values()) {
         CreateLocationSample createLocationSample = new CreateLocationSample();
 
         createLocationSample.setLocationSampleIdentity(Insamlingsappen.getInstance().getPrevayler().execute(new IdentityFactory()));
-        createLocationSample.setAccountIdentity("Helsingborgimport version 0.0.1");
+        createLocationSample.setAccountIdentity(accountIdentity);
 
         createLocationSample.setApplication("Helsingborgimport");
         createLocationSample.setApplicationVersion("0.0.1");
@@ -171,9 +173,16 @@ public class Helsingborgsimport {
         if (city != null) {
           createLocationSample.getTags().put("addr:city", city);
         }
+        String street = node.getTag("addr:street");
+        if (street != null) {
+          createLocationSample.getTags().put("addr:street", street.trim());
+        }
+        String housenumber = node.getTag("addr:housenumber");
+        if (housenumber != null) {
+          createLocationSample.getTags().put("addr:housenumber", housenumber.trim());
+        }
         if (!createLocationSample.getTags().isEmpty()) {
           Insamlingsappen.getInstance().getPrevayler().execute(createLocationSample);
-
         } else {
           System.currentTimeMillis();
         }
