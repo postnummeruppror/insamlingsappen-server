@@ -28,10 +28,15 @@ public class Helsingborgsimport {
     try {
 
 
-      // 1. deprecate old data within the hull of the imported data
+      // 1. deprecate old data
+      // 1.1 within the hull of the imported data
+      // 1.2 without coordinate but with addr:city set to a postort that only exists within the hull
+      // todo 1.3 without coordinate but with addr:postcode set to a postal code that only exists within the hull
 
       GeometryFactory geometryFactory = new GeometryFactory();
 
+
+      // This was valid 2017-12-06. Might not be valid when you read it or run it.
 
       Set<String> postorterOnlyInHelsingborgKommun = new HashSet<>();
       postorterOnlyInHelsingborgKommun.add("GANTOFTA");
@@ -70,29 +75,33 @@ public class Helsingborgsimport {
       LinearRing hullShell = geometryFactory.createLinearRing(hullCoordinates);
       Polygon hullPolygon = new Polygon(hullShell, null, geometryFactory);
       for (LocationSample sample : Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().values()) {
-        if (sample.getCoordinate() != null
-            && sample.getCoordinate().getLatitude() != null
-            && sample.getCoordinate().getLongitude() != null) {
 
-          if (hullPolygon.contains(geometryFactory.createPoint(
-              new com.vividsolutions.jts.geom.Coordinate(
-                  sample.getCoordinate().getLongitude(),
-                  sample.getCoordinate().getLatitude()
-              )))) {
-            deprecationSamples.add(sample);
-          }
-        } else {
-          String addrCity = sample.getTag("addr:city");
-          if (addrCity != null
-              && postorterOnlyInHelsingborgKommun.contains(addrCity.toUpperCase().trim())) {
-            deprecationSamples.add(sample);
-          }
+        if (!"true".equalsIgnoreCase(sample.getTag("deprecated"))) {
+
+          if (sample.getCoordinate() != null
+              && sample.getCoordinate().getLatitude() != null
+              && sample.getCoordinate().getLongitude() != null) {
+
+            if (hullPolygon.contains(geometryFactory.createPoint(
+                new com.vividsolutions.jts.geom.Coordinate(
+                    sample.getCoordinate().getLongitude(),
+                    sample.getCoordinate().getLatitude()
+                )))) {
+              deprecationSamples.add(sample);
+            }
+          } else {
+            String addrCity = sample.getTag("addr:city");
+            if (addrCity != null
+                && postorterOnlyInHelsingborgKommun.contains(addrCity.toUpperCase().trim())) {
+              deprecationSamples.add(sample);
+            }
 //          String postnummer = sample.getTag("addr:postcode");
 //          if (postnummer != null
 //              && postnummerOnlyInHelsingborgKommun.contains(postnummer.trim())) {
 //            deprecationSamples.add(sample);
 //          }
 
+          }
         }
       }
 
@@ -168,6 +177,11 @@ public class Helsingborgsimport {
         } else {
           System.currentTimeMillis();
         }
+      }
+
+      // 3. produce emails to holders of accounts and let them know their reports have been deprecated
+      for (Map.Entry<String, List<LocationSample>> entry : samplesByEmail.entrySet()) {
+        System.out.println(entry.getKey() + "\t" + entry.getValue().size());
       }
 
       System.currentTimeMillis();
