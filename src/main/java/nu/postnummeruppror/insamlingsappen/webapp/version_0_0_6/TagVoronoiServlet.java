@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.precision.GeometryPrecisionReducer;
 import nu.postnummeruppror.insamlingsappen.Insamlingsappen;
+import nu.postnummeruppror.insamlingsappen.Sweden;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 import nu.postnummeruppror.insamlingsappen.index.LocationSampleIndexFields;
 import org.apache.commons.io.IOUtils;
@@ -35,7 +36,7 @@ public class TagVoronoiServlet extends HttpServlet {
   private static final Logger log = LoggerFactory.getLogger(TagVoronoiServlet.class);
 
 
-  private MultiPolygon swedenMultipolygon;
+  private Sweden sweden;
   private GeometryFactory geometryFactory;
 
   @Override
@@ -43,86 +44,8 @@ public class TagVoronoiServlet extends HttpServlet {
 
     try {
 
-      geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.maximumPreciseValue));
-
-      PojoRoot sweden = new PojoRoot();
-      InstantiatedOsmXmlParser parser = InstantiatedOsmXmlParser.newInstance();
-      parser.setRoot(sweden);
-      parser.parse(getClass().getResourceAsStream("/sverige-natural-earth-cc0.osm.xml"));
-
-      List<LinearRing> swedenLinearRings = new ArrayList<>();
-
-      Relation rootRelation = sweden.getRelation(-524915);
-
-
-      List<Node> nodes = new ArrayList<>();
-      Node firstNode = null;
-      for (RelationMembership membership : rootRelation.getMembers()) {
-
-        if (!"outer".equalsIgnoreCase(membership.getRole())) {
-          continue;
-        }
-
-        if (firstNode == null) {
-          firstNode = membership.getObject().accept(new OsmObjectVisitor<Node>() {
-            @Override
-            public Node visit(Node node) {
-              return node;
-            }
-
-            @Override
-            public Node visit(Way way) {
-              return way.getNodes().get(0);
-            }
-
-            @Override
-            public Node visit(Relation relation) {
-              return relation.accept(this);
-            }
-          });
-        }
-
-        nodes.addAll(membership.getObject().accept(new OsmObjectVisitor<List<Node>>() {
-          @Override
-          public List<Node> visit(Node node) {
-            ArrayList<Node> nodes = new ArrayList<>(1);
-            nodes.add(node);
-            return nodes;
-          }
-
-          @Override
-          public List<Node> visit(Way way) {
-            return way.getNodes();
-          }
-
-          @Override
-          public List<Node> visit(Relation relation) {
-            List<Node> nodes = new ArrayList<>();
-            for (RelationMembership membership : relation.getMembers()) {
-              nodes.addAll(membership.getObject().accept(this));
-            }
-            return nodes;
-          }
-        }));
-
-        if (nodes.get(nodes.size() - 1).equals(firstNode)) {
-          Coordinate[] coordinates = new Coordinate[nodes.size() + 1];
-          for (int i = 0; i < nodes.size(); i++) {
-            Node node = nodes.get(i);
-            coordinates[i] = new Coordinate(node.getX(), node.getY());
-          }
-          coordinates[coordinates.length - 1] = coordinates[0];
-          swedenLinearRings.add(new LinearRing(new CoordinateArraySequence(coordinates), geometryFactory));
-          firstNode = null;
-          nodes.clear();
-        }
-      }
-
-      Polygon[] polygons = new Polygon[swedenLinearRings.size()];
-      for (int i = 0; i < swedenLinearRings.size(); i++) {
-        polygons[i] = new Polygon(swedenLinearRings.get(i), null, geometryFactory);
-      }
-      swedenMultipolygon = new MultiPolygon(polygons, geometryFactory);
+      geometryFactory = new GeometryFactory();
+      sweden = new Sweden(geometryFactory);
 
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -150,13 +73,14 @@ public class TagVoronoiServlet extends HttpServlet {
       long timestampTo = Long.MAX_VALUE;
       long maximumAccuracy = 999;
 
-      Map<String, Set<LocationSample>> gatheredPerNormalizedPostalTown = new HashMap<>(2000);
+      Map<String, Set<LocationSample>> samplesByClassValue = new HashMap<>(2000);
 
       for (LocationSample locationSample : locationSamples) {
         if (locationSample.getCoordinate() != null
             && locationSample.getCoordinate().getLatitude() != null
             && locationSample.getCoordinate().getLongitude() != null
             && locationSample.getTag(tag) != null
+            && !"true".equalsIgnoreCase(locationSample.getTag("deprecated"))
             && locationSample.getCoordinate().getAccuracy() != null
             && locationSample.getTimestamp() >= timestampFrom
             && locationSample.getTimestamp() <= timestampTo) {
@@ -171,10 +95,10 @@ public class TagVoronoiServlet extends HttpServlet {
             continue;
           }
 
-          Set<LocationSample> perNormalizedTagValue = gatheredPerNormalizedPostalTown.get(tagValue);
+          Set<LocationSample> perNormalizedTagValue = samplesByClassValue.get(tagValue);
           if (perNormalizedTagValue == null) {
             perNormalizedTagValue = new HashSet<>(4096);
-            gatheredPerNormalizedPostalTown.put(tagValue, perNormalizedTagValue);
+            samplesByClassValue.put(tagValue, perNormalizedTagValue);
           }
           perNormalizedTagValue.add(locationSample);
 
@@ -184,7 +108,7 @@ public class TagVoronoiServlet extends HttpServlet {
       AdjacentClassVoronoiClusterer<String> voronoiClusterer = new AdjacentClassVoronoiClusterer<>(new GeometryFactory());
       voronoiClusterer.setNumberOfThreads(1);
 
-      for (Map.Entry<String, Set<LocationSample>> entry : gatheredPerNormalizedPostalTown.entrySet()) {
+      for (Map.Entry<String, Set<LocationSample>> entry : samplesByClassValue.entrySet()) {
 
         String tagValue = entry.getKey();
         for (LocationSample locationSample : entry.getValue()) {
@@ -229,7 +153,7 @@ public class TagVoronoiServlet extends HttpServlet {
         List<Polygon> polygons = new ArrayList<>();
 
         for (Polygon polygon : entry.getValue()) {
-          Geometry geometry = foo.reduce(polygon).intersection(foo.reduce(swedenMultipolygon));
+          Geometry geometry = foo.reduce(polygon).intersection(foo.reduce(sweden.getSwedenMultiPolygon()));
           if (geometry instanceof Polygon) {
             polygons.add((Polygon) geometry);
           } else if (geometry instanceof GeometryCollection) {
