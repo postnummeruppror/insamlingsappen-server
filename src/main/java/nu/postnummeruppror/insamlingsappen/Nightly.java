@@ -121,8 +121,8 @@ public class Nightly {
 
       // statistik
       {
-        Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "stats.json")), "UTF8");
         JSONArray json = new ProduceTimeLineStatistics().execute();
+        Writer out = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "stats.json")), "UTF8");
         json.write(out);
         out.close();
       }
@@ -136,9 +136,9 @@ public class Nightly {
 
         for (int postnummerLength = 1; postnummerLength <= 5; postnummerLength++) {
           postnummerPolygonProducer.setPostalCodeLength(postnummerLength);
-          Writer geojson = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postnummer_polygons_" + postnummerLength + ".geo.json")), StandardCharsets.UTF_8);
           GeoJSONVoronoiFactory<String> geojsonFactory = new GeoJSONVoronoiFactory<>();
           geojsonFactory.factory(postnummerPolygonProducer.execute());
+          Writer geojson = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postnummer_polygons_" + postnummerLength + ".geo.json")), StandardCharsets.UTF_8);
           geojsonFactory.getRoot().writeJSON(geojson);
           geojson.close();
         }
@@ -150,9 +150,9 @@ public class Nightly {
         Sweden sweden = new Sweden(geometryFactory);
 
         PostortPolygonProducer postortPolygonProducer = new PostortPolygonProducer(geometryFactory, sweden.getSwedenMultiPolygon());
-        Writer geojson = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postort_polygons.geo.json")), StandardCharsets.UTF_8);
         GeoJSONVoronoiFactory<String> geojsonFactory = new GeoJSONVoronoiFactory<>();
         geojsonFactory.factory(postortPolygonProducer.execute());
+        Writer geojson = new OutputStreamWriter(new FileOutputStream(new File(nightlyPath, "postort_polygons.geo.json")), StandardCharsets.UTF_8);
         geojsonFactory.getRoot().writeJSON(geojson);
         geojson.close();
 
