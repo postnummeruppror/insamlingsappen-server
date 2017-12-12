@@ -110,6 +110,11 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
         }
       }
 
+      if (coordinate.getLatitude() == null
+          && coordinate.getLongitude() == null) {
+        coordinate = null;
+      }
+
       locationSample.setCoordinate(coordinate);
 
     }

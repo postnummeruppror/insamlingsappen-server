@@ -7,23 +7,29 @@ import nu.postnummeruppror.insamlingsappen.domain.Root;
 import org.prevayler.TransactionWithQuery;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author kalle
- * @since 2014-09-29 19:04
+ * @since 2017-12-11 22:22
  */
-public class CreateLocationSample implements TransactionWithQuery<Root, LocationSample>, Serializable {
+public class ReplaceLocationSample implements TransactionWithQuery<Root, LocationSample>, Serializable {
 
   private static final long serialVersionUID = 1l;
 
-  public CreateLocationSample() {
+  private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+  public ReplaceLocationSample() {
   }
 
   private String accountIdentity;
-  private Long locationSampleIdentity;
+
+  private Long previousLocationSampleIdentity;
+  private Long nextLocationSampleIdentity;
 
   private String application;
   private String applicationVersion;
@@ -32,8 +38,14 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
 
   private Map<String, String> tags = new HashMap<>();
 
+
   @Override
   public LocationSample executeAndQuery(Root root, Date executionTime) throws Exception {
+
+    LocationSample previousLocationSample = root.getLocationSamples().get(previousLocationSampleIdentity);
+    if (previousLocationSample == null) {
+      throw new IllegalArgumentException("No LocationSample with identity " + previousLocationSampleIdentity);
+    }
 
     Account account = root.getAccounts().get(accountIdentity);
     if (account == null) {
@@ -44,13 +56,13 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
       root.getAccounts().put(account.getIdentity(), account);
     }
 
-    LocationSample locationSample = new LocationSample();
-    locationSample.setIdentity(locationSampleIdentity);
+    LocationSample nextLocationSample = new LocationSample();
+    nextLocationSample.setIdentity(nextLocationSampleIdentity);
 
-    locationSample.setTimestamp(executionTime.getTime());
+    nextLocationSample.setTimestamp(executionTime.getTime());
 
-    locationSample.setApplication(root.getApplicationIntern().intern(application));
-    locationSample.setApplicationVersion(root.getApplicationVersionIntern().intern(applicationVersion));
+    nextLocationSample.setApplication(root.getApplicationIntern().intern(application));
+    nextLocationSample.setApplicationVersion(root.getApplicationVersionIntern().intern(applicationVersion));
 
     if (coordinate != null) {
 
@@ -68,22 +80,30 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
         coordinate = null;
       }
 
-      locationSample.setCoordinate(coordinate);
+
+      nextLocationSample.setCoordinate(coordinate);
 
     }
 
     for (Map.Entry<String, String> tag : tags.entrySet()) {
-      locationSample.setTag(root.getTagsIntern().internKey(tag.getKey()), root.getTagsIntern().internValue(tag.getKey(), tag.getValue()));
+      nextLocationSample.setTag(root.getTagsIntern().internKey(tag.getKey()), root.getTagsIntern().internValue(tag.getKey(), tag.getValue()));
     }
 
 
-    locationSample.setAccount(account);
-    account.getLocationSamples().add(locationSample);
+    nextLocationSample.setAccount(account);
+    account.getLocationSamples().add(nextLocationSample);
 
 
-    root.getLocationSamples().put(locationSample.getIdentity(), locationSample);
+    root.getLocationSamples().put(nextLocationSample.getIdentity(), nextLocationSample);
 
-    return locationSample;
+    // deprecate previous
+    previousLocationSample.getTags().put("deprecated", "true");
+    previousLocationSample.getTags().put("deprecated_reason", "Replaced due to change");
+    previousLocationSample.getTags().put("deprecated_replacement", String.valueOf(nextLocationSampleIdentity));
+    previousLocationSample.getTags().put("deprecated_timestamp", df.format(executionTime));
+
+    // return new
+    return nextLocationSample;
 
 
   }
@@ -96,12 +116,20 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     this.accountIdentity = accountIdentity;
   }
 
-  public Long getLocationSampleIdentity() {
-    return locationSampleIdentity;
+  public Long getPreviousLocationSampleIdentity() {
+    return previousLocationSampleIdentity;
   }
 
-  public void setLocationSampleIdentity(Long locationSampleIdentity) {
-    this.locationSampleIdentity = locationSampleIdentity;
+  public void setPreviousLocationSampleIdentity(Long previousLocationSampleIdentity) {
+    this.previousLocationSampleIdentity = previousLocationSampleIdentity;
+  }
+
+  public Long getNextLocationSampleIdentity() {
+    return nextLocationSampleIdentity;
+  }
+
+  public void setNextLocationSampleIdentity(Long nextLocationSampleIdentity) {
+    this.nextLocationSampleIdentity = nextLocationSampleIdentity;
   }
 
   public String getApplication() {
@@ -136,3 +164,5 @@ public class CreateLocationSample implements TransactionWithQuery<Root, Location
     this.tags = tags;
   }
 }
+
+

@@ -224,5 +224,15 @@
   </servlet-mapping>
 
 
+  <servlet>
+    <servlet-name>0.0.6/ReplaceLocationSampleServlet</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_6.ReplaceLocationSampleServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>0.0.6/ReplaceLocationSampleServlet</servlet-name>
+    <url-pattern>/api/0.0.6/location_sample/replace</url-pattern>
+  </servlet-mapping>
+
+
 
 </web-app>

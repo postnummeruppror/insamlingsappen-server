@@ -143,13 +143,11 @@ public class ListLocationSamplesByGeoJsonPolygonServlet extends HttpServlet {
         locationSampleJSON.put("identity", locationSample.getIdentity());
 
 
-        JSONArray tagsJSON = new JSONArray();
+        JSONObject tagsJSON = new JSONObject();
         locationSampleJSON.put("tags", tagsJSON);
 
         for (Map.Entry<String, String> tag : locationSample.getTags().entrySet()) {
-          JSONObject tagJSON = new JSONObject();
-          tagJSON.put(tag.getKey(), tag.getValue());
-          tagsJSON.put(tagJSON);
+          tagsJSON.put(tag.getKey(), tag.getValue());
         }
 
         if (locationSample.getCoordinate() != null) {

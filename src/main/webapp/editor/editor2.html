@@ -25,9 +25,11 @@
 
   <script src="lib/randomseed.js" type="text/javascript"></script>
 
+
   <link rel="stylesheet" href="lib/leaflet-1.2.0/leaflet.css" type="text/css"/>
 
   <style type="text/css">
+
     html, body, div, span, textarea, button, input, table, tr, td {
       font-family: arial, helvetica, sans-serif;
       font-size: 13px
@@ -38,6 +40,13 @@
       padding: 0px;
       width: 100%;
       height: 100%;
+    }
+
+    #form {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      z-index: 1000;
     }
 
     #map div.locationSampleMarker {
@@ -102,6 +111,7 @@
 
 <script type="text/javascript">
 
+
   var map = new L.Map('map');
 
   var attribution = 'Kartbilder från <a href="http://www.openstreetmap.se">OpenStreetMap Sverige</a> | Postorter från <a href="http://postnummeruppror.nu">Postnummeruppror</a>';
@@ -118,42 +128,50 @@
   var locationSamplesMarkersLayer = L.layerGroup();
   map.addLayer(locationSamplesMarkersLayer);
 
+  var polygonLayer;
 
-  $.getJSON('../nightly/postort_polygons.geo.json', function (geojson) {
-    var polygonLayer = L.geoJson(geojson, {
+  function loadPolygons() {
+    $.getJSON('../nightly/' + $("#polygons").val() + '.geo.json', function (geojson) {
 
-      style: function (feature) {
-
-        Math.seedrandom(feature.properties.class);
-        var rgb = "#";
-        for (var i = 0; i < 3; i++) {
-          rgb += parseInt(Math.random() * 255).toString(16);
-        }
-
-        return {
-          stroke: true,
-          color: '#ffffff',
-          weight: 1,
-          opacity: 1,
-
-          fillColor: rgb,
-          fillOpacity: 0.5
-        };
-
-      },
-
-
-      onEachFeature: function onEachFeature(feature, layer) {
-        if (feature.properties && feature.properties.class) {
-          layer.bindPopup(feature.properties.class);
-        }
+      if (polygonLayer) {
+        polygonLayer.clearLayers();
+        map.removeLayer(polygonLayer);
       }
 
-    });
+      polygonLayer = L.geoJson(geojson, {
 
-    polygonLayer.addTo(map);
+        style: function (feature) {
 
-    polygonLayer.on("click", function click(e) {
+          Math.seedrandom(feature.properties.class);
+          var rgb = "#";
+          for (var i = 0; i < 3; i++) {
+            rgb += parseInt(Math.random() * 255).toString(16);
+          }
+
+          return {
+            stroke: true,
+            color: '#ffffff',
+            weight: 1,
+            opacity: 1,
+
+            fillColor: rgb,
+            fillOpacity: 0.5
+          };
+
+        },
+
+
+        onEachFeature: function onEachFeature(feature, layer) {
+          if (feature.properties && feature.properties.class) {
+            layer.bindPopup(feature.properties.class);
+          }
+        }
+
+      });
+
+      polygonLayer.addTo(map);
+
+      polygonLayer.on("click", function click(e) {
         // load location samples using
         // /api/0.0.6/location_sample/listByGeoJsonPolygon
         // and bind to markers
@@ -176,27 +194,94 @@
 
           for (var i = 0; i < data.locationSamples.length; i++) {
 
+
+            function createMarker(locationSample) {
+              var marker = L.marker(
+                  [locationSample.coordinate.latitude, locationSample.coordinate.longitude], {
+                    icon: L.divIcon({
+                      className: "locationSampleMarker",
+                      html: locationSample.identity
+                    })
+                  });
+
+              marker.on("click", function markerClick(e) {
+                $("#locationSample-json").val(JSON.stringify(locationSample, null, 2));
+              });
+
+              return marker;
+            }
+
             var locationSample = data.locationSamples[i];
-
-            var marker = L.marker(
-                [locationSample.coordinate.latitude, locationSample.coordinate.longitude], {
-                  icon: L.divIcon({
-                    className: "locationSampleMarker",
-                    html: JSON.stringify(locationSample)
-                  })
-                });
-
-            locationSamplesMarkersLayer.addLayer(marker);
-
+            if (!locationSample.tags.deprecated) {
+              var marker = createMarker(locationSample)
+              locationSamplesMarkersLayer.addLayer(marker);
+            }
 
           }
 
         });
+      });
     });
+  }
+
+
+  var secretKey = new URLSearchParams(location.search.slice(1)).get("secretKey");
+  
+  function replace() {
+    var object = JSON.parse($("#locationSample-json").val());
+
+    object.secretKey = secretKey;
+    object.accountIdentity = "test-account"; // todo
+    object.application = "test-editor.html";
+    object.applicationVersion = "0.0.1";
+
+    $.post("/api/0.0.6/location_sample/replace", JSON.stringify(object, null, 2),
+        function success(data) {
+          $("#locationSample-json").val("REPLACED");
+        }, function fail() {
+          $("#locationSample-json").val("FAILED TO REPLACE");
+        });
+    $("#locationSample-json").val("SENT FOR UPDATE");
+
+  }
+
+  function deprecate() {
+    $.post("/api/0.0.6/location_sample/deprecate", $("#locationSample-json").val(),
+        function success(data) {
+          $("#locationSample-json").val(data);
+        }, function fail() {
+
+        });
+    $("#locationSample-json").val("SENT FOR DEPRECATION");
+
+  }
+
+
+  $(document).ready(function () {
+    loadPolygons();
   });
 
 
 </script>
+
+<div id="form">
+  <select id="polygons" onchange="loadPolygons()">
+    <option value="postort_polygons" selected>Postorter</option>
+    <option value="postnummer_polygons_1">Postnummer 1</option>
+    <option value="postnummer_polygons_2">Postnummer 2</option>
+    <option value="postnummer_polygons_3">Postnummer 3</option>
+    <option value="postnummer_polygons_4">Postnummer 4</option>
+    <option value="postnummer_polygons_5">Postnummer 5</option>
+  </select>
+  <br/>
+  <br/>
+  <textarea id="locationSample-json" rows="20" cols="40"></textarea>
+  <br/>
+  <button onclick="replace();">Ersätt</button>
+  <!--<br/>-->
+  <!--<input id="deprecation-text" style="width:20em;" value="Anledning"/>-->
+  <!--<button onclick="deprecate();">Fasa ut</button>-->
+</div>
 
 
 </body>
