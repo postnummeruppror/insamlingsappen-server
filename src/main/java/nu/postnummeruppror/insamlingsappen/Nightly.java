@@ -27,13 +27,22 @@ public class Nightly {
   public static void main(String[] args) throws Exception {
     Insamlingsappen.getInstance().open();
     try {
-      new Nightly.NightlyRunnable().execute();
+      Nightly.getInstance().getRunnable().execute();
     } finally {
       Insamlingsappen.getInstance().close();
     }
   }
 
   private Logger log = LoggerFactory.getLogger(getClass());
+
+  private static Nightly instance = new Nightly();
+
+  public static Nightly getInstance() {
+    return instance;
+  }
+
+  private Nightly() {
+  }
 
   private NightlyRunnable runnable;
 
@@ -48,7 +57,7 @@ public class Nightly {
     runnable.stop();
   }
 
-  private static class NightlyRunnable implements Runnable {
+  public static class NightlyRunnable implements Runnable {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -108,7 +117,7 @@ public class Nightly {
       }
     }
 
-    public void execute() throws Exception {
+    public synchronized void execute() throws Exception {
 
       // statistik
       {
@@ -319,5 +328,7 @@ public class Nightly {
     }
   }
 
-
+  public NightlyRunnable getRunnable() {
+    return runnable;
+  }
 }

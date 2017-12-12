@@ -234,5 +234,15 @@
   </servlet-mapping>
 
 
+  <servlet>
+    <servlet-name>0.0.6/RunNightlyServlet</servlet-name>
+    <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_6.RunNightlyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>0.0.6/RunNightlyServlet</servlet-name>
+    <url-pattern>/api/0.0.6/nightly/run</url-pattern>
+  </servlet-mapping>
+
+
 
 </web-app>

@@ -12,8 +12,6 @@ import javax.servlet.ServletContextListener;
  */
 public class ServiceStarter implements ServletContextListener {
 
-  private Nightly nightly;
-
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
     try {
@@ -22,14 +20,13 @@ public class ServiceStarter implements ServletContextListener {
       throw new RuntimeException(e);
     }
 
-    nightly = new Nightly();
-    nightly.start();
+    Nightly.getInstance().start();
   }
 
   @Override
   public void contextDestroyed(ServletContextEvent servletContextEvent) {
 
-    nightly.stop();
+    Nightly.getInstance().stop();
 
     try {
       Insamlingsappen.getInstance().close();
