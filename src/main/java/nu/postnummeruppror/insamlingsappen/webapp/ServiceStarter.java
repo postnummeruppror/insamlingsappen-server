@@ -14,6 +14,9 @@ public class ServiceStarter implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
+
+    System.out.println("Secret key is " + System.getProperty("secretKey"));
+
     try {
       Insamlingsappen.getInstance().open();
     } catch (Exception e) {

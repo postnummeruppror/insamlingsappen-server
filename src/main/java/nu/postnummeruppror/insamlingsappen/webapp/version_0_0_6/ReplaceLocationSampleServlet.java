@@ -91,8 +91,8 @@ public class ReplaceLocationSampleServlet extends HttpServlet {
 
       log.debug("Incoming replace request: " + requestJSON.toString());
 
-      if (!requestJSON.getString("secretKey").equals(System.getenv("secretKey"))) {
-        log.warn("Invalid secret key. Should be {} but was {}", System.getenv("secretKey"), requestJSON.getString("secretKey"));
+      if (!requestJSON.getString("secretKey").equals(System.getProperty("secretKey"))) {
+        log.warn("Invalid secret key. Should be {} but was {}", System.getProperty("secretKey"), requestJSON.getString("secretKey"));
         throw new RuntimeException("Invalid secret key.");
       }
 
