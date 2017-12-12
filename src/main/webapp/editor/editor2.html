@@ -130,6 +130,8 @@
 
   var polygonLayer;
 
+  var selectedMarker = null;
+
   function loadPolygons() {
     $.getJSON('../nightly/' + $("#polygons").val() + '.geo.json', function (geojson) {
 
@@ -206,6 +208,7 @@
 
               marker.on("click", function markerClick(e) {
                 $("#locationSample-json").val(JSON.stringify(locationSample, null, 2));
+                selectedMarker = marker;
               });
 
               return marker;
@@ -256,6 +259,11 @@
 
   }
 
+  function hideSelectedMarker() {
+    locationSamplesMarkersLayer.removeLayer(selectedMarker);
+    $("#locationSample-json").val("");
+  }
+
 
   $(document).ready(function () {
     loadPolygons();
@@ -278,7 +286,9 @@
   <textarea id="locationSample-json" rows="20" cols="40"></textarea>
   <br/>
   <button onclick="replace();">Ersätt</button>
-  <!--<br/>-->
+  <br/>
+  <button onclick="hideSelectedMarker();">Göm vald</button>
+  <br/>
   <!--<input id="deprecation-text" style="width:20em;" value="Anledning"/>-->
   <!--<button onclick="deprecate();">Fasa ut</button>-->
 </div>
