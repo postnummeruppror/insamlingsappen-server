@@ -92,7 +92,8 @@ public class ReplaceLocationSampleServlet extends HttpServlet {
       log.debug("Incoming replace request: " + requestJSON.toString());
 
       if (!requestJSON.getString("secretKey").equals(System.getenv("secretKey"))) {
-        throw new RuntimeException("Invalid secret key");
+        log.warn("Invalid secret key. Should be {} but was {}", System.getenv("secretKey"), requestJSON.getString("secretKey"));
+        throw new RuntimeException("Invalid secret key.");
       }
 
       ReplaceLocationSample replaceLocationSample = new ReplaceLocationSample();
@@ -107,8 +108,8 @@ public class ReplaceLocationSampleServlet extends HttpServlet {
       if (requestJSON.has("tags")) {
         JSONObject tagsJSON = requestJSON.getJSONObject("tags");
 
-        for (Iterator keysIterator = tagsJSON.keys(); keysIterator.hasNext();) {
-          String key = (String)keysIterator.next();
+        for (Iterator keysIterator = tagsJSON.keys(); keysIterator.hasNext(); ) {
+          String key = (String) keysIterator.next();
           String value = tagsJSON.getString(key);
           replaceLocationSample.getTags().put(key, value);
         }
