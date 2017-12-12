@@ -215,7 +215,10 @@
             }
 
             var locationSample = data.locationSamples[i];
-            if (!locationSample.tags.deprecated) {
+            if (!locationSample.tags.deprecated
+                && locationSample.coordinate
+                && locationSample.coordinate.accuracy
+                && locationSample.coordinate.accuracy < 1000) {
               var marker = createMarker(locationSample)
               locationSamplesMarkersLayer.addLayer(marker);
             }
