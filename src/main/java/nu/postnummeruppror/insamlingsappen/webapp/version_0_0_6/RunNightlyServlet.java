@@ -18,7 +18,7 @@ public class RunNightlyServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-    if (!req.getParameter("secretKey").equals(System.getenv("secretKey"))) {
+    if (!req.getParameter("secretKey").equals(System.getProperty("secretKey"))) {
       throw new RuntimeException("Invalid secret key");
     }
 
