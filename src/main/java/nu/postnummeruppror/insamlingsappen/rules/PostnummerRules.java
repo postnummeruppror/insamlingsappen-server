@@ -66,7 +66,7 @@ public class PostnummerRules {
 
     postnummer = postnummer.replaceAll("\\D+", "");
     if (postnummer.length() != 5) {
-      throw new IllegalArgumentException("Postal codes are 5 digits");
+      throw new IllegalArgumentException("Postal codes are 5 digits: " + postnummer);
     }
 
     // Stockholm
