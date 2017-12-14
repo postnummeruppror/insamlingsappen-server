@@ -1,146 +1,170 @@
 <!DOCTYPE HTML>
-<html>
-<head>
+<html lang="sv">
+	<head>
+		<meta charset="UTF-8">
+		<title>Statistik - postnummerupproret</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="//insamling.postnummeruppror.nu/mobil/img/favicon.png">
+		<link href="//insamling.postnummeruppror.nu/mobil/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="//insamling.postnummeruppror.nu/mobil/css/style.css" rel="stylesheet" media="screen">
+		<link href='//fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+		<link href="//fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet" type="text/css">
+		<link href='//fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+		<script src="lib/plotly-latest.min.js"></script>
+		<script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="//insamling.postnummeruppror.nu/mobil/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
 
-  <script src="lib/plotly-latest.min.js"></script>
-  <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
+			window.onload = function () {
 
-  <script type="text/javascript">
-
-    window.onload = function () {
-
-      var totalSamplesData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        type: "none"
-      }];
-      var newSamplesData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        mode: 'none',
-        type: "none"
-      }];
-      var totalAccountsData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        type: "none"
-      }];
-      var newAccountsData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        mode: 'none',
-        type: "none"
-      }];
-      var totalPostalCodesData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        type: "none"
-      }];
-      var newPostalCodesData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        mode: 'none',
-        type: "none"
-      }];
-      var totalPostalTownsData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        type: "none"
-      }];
-      var newPostalTownsData = [{
-        x: [],
-        y: [],
-        fill: "tozeroy",
-        mode: 'none',
-        type: "none"
-      }];
-
-
-
-      $.getJSON('../nightly/stats.json', function (arr) {
-        for (var i = 0; i < arr.length; i++) {
-          var item = arr[i];
-
-          item.date = new Date(item.date);
-
-          totalSamplesData[0].x.push(item.date);
-          totalSamplesData[0].y.push(item.totalSampleCount);
-
-          newSamplesData[0].x.push(item.date);
-          newSamplesData[0].y.push(item.newSamplesCount);
+				var totalSamplesData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					type: "none"
+				}];
+				var newSamplesData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					mode: 'none',
+					type: "none"
+				}];
+				var totalAccountsData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					type: "none"
+				}];
+				var newAccountsData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					mode: 'none',
+					type: "none"
+				}];
+				var totalPostalCodesData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					type: "none"
+				}];
+				var newPostalCodesData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					mode: 'none',
+					type: "none"
+				}];
+				var totalPostalTownsData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					type: "none"
+				}];
+				var newPostalTownsData = [{
+					x: [],
+					y: [],
+					fill: "tozeroy",
+					mode: 'none',
+					type: "none"
+				}];
 
 
-          totalAccountsData[0].x.push(item.date);
-          totalAccountsData[0].y.push(item.totalAccountsCount);
 
-          newAccountsData[0].x.push(item.date);
-          newAccountsData[0].y.push(item.newAccountsCount);
+				$.getJSON('../nightly/stats.json', function (arr) {
+					for (var i = 0; i < arr.length; i++) {
+						var item = arr[i];
 
-          totalPostalCodesData[0].x.push(item.date);
-          totalPostalCodesData[0].y.push(item.totalPostalCodeCount);
+						item.date = new Date(item.date);
 
-          newPostalCodesData[0].x.push(item.date);
-          newPostalCodesData[0].y.push(item.newPostalCodes.length);
+						totalSamplesData[0].x.push(item.date);
+						totalSamplesData[0].y.push(item.totalSampleCount);
 
-
-          totalPostalTownsData[0].x.push(item.date);
-          totalPostalTownsData[0].y.push(item.totalPostalTownCount);
-
-          newPostalTownsData[0].x.push(item.date);
-          newPostalTownsData[0].y.push(item.newPostalTowns.length);
-
-        }
+						newSamplesData[0].x.push(item.date);
+						newSamplesData[0].y.push(item.newSamplesCount);
 
 
-        var logLayout = {
-          xaxis: {
-            autorange: true
-          },
-          yaxis: {
-            type: 'log',
-            autorange: true
-          }
-        };
+						totalAccountsData[0].x.push(item.date);
+						totalAccountsData[0].y.push(item.totalAccountsCount);
 
-        Plotly.newPlot('totalSamplesContainer', totalSamplesData);
-        Plotly.newPlot('newSamplesContainer', newSamplesData, logLayout);
-        Plotly.newPlot('totalAccountsContainer', totalAccountsData);
-        Plotly.newPlot('newAccountsContainer', newAccountsData, logLayout);
-        Plotly.newPlot('totalPostalCodesContainer', totalPostalCodesData);
-        Plotly.newPlot('newPostalCodesContainer', newPostalCodesData, logLayout);
-        Plotly.newPlot('totalPostalTownsContainer', totalPostalTownsData);
-        Plotly.newPlot('newPostalTownsContainer', newPostalTownsData, logLayout);
+						newAccountsData[0].x.push(item.date);
+						newAccountsData[0].y.push(item.newAccountsCount);
+
+						totalPostalCodesData[0].x.push(item.date);
+						totalPostalCodesData[0].y.push(item.totalPostalCodeCount);
+
+						newPostalCodesData[0].x.push(item.date);
+						newPostalCodesData[0].y.push(item.newPostalCodes.length);
 
 
-      });
+						totalPostalTownsData[0].x.push(item.date);
+						totalPostalTownsData[0].y.push(item.totalPostalTownCount);
+
+						newPostalTownsData[0].x.push(item.date);
+						newPostalTownsData[0].y.push(item.newPostalTowns.length);
+
+					}
 
 
-    }
-  </script>
-</head>
-<body>
-<h1>Totalt antal rapporter</h1>
-<div id="totalSamplesContainer" style="height: 300px; width: 100%;"></div>
-<h1>Antal nya rapporter</h1>
-<div id="newSamplesContainer" style="height: 300px; width: 100%;"></div>
-<h1>Totalt antal konton</h1>
-<div id="totalAccountsContainer" style="height: 300px; width: 100%;"></div>
-<h1>Antal nya konton</h1>
-<div id="newAccountsContainer" style="height: 300px; width: 100%;"></div>
-<h1>Totalt antal postnummer</h1>
-<div id="totalPostalCodesContainer" style="height: 300px; width: 100%;"></div>
-<h1>Antal nya postnummer</h1>
-<div id="newPostalCodesContainer" style="height: 300px; width: 100%;"></div>
-<h1>Totalt antal postorter</h1>
-<div id="totalPostalTownsContainer" style="height: 300px; width: 100%;"></div>
-<h1>Antal nya postorter</h1>
-<div id="newPostalTownsContainer" style="height: 300px; width: 100%;"></div>
-</body>
+					var logLayout = {
+						xaxis: {
+							autorange: true
+						},
+						yaxis: {
+							type: 'log',
+							autorange: true
+						}
+					};
+
+					Plotly.newPlot('totalSamplesContainer', totalSamplesData);
+					Plotly.newPlot('newSamplesContainer', newSamplesData, logLayout);
+					Plotly.newPlot('totalAccountsContainer', totalAccountsData);
+					Plotly.newPlot('newAccountsContainer', newAccountsData, logLayout);
+					Plotly.newPlot('totalPostalCodesContainer', totalPostalCodesData);
+					Plotly.newPlot('newPostalCodesContainer', newPostalCodesData, logLayout);
+					Plotly.newPlot('totalPostalTownsContainer', totalPostalTownsData);
+					Plotly.newPlot('newPostalTownsContainer', newPostalTownsData, logLayout);
+
+
+				});
+
+
+			}
+		</script>
+	</head>
+	<body style="padding-top:70px">
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<div class="navbar-brand">
+						<a class="navbar-brand" href="#"><img src="//insamling.postnummeruppror.nu/mobil/img/48x48.png" alt="Postnummeruppror logotyp"> Postnummeruppror</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Totalt antal rapporter</h1>
+					<div id="totalSamplesContainer" style="height: 300px; width: 100%;"></div>
+					<h1>Antal nya rapporter</h1>
+					<div id="newSamplesContainer" style="height: 300px; width: 100%;"></div>
+					<h1>Totalt antal konton</h1>
+					<div id="totalAccountsContainer" style="height: 300px; width: 100%;"></div>
+					<h1>Antal nya konton</h1>
+					<div id="newAccountsContainer" style="height: 300px; width: 100%;"></div>
+					<h1>Totalt antal postnummer</h1>
+					<div id="totalPostalCodesContainer" style="height: 300px; width: 100%;"></div>
+					<h1>Antal nya postnummer</h1>
+					<div id="newPostalCodesContainer" style="height: 300px; width: 100%;"></div>
+					<h1>Totalt antal postorter</h1>
+					<div id="totalPostalTownsContainer" style="height: 300px; width: 100%;"></div>
+					<h1>Antal nya postorter</h1>
+					<div id="newPostalTownsContainer" style="height: 300px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
