@@ -9,50 +9,6 @@ import java.util.Map;
  */
 public class PostnummerRules {
 
-  private Map<String, String> postalTownByPostalCodePrefix = new HashMap<>();
-  private Map<String, String> postalTownByTwoDigitPostalCodePrefix = new HashMap<>();
-
-  public PostnummerRules() {
-    postalTownByTwoDigitPostalCodePrefix.put("22", "Lund");
-    postalTownByTwoDigitPostalCodePrefix.put("25", "Helsingborg");
-    postalTownByTwoDigitPostalCodePrefix.put("30", "Halmstad");
-    postalTownByTwoDigitPostalCodePrefix.put("35", "Växjö");
-    postalTownByTwoDigitPostalCodePrefix.put("39", "Kalmar");
-    postalTownByTwoDigitPostalCodePrefix.put("50", "Borås");
-    postalTownByTwoDigitPostalCodePrefix.put("55", "Jönköping");
-    postalTownByTwoDigitPostalCodePrefix.put("58", "Linköping");
-    postalTownByTwoDigitPostalCodePrefix.put("60", "Norrköping");
-    postalTownByTwoDigitPostalCodePrefix.put("63", "Eskilstuna");
-    postalTownByTwoDigitPostalCodePrefix.put("65", "Karlstad");
-    postalTownByTwoDigitPostalCodePrefix.put("70", "Örebro");
-    postalTownByTwoDigitPostalCodePrefix.put("72", "Västerås");
-    postalTownByTwoDigitPostalCodePrefix.put("75", "Uppsala");
-    postalTownByTwoDigitPostalCodePrefix.put("80", "Gävle");
-    postalTownByTwoDigitPostalCodePrefix.put("85", "Sundsvall");
-    postalTownByTwoDigitPostalCodePrefix.put("90", "Umeå");
-    postalTownByTwoDigitPostalCodePrefix.put("95", "Luleå");
-
-    postalTownByPostalCodePrefix.putAll(postalTownByTwoDigitPostalCodePrefix);
-    postalTownByPostalCodePrefix.put("10", "Stockholm");
-    postalTownByPostalCodePrefix.put("11", "Stockholm");
-    postalTownByPostalCodePrefix.put("20", "Malmö");
-    postalTownByPostalCodePrefix.put("21", "Malmö");
-    postalTownByPostalCodePrefix.put("40", "Göteborg");
-    postalTownByPostalCodePrefix.put("41", "Göteborg");
-
-  }
-
-  public String getPostalTown(String postalCode) {
-    for (int i = 1; i < 5 && i <= postalCode.length(); i++) {
-      String searchPrefix = postalCode.substring(0, i);
-      String postalTown = postalTownByPostalCodePrefix.get(searchPrefix);
-      if (postalTown != null) {
-        return postalTown;
-      }
-    }
-    return null;
-  }
-
   /**
    *
    * @param postnummer
@@ -212,13 +168,6 @@ public class PostnummerRules {
         ) {
       return false;
     }
-
-    String postalTown = postalTownByTwoDigitPostalCodePrefix.get(postnummer.substring(0,2));
-    if (postalTown != null) {
-      return isSpecialTwoNumberUtdelningspost(postnummer);
-    }
-
-    // todo är alla andra tvånummer? jag tror inte det.
 
 
     return null;

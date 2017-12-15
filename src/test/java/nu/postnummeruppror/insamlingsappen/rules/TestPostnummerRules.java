@@ -15,19 +15,6 @@ import java.util.List;
 public class TestPostnummerRules {
 
   @Test
-  public void testGetPostalTown() {
-
-    PostnummerRules postnummerRules = new PostnummerRules();
-
-    Assert.assertNull("Halmstad", postnummerRules.getPostalTown("3"));
-    Assert.assertEquals("Halmstad", postnummerRules.getPostalTown("30"));
-    Assert.assertEquals("Halmstad", postnummerRules.getPostalTown("302"));
-    Assert.assertEquals("Halmstad", postnummerRules.getPostalTown("3023"));
-    Assert.assertEquals("Halmstad", postnummerRules.getPostalTown("30234"));
-
-  }
-
-  @Test
   public void testTwoNumberIdentifiedPostalTown() {
 
     PostnummerRules postnummerRules = new PostnummerRules();
@@ -45,6 +32,7 @@ public class TestPostnummerRules {
 
       List<LocationSample> badPostalCodes = new ArrayList<>();
       List<LocationSample> badPostalTowns = new ArrayList<>();
+      List<LocationSample> badAccuracy = new ArrayList<>();
 
       for (LocationSample locationSample : Insamlingsappen.getInstance().getPrevayler().prevalentSystem().getLocationSamples().values()) {
         if (!"true".equals(locationSample.getTag("deprecated"))) {
@@ -57,21 +45,14 @@ public class TestPostnummerRules {
                 badPostalCodes.add(locationSample);
               }
 
-              String postalTown = locationSample.getTag("addr:city");
-              if (postalTown != null) {
-                postalTown = postalTown.trim();
-                String rulePostalTown = rules.getPostalTown(postalCode);
-                if (rulePostalTown != null) {
-                  if (!postalTown.equalsIgnoreCase(rulePostalTown)) {
-                    badPostalTowns.add(locationSample);
-                  }
-                }
-              }
-
             }
           }
+        }
 
-
+        if (locationSample.getCoordinate() != null
+            && locationSample.getCoordinate().getAccuracy() != null
+            && locationSample.getCoordinate().getAccuracy() > 1000) {
+          badAccuracy.add(locationSample);
         }
       }
 
