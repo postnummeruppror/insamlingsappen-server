@@ -190,46 +190,47 @@
           "reference": null,
           "polygon": intersectingPolygons[0]
         }), function success(data) {
-          locationSamplesMarkersLayer.clearLayers();
 
           data = JSON.parse(data);
-
-          for (var i = 0; i < data.locationSamples.length; i++) {
-
-
-            function createMarker(locationSample) {
-              var marker = L.marker(
-                  [locationSample.coordinate.latitude, locationSample.coordinate.longitude], {
-                    icon: L.divIcon({
-                      className: "locationSampleMarker",
-                      html: locationSample.identity
-                    })
-                  });
-
-              marker.on("click", function markerClick(e) {
-                $("#locationSample-json").val(JSON.stringify(locationSample, null, 2));
-                selectedMarker = marker;
-              });
-
-              return marker;
-            }
-
-            var locationSample = data.locationSamples[i];
-            if (!locationSample.tags.deprecated
-                && locationSample.coordinate
-                && locationSample.coordinate.accuracy
-                && locationSample.coordinate.accuracy < 1000) {
-              var marker = createMarker(locationSample)
-              locationSamplesMarkersLayer.addLayer(marker);
-            }
-
-          }
+          createMarkers(data.locationSamples);
 
         });
       });
     });
   }
 
+  function createMarkers(locationSamples) {
+    locationSamplesMarkersLayer.clearLayers();
+    for (var i = 0; i < locationSamples.length; i++) {
+
+      function createMarker(locationSample) {
+        var marker = L.marker(
+          [locationSample.coordinate.latitude, locationSample.coordinate.longitude], {
+            icon: L.divIcon({
+              className: "locationSampleMarker",
+              html: locationSample.identity
+            })
+          });
+
+        marker.on("click", function markerClick(e) {
+          $("#locationSample-json").val(JSON.stringify(locationSample, null, 2));
+          selectedMarker = marker;
+        });
+
+        return marker;
+      }
+
+      var locationSample = locationSamples[i];
+      if (!locationSample.tags.deprecated
+        && locationSample.coordinate
+        && locationSample.coordinate.accuracy
+        && locationSample.coordinate.accuracy < 1000) {
+        var marker = createMarker(locationSample)
+        locationSamplesMarkersLayer.addLayer(marker);
+      }
+
+    }
+  }
 
   var secretKey = new URLSearchParams(location.search.slice(1)).get("secretKey");
   
@@ -262,6 +263,18 @@
 
   }
 
+  function findByTags() {
+    $.post("/api/0.0.6/location_sample/findByTags", $("#locationSample-json").val(),
+      function success(data) {
+        console.log("success");
+
+        data = JSON.parse(data);
+        createMarkers(data.locationSamples);
+
+      });
+    $("#locationSample-json").val("REQUESTED");
+  }
+
   function hideSelectedMarker() {
     locationSamplesMarkersLayer.removeLayer(selectedMarker);
     $("#locationSample-json").val("");
@@ -291,6 +304,8 @@
   <button onclick="replace();">Ersätt</button>
   <br/>
   <button onclick="hideSelectedMarker();">Göm vald</button>
+  <br/>
+  <button onclick="findByTags();">Sök tags</button>
   <br/>
   <!--<input id="deprecation-text" style="width:20em;" value="Anledning"/>-->
   <!--<button onclick="deprecate();">Fasa ut</button>-->

@@ -5,6 +5,7 @@ import nu.postnummeruppror.insamlingsappen.domain.Root;
 import org.prevayler.Query;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author kalle
@@ -12,8 +13,8 @@ import java.util.*;
  */
 public class FindSamplesByTag implements Query<Root, Collection<LocationSample>> {
 
-  private Map<String, String> mustTags = new HashMap<>();
-  private Map<String, String> mustNotTags = new HashMap<>();
+  private Map<String, Pattern> mustTags = new HashMap<>();
+  private Map<String, Pattern> mustNotTags = new HashMap<>();
 
   public FindSamplesByTag() {
   }
@@ -24,10 +25,10 @@ public class FindSamplesByTag implements Query<Root, Collection<LocationSample>>
 
   public FindSamplesByTag(boolean includeDeprecated, String... mustKeyValues) {
     for (int i=0; i<mustKeyValues.length; i+=2) {
-      mustTags.put(mustKeyValues[i], mustKeyValues[i+1]);
+      mustTags.put(mustKeyValues[i], Pattern.compile(mustKeyValues[i+1]));
     }
     if (!includeDeprecated) {
-      mustNotTags.put("deprecated", "true");
+      mustNotTags.put("deprecated", Pattern.compile("^true$"));
     }
   }
 
@@ -38,8 +39,9 @@ public class FindSamplesByTag implements Query<Root, Collection<LocationSample>>
 
       boolean match = true;
       if (!mustNotTags.isEmpty()) {
-        for (Map.Entry<String, String> requiredMustNotTag : mustNotTags.entrySet()) {
-          if (requiredMustNotTag.getValue().equals(locationSample.getTag(requiredMustNotTag.getKey()))) {
+        for (Map.Entry<String, Pattern> requiredMustNotTag : mustNotTags.entrySet()) {
+          String value = locationSample.getTag(requiredMustNotTag.getKey());
+          if (value == null || requiredMustNotTag.getValue().matcher(value).matches()) {
             match = false;
             break;
           }
@@ -47,8 +49,9 @@ public class FindSamplesByTag implements Query<Root, Collection<LocationSample>>
       }
 
       if (match) {
-        for (Map.Entry<String, String> requiredTag : mustTags.entrySet()) {
-          if (!requiredTag.getValue().equals(locationSample.getTag(requiredTag.getKey()))) {
+        for (Map.Entry<String, Pattern> requiredTag : mustTags.entrySet()) {
+          String value = locationSample.getTag(requiredTag.getKey());
+          if (value == null || !requiredTag.getValue().matcher(value).matches()) {
             match = false;
             break;
           }
@@ -63,11 +66,11 @@ public class FindSamplesByTag implements Query<Root, Collection<LocationSample>>
     return locationSamples;
   }
 
-  public Map<String, String> getMustTags() {
+  public Map<String, Pattern> getMustTags() {
     return mustTags;
   }
 
-  public Map<String, String> getMustNotTags() {
+  public Map<String, Pattern> getMustNotTags() {
     return mustNotTags;
   }
 }

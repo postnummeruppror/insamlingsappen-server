@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author kalle
@@ -40,11 +41,11 @@ public class FindSamplesByTagServlet extends HttpServlet {
     documentation.append("{\n");
     documentation.append("\n");
     documentation.append("  \"reference\": Optional. Any value. Will be sent back to client in response.\n");
-    documentation.append("  \"mustTags\": { JSON object. Required tags. All must match. Case sensitive\n");
+    documentation.append("  \"mustTags\": { JSON object. Required tags. All must match. Case sensitive regexp\n");
     documentation.append("    \"addr:city\": \"Place\"\n");
     documentation.append("    \"addr:postcode\": \"12345\"\n");
     documentation.append("  },\n");
-    documentation.append("  \"mustNotTags\": { JSON object. Tags that mut not match. All must match. Case sensitive\n");
+    documentation.append("  \"mustNotTags\": { JSON object. Tags that mut not match. All must match. Case sensitive regexp\n");
     documentation.append("    \"deprecated\": \"true\"\n");
     documentation.append("    \"key\": \"nor this\"\n");
     documentation.append("  }\n");
@@ -100,18 +101,22 @@ public class FindSamplesByTagServlet extends HttpServlet {
       log.debug("Incoming request: " + requestJSON.toString());
 
       FindSamplesByTag findSamplesByTag = new FindSamplesByTag();
-      JSONObject mustTags = requestJSON.getJSONObject("mustTags");
-      for (Iterator iterator = mustTags.keys(); iterator.hasNext();) {
-        String key = (String)iterator.next();
-        String value = mustTags.getString(key);
-        findSamplesByTag.getMustTags().put(key, value);
+      if (requestJSON.has("mustTags")) {
+        JSONObject mustTags = requestJSON.getJSONObject("mustTags");
+        for (Iterator iterator = mustTags.keys(); iterator.hasNext(); ) {
+          String key = (String) iterator.next();
+          String value = mustTags.getString(key);
+          findSamplesByTag.getMustTags().put(key, Pattern.compile(value));
+        }
       }
 
-      JSONObject mustNotTags = requestJSON.getJSONObject("mustNotTags");
-      for (Iterator iterator = mustNotTags.keys(); iterator.hasNext();) {
-        String key = (String)iterator.next();
-        String value = mustNotTags.getString(key);
-        findSamplesByTag.getMustNotTags().put(key, value);
+      if (requestJSON.has("mustNotTags")) {
+        JSONObject mustNotTags = requestJSON.getJSONObject("mustNotTags");
+        for (Iterator iterator = mustNotTags.keys(); iterator.hasNext(); ) {
+          String key = (String) iterator.next();
+          String value = mustNotTags.getString(key);
+          findSamplesByTag.getMustNotTags().put(key, Pattern.compile(value));
+        }
       }
 
 

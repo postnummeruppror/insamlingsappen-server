@@ -245,11 +245,11 @@
 
 
   <servlet>
-    <servlet-name>0.0.6/FindSamplesByTagServlet</servlet-name>
+    <servlet-name>0.0.6/FindSamplesByTagsServlet</servlet-name>
     <servlet-class>nu.postnummeruppror.insamlingsappen.webapp.version_0_0_6.FindSamplesByTagServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>0.0.6/FindSamplesByTagServlet</servlet-name>
+    <servlet-name>0.0.6/FindSamplesByTagsServlet</servlet-name>
     <url-pattern>/api/0.0.6/location_sample/findByTags</url-pattern>
   </servlet-mapping>
 

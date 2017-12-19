@@ -47,6 +47,16 @@ public class TestPostnummerRules {
 
             }
           }
+
+          String postalTown = locationSample.getTag("addr:city");
+          if (postalTown != null) {
+            if (postalTown.trim().isEmpty()) {
+              badPostalTowns.add(locationSample);
+            } else if (postalTown.matches(".*\\d.*")) {
+              badPostalTowns.add(locationSample);
+            }
+          }
+
         }
 
         if (locationSample.getCoordinate() != null
