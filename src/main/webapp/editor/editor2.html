@@ -275,6 +275,40 @@
     $("#locationSample-json").val("REQUESTED");
   }
 
+  var newLocationSampleMarker;
+
+  function createNewLocationSample() {
+    locationSamplesMarkersLayer.clearLayers();
+    polygonLayer.clearLayers();
+    $("#locationSample-json").val(JSON.stringify({
+    }, null, 2));
+
+  }
+
+  function saveNewLocationSample() {
+
+    var object = JSON.parse($("#locationSample-json").val());
+
+    object.accountIdentity = "test-account";
+    object.application = "test-editor.html";
+    object.applicationVersion = "0.0.1";
+
+    object.coordinate = {
+      latitude : newLocationSampleMarker.latLng.lat(),
+      longitude : newLocationSampleMarker.latLng.lng(),
+      accuracy : 10,
+      provider: "human"
+    };
+
+
+
+    $.post("/api/0.0.6/location_sample/create", JSON.stringify(object, null, 2),
+      function success(data) {
+        $("#locationSample-json").val("CREATED");
+      });
+    $("#locationSample-json").val("REQUESTED");
+  }
+
   function hideSelectedMarker() {
     locationSamplesMarkersLayer.removeLayer(selectedMarker);
     $("#locationSample-json").val("");
@@ -306,6 +340,10 @@
   <button onclick="hideSelectedMarker();">Göm vald</button>
   <br/>
   <button onclick="findByTags();">Sök tags</button>
+  <br/>
+  <button onclick="createNewLocationSample();">Skapa</button>
+  <br/>
+  <button onclick="saveNewLocationSample();">Spara ny</button>
   <br/>
   <!--<input id="deprecation-text" style="width:20em;" value="Anledning"/>-->
   <!--<button onclick="deprecate();">Fasa ut</button>-->
