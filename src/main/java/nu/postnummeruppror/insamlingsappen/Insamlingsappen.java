@@ -4,6 +4,8 @@ import nu.postnummeruppror.insamlingsappen.domain.Root;
 import nu.postnummeruppror.insamlingsappen.index.LocationSampleIndex;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,8 @@ import java.io.IOException;
  * @since 2014-09-06 00:42
  */
 public class Insamlingsappen {
+
+  private Logger log = LoggerFactory.getLogger(getClass());
 
   /**
    * För att teststarta tjänsten
@@ -48,9 +52,12 @@ public class Insamlingsappen {
     prevaylerFactory.configurePrevalentSystem(new Root());
     prevayler = prevaylerFactory.create();
 
+    log.info("Prevayler loaded with {} samples", prevayler.prevalentSystem().getLocationSamples().size());
+
     locationSampleIndex = new LocationSampleIndex();
     locationSampleIndex.open();
     locationSampleIndex.reconstruct();
+
   }
 
   public void close() throws Exception {
