@@ -27,6 +27,7 @@ public class Nightly {
   public static void main(String[] args) throws Exception {
     Insamlingsappen.getInstance().open();
     try {
+      Nightly.getInstance().runnable = new NightlyRunnable();
       Nightly.getInstance().getRunnable().execute();
     } finally {
       Insamlingsappen.getInstance().close();
